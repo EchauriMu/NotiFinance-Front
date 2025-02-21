@@ -37,8 +37,7 @@ const TrackedCoins = ({ watchlist, loading }) => {
           ) : watchlist.length > 0 ? (
             watchlist.map((coin, index) => {
               const color = tagColors[index % tagColors.length];
-              console.log(`💰 [TrackedCoins] Moneda ${index + 1}: ${coin.symbol}, Color asignado: ${color}`);
-              return <Tag key={index} color={color}>{coin.symbol}</Tag>;
+               return <Tag key={index} color={color}>{coin.symbol}</Tag>;
             })
           ) : (
             <Text style={{ color: 'gray' }}>No hay monedas en seguimiento</Text>

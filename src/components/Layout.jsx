@@ -5,6 +5,8 @@ import CryptoHeader from './Header/Header';
 import CryptoChart from './Charts/ChartSection';
 import PriceTrackerCard from './PriceTrackerCard';
 import Dashboard from './dashboard/dashboard';
+import CryptoAlertForm from './NotiFInance/WatchList';
+import ConfigTab from './Config/ConfigMain';
 
 const { Content, Footer } = Layout;
 const { Text } = Typography;
@@ -25,8 +27,8 @@ const styles = {
 const sections = {
   dashboard: <Dashboard/>,
   monedas:<CryptoChart />,
-  notifinance: <div>Noticias y actualizaciones</div>,
-  configuracion: <div>Opciones de configuración</div>,
+  notifinance:  <CryptoAlertForm/>,
+  configuracion: <ConfigTab/>,
 };
 
 const CryptoLayout = () => {

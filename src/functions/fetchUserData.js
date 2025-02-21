@@ -3,8 +3,7 @@ import axiosInstance from '../api/axiosInstance';
 // Función para obtener los datos del usuario (perfil)
 export const fetchUserData = async () => {
   try {
-    const response = await axiosInstance.get('/user/profile');  // Usando la ruta correcta para los datos del usuario
-
+    const response = await axiosInstance.get('/user/profile'); 
     console.log('📥 [API] Datos de usuario recibidos:', response.data);
 
     const userData = {
@@ -14,6 +13,9 @@ export const fetchUserData = async () => {
       role: response.data.data.role,
       lastLogin: response.data.data.lastLogin || 'Nunca',  // Si no tiene último login, mostramos "Nunca"
     };
+
+     // Guardar en sessionStorage
+     sessionStorage.setItem('userData', JSON.stringify(userData));
 
     return userData;
   } catch (error) {
@@ -27,7 +29,6 @@ export const fetchSettings = async () => {
   try {
     const response = await axiosInstance.get('/setting/get');  // Ruta para configuración y lista de seguimiento
 
-    console.log('📥 [API] Datos de configuración y watchlist recibidos:', response.data);
 
     const notificationSettings = response.data.notificationSettings || {
       email: false,

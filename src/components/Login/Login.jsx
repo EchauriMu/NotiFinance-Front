@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Form, Input, Button, Card, Spin, message } from "antd";
+import { Form, Input, Button, Card, Spin, message ,notification} from "antd";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../api/axiosInstance";
 
@@ -12,7 +12,11 @@ const Login = ({ setIsAuthenticated }) => {
     try {
       const response = await axiosInstance.post("/auth/login", values);
       if (response.status === 200) {
-        message.success("Inicio de sesión exitoso");
+        notification.success({
+          message: 'Inicio de sesión exitoso',
+          description: 'Has iniciado sesión correctamente.',
+          placement: 'bottomRight',
+        });
         console.log('redirigiendo....');
         setIsAuthenticated(true);
         navigate("/"); // Redirigir al dashboard

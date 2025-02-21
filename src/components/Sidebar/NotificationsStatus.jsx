@@ -25,9 +25,9 @@ const NotificationsStatus = ({ loading, notificationSettings }) => {
             <BellOutlined style={{ color: '#52c41a', fontSize: '22px' }} />
             <Text style={{ color: 'white' }}>Notificaciones</Text>
           </Space>
-          <Badge status={notificationSettings.email ? "success" : "error"} text={<Text style={{ color: 'white' }}>Email {notificationSettings.email ? 'Activo' : 'Inactivo'}</Text>} />
-          <Badge status={notificationSettings.whatsapp ? "success" : "error"} text={<Text style={{ color: 'white' }}>Whatsapp {notificationSettings.whatsapp ? 'Activo' : 'Inactivo'}</Text>} />
-          <Badge status={notificationSettings.discord ? "success" : "error"} text={<Text style={{ color: 'white' }}>Discord {notificationSettings.discord ? 'Activo' : 'Inactivo'}</Text>} />
+          <Badge status={notificationSettings.email ? "success" : "error"} text={<Text style={{ color: 'white' }}>Email {notificationSettings.email ? 'Registrado' : 'Sin registrar'}</Text>} />
+          <Badge status={notificationSettings.whatsapp ? "success" : "error"} text={<Text style={{ color: 'white' }}>Whatsapp {notificationSettings.whatsapp ? 'Registrado' : 'Sin registrar'}</Text>} />
+          <Badge status={notificationSettings.discord ? "success" : "error"} text={<Text style={{ color: 'white' }}>Discord {notificationSettings.discord ? 'Registrado' : 'Sin registrar'}</Text>} />
         </Space>
       )}
     </div>

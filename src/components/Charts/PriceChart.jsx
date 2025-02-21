@@ -32,10 +32,10 @@ const PriceChart = ({ chartData, loadingChart, selectedCrypto }) => {
             formatter={(value) => [`Precio: ${value}`, 'Precio']} 
           />
           <Line 
-            type="monotone" 
+            type="Linear" 
             dataKey="price" 
             stroke="#8884d8" 
-            dot={false} 
+            dot={true} 
             strokeWidth={3} 
           />
         </LineChart>
