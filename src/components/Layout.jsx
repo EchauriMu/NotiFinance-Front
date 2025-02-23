@@ -5,7 +5,7 @@ import CryptoHeader from './Header/Header';
 import CryptoChart from './Charts/ChartSection';
 import PriceTrackerCard from './PriceTrackerCard';
 import Dashboard from './dashboard/dashboard';
-import CryptoAlertForm from './NotiFInance/WatchList';
+import CryptoAlertForm from './NotiFInance/CryptoAlertForm';
 import ConfigTab from './Config/ConfigMain';
 
 const { Content, Footer } = Layout;
@@ -37,11 +37,11 @@ const CryptoLayout = () => {
   return (
     <Layout style={styles.layout}>
       <Row gutter={[0, 16]}>
-        <Col xs={24} md={6}>
+        <Col xs={24} md={5}>
           <Sidebar />
         </Col>
 
-        <Col xs={24} md={18}>
+        <Col xs={24} md={19}>
           <CryptoHeader setActiveSection={setActiveSection} />
 
           <Content style={styles.content}>

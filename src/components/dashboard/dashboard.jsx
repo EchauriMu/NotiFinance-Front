@@ -10,7 +10,7 @@ const Dashboard = () => {
       {/* Panel Principal */}
       <Col xs={24} lg={16}>
         <Card>
-          <Title level={4}>Bienvenido a NotiFInance</Title>
+          <Title style={{marginTop:0}} level={4}>Bienvenido a NotiFInance</Title>
           <Text type="secondary">Resumen de tus alertas de criptomonedas</Text>
           
           <Row gutter={[16, 16]} style={{ }}>
@@ -85,7 +85,7 @@ const Dashboard = () => {
       {/* Panel de Estado del Sistema */}
       <Col xs={24} lg={8}>
         <Card>
-          <Title level={4}>Estado del Sistema</Title>
+          <Title style={{marginTop:0}} level={4}>Estado del Sistema</Title>
           <Space direction="vertical" style={{ width: '100%' }}>
             <Row justify="space-between">
               <Text>Servicio de Alertas</Text>

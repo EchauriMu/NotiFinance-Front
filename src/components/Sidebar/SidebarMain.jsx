@@ -10,7 +10,7 @@ import SubscriptionInfo from './SubscriptionInfo';
 const styles = {
   sidebar: {
     backgroundColor: '#141414',
-    padding: '20px',
+    padding: '15px',
     borderRight: '1px solid rgba(255,255,255,0.1)',
     height: '100%'
   },

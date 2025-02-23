@@ -25,7 +25,7 @@ const UserInfo = ({ userData, loading }) => {
         <Space direction="vertical" align="center" style={{ width: '100%' }}>
           {/* Avatar del usuario */}
           <Avatar
-            size={74}
+            size={84}
             src={
               userData?.username
                 ? `https://api.dicebear.com/9.x/dylan/svg?seed=${encodeURIComponent(userData.username)}`
