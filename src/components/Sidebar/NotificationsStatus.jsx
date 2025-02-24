@@ -15,6 +15,8 @@ const styles = {
 };
 
 const NotificationsStatus = ({ loading, notificationSettings }) => {
+  const isRegistered = (value) => value && value.trim() !== ""; // Verifica si no está vacío
+
   return (
     <div style={styles.statsCard}>
       {loading ? (
@@ -25,9 +27,15 @@ const NotificationsStatus = ({ loading, notificationSettings }) => {
             <BellOutlined style={{ color: '#52c41a', fontSize: '22px' }} />
             <Text style={{ color: 'white' }}>Notificaciones</Text>
           </Space>
-          <Badge status={notificationSettings.email ? "success" : "error"} text={<Text style={{ color: 'white' }}>Email {notificationSettings.email ? 'Registrado' : 'Sin registrar'}</Text>} />
-          <Badge status={notificationSettings.whatsapp ? "success" : "error"} text={<Text style={{ color: 'white' }}>Whatsapp {notificationSettings.whatsapp ? 'Registrado' : 'Sin registrar'}</Text>} />
-          <Badge status={notificationSettings.discord ? "success" : "error"} text={<Text style={{ color: 'white' }}>Discord {notificationSettings.discord ? 'Registrado' : 'Sin registrar'}</Text>} />
+          <Badge status={isRegistered(notificationSettings.email) ? "success" : "error"} 
+            text={<Text style={{ color: 'white' }}>Email {isRegistered(notificationSettings.email) ? 'Registrado' : 'Sin registrar'}</Text>} 
+          />
+          <Badge status={isRegistered(notificationSettings.whatsapp) ? "success" : "error"} 
+            text={<Text style={{ color: 'white' }}>Whatsapp {isRegistered(notificationSettings.whatsapp) ? 'Registrado' : 'Sin registrar'}</Text>} 
+          />
+          <Badge status={isRegistered(notificationSettings.discord) ? "success" : "error"} 
+            text={<Text style={{ color: 'white' }}>Discord {isRegistered(notificationSettings.discord) ? 'Registrado' : 'Sin registrar'}</Text>} 
+          />
         </Space>
       )}
     </div>

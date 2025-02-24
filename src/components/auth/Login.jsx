@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Form, Input, Button, Card, Spin, message ,notification} from "antd";
+import { Form, Input, Button, Card, Spin, notification } from "antd";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../api/axiosInstance";
 
@@ -11,19 +11,27 @@ const Login = ({ setIsAuthenticated }) => {
     setLoading(true);
     try {
       const response = await axiosInstance.post("/auth/login", values);
+
       if (response.status === 200) {
         notification.success({
-          message: 'Inicio de sesión exitoso',
-          description: 'Has iniciado sesión correctamente.',
-          placement: 'bottomRight',
+          message: "Inicio de sesión exitoso",
+          description: "Has iniciado sesión correctamente.",
+          placement: "bottomRight",
         });
-        console.log('redirigiendo....');
+
+        console.log("redirigiendo....");
         setIsAuthenticated(true);
         navigate("/"); // Redirigir al dashboard
-
       }
     } catch (error) {
-      message.error("Usuario o contraseña incorrectos");
+      const errorMessage =
+        error.response?.data?.message || "Ocurrió un error al iniciar sesión";
+
+      notification.error({
+        message: "Error de inicio de sesión",
+        description: errorMessage,
+        placement: "bottomRight",
+      });
     } finally {
       setLoading(false);
     }
