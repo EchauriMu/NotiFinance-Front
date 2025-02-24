@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Form, Input, Button, Card, Spin, notification } from "antd";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axiosInstance from "../../api/axiosInstance";
 
 const Login = ({ setIsAuthenticated }) => {
@@ -55,6 +55,10 @@ const Login = ({ setIsAuthenticated }) => {
             </Button>
           </Form.Item>
         </Form>
+         {/* 🔗 Enlace para iniciar sesión */}
+         <div style={{ marginTop: 10 }}>
+          ¿No tienes cuenta? <Link to="/register">Registrate aquí</Link>
+        </div>
       </Card>
     </div>
   );
