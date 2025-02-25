@@ -58,9 +58,10 @@ const CryptoChart = () => {
   }, [selectedCrypto, interval]);
 
   return (
-    <Card style={styles.card}>
+   
       <Row gutter={[16, 16]}>
-        <Col xs={24}>
+        <Col xs={24} md={14}>
+        <Card style={styles.card}>
           {!selectedCrypto && !loadingChart && (
             <Alert
               message="¡Importante!"
@@ -106,9 +107,10 @@ const CryptoChart = () => {
             loadingChart={loadingChart}
             selectedCrypto={selectedCrypto}
           />
+           </Card>
         </Col>
       </Row>
-    </Card>
+   
   );
 };
 

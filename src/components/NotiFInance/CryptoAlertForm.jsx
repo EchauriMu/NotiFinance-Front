@@ -53,7 +53,7 @@ const CryptoAlertForm = () => {
 
   return (
     <Row gutter={[16, 16]}>
-      <Col span={24} xs={24} md={14}>
+      <Col span={24} xs={24} md={12}>
         <Watchlist
           form={form}
           cryptoOptions={cryptoOptions}
@@ -62,7 +62,7 @@ const CryptoAlertForm = () => {
           setSelectedCrypto={setSelectedCrypto}
         />
       </Col>
-      <Col span={24} xs={24} md={10}>
+      <Col span={24} xs={24} md={12}>
       <StatForum  symbol={selectedCrypto} />
 
         <Explore news={news} loading={loadingNews} error={errorNews} />

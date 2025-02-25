@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Form, Select, Input, Row, Col, Alert, Button, notification } from 'antd';
+import { Card, Form, Select, Input, Row, Col, Alert, Button, notification, Modal } from 'antd';
 import { MailOutlined, DiscordOutlined, WhatsAppOutlined } from '@ant-design/icons';
 import axiosInstance from '../../api/axiosInstance';
 
@@ -43,11 +43,20 @@ export const Watchlist = ({ form, cryptoOptions, selectedNotification, selectNot
       form.resetFields();
     } catch (error) {
       console.error("Error al crear alerta:", error);
-      notification.error({
-        message: "Error",
-        description: "Error al crear alerta",
-        placement: "topRight"
-      });
+
+      if (error.response?.data?.code === "NO_ALERT_SERVICE") {
+        Modal.error({
+          title: "Servicio No Registrado",
+          content: "No tienes el servicio registrado. Ve a Configuración → Registra el servicio deseado.",
+          okText: "Entendido"
+        });
+      } else {
+        notification.error({
+          message: "Error",
+          description: "Error al crear alerta",
+          placement: "topRight"
+        });
+      }
     }
   };
 
