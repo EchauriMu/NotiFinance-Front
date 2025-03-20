@@ -45,6 +45,7 @@ const CryptoChart = () => {
     const data = await fetchChartData(selectedCrypto, 'USD', interval);
     setChartData(data.reverse());
     setLoadingChart(false);
+    console.log(chartData);
   };
 
   useEffect(() => {
@@ -60,7 +61,7 @@ const CryptoChart = () => {
   return (
    
       <Row gutter={[16, 16]}>
-        <Col xs={24} md={14}>
+        <Col xs={24} md={24}>
         <Card style={styles.card}>
           {!selectedCrypto && !loadingChart && (
             <Alert
