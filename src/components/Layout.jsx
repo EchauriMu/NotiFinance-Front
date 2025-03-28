@@ -7,6 +7,7 @@ import CryptoChart from './Charts/ChartSection';
 import Dashboard from './dashboard/dashboard';
 import CryptoAlertForm from './NotiFInance/CryptoAlertForm';
 import ConfigTab from './Config/ConfigMain';
+import Analitics from './Analitics/Analitics';
 
 const { Content, Footer } = Layout;
 const { Text } = Typography;
@@ -35,6 +36,7 @@ const sections = {
   monedas: <CryptoChart />, 
   notifinance: <CryptoAlertForm />, 
   configuracion: <ConfigTab />,
+  analitics: <Analitics/>,
 };
 
 const CryptoLayout = () => {

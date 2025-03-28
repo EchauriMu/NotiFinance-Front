@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Form, Input, Button, message, Card } from "antd";
-import { useParams, useNavigate } from "react-router-dom"; // Importa useNavigate
+import { Form, Input, Button, message, Card, Spin } from "antd";
+import { useParams, useNavigate } from "react-router-dom";
 import axiosInstance from "../../api/axiosInstance";
 
 const VerifyToken = () => {
   const [loading, setLoading] = useState(false);
-  const { userId } = useParams(); // Captura el ID del usuario desde la URL
-  const navigate = useNavigate(); // Hook para redirigir
+  const { userId } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!userId) {
@@ -22,24 +22,22 @@ const VerifyToken = () => {
 
     setLoading(true);
     try {
-      // 🔥 Corrige la URL: Usa `userId` en lugar de `:userId`
       await axiosInstance.post(`/auth/verify/${userId}`, {
-        token: values.token, // Ya no es necesario enviar userId en el body
+        token: values.token,
       });
 
       message.success({
         content: "✅ ¡Cuenta verificada con éxito! Redirigiendo a login...",
-        duration: 2, // Muestra la notificación por 2 segundos
+        duration: 2,
         style: { bottom: 50, right: 50 },
       });
 
-      setTimeout(() => {
-        navigate("/login"); // 🔀 Redirige después de 2 segundos
-      }, 2000);
+      setTimeout(() => navigate("/login"), 2000);
     } catch (error) {
       message.error(error.response?.data?.error || "❌ Error al verificar el token.");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
@@ -55,9 +53,12 @@ const VerifyToken = () => {
         >
           <Input maxLength={6} placeholder="123456" />
         </Form.Item>
-        <Button type="primary" htmlType="submit" loading={loading} block>
-          Verificar Cuenta
-        </Button>
+
+        <Form.Item>
+          <Button type="primary" htmlType="submit" block disabled={loading}>
+            {loading ? <Spin /> : "Verificar Cuenta"}
+          </Button>
+        </Form.Item>
       </Form>
     </Card>
   );

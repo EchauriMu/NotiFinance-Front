@@ -30,13 +30,9 @@ const ConfigMain = () => {
           </Card>
         </Col>
         <Col span={24}  xs={24} md={12}>
-        <Card  style={{height:'100%'}}>
-         
-      
-    <Space>
-    <SettingOutlined style={{color:'', fontSize:'36px'}}/>
-                  <Text style={{fontSize:'20px'}}strong>Configuracion de perfil</Text>
-                </Space>
+        <Card title='Configuracion del perfil' style={{height:'100%'}}>
+        <SettingOutlined style={{ fontSize: '24px', color: '#1890FF' }} />
+    
     
         </Card>
       </Col>
