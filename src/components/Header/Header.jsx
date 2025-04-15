@@ -1,10 +1,39 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Row, Col, Space, Button } from 'antd';
-import { TeamOutlined, ShareAltOutlined } from '@ant-design/icons';
+import { DotChartOutlined,TeamOutlined, AppstoreAddOutlined, CalendarOutlined, NotificationOutlined } from '@ant-design/icons';
 
-const sections = ['dashboard', 'monedas', 'notifinance', 'configuracion', 'analitics'];
+const sections = ['dashboard', 'monedas', 'notifinance', 'configuracion'];
 
-const CryptoHeader = ({ setActiveSection }) => {
+const CryptoHeader = ({ setActiveSection, activeSection }) => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    checkMobile(); // Comprobar al principio
+
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  const buttonStyle = (section) => ({
+    borderBottom: activeSection === section ? '4px solid orange' : 'none',
+  });
+
+  const renderButton = (section, label, icon) => (
+    <Button
+      key={section}
+      type="text"
+      onClick={() => setActiveSection(section)}
+      icon={icon}
+      style={buttonStyle(section)}
+    >
+      {label}
+    </Button>
+  );
+
   return (
     <header
       style={{
@@ -16,31 +45,33 @@ const CryptoHeader = ({ setActiveSection }) => {
     >
       <Row justify="space-between" align="middle">
         <Col xs={24} sm={16}>
-          <Space size="large" wrap style={{marginLeft:40}}>
+          <Space
+            size="large"
+            wrap
+            style={{
+              marginLeft: isMobile ? 0 : 40,
+              textAlign: isMobile ? 'center' : 'initial',
+            }}
+          >
             {sections
-              .filter(section => section !== 'analitics')
+              .filter((section) => section !== 'analitics')
               .map((section) => (
-                <Button 
-                  key={section} 
-                  type="text" 
+                <Button
+                  key={section}
+                  type="text"
                   onClick={() => setActiveSection(section)}
+                  style={buttonStyle(section)}
                 >
                   {section.charAt(0).toUpperCase() + section.slice(1)}
                 </Button>
-              ))
-            }
+              ))}
           </Space>
         </Col>
-        <Col xs={24} sm={8} style={{ textAlign: 'right', marginTop: '8px' }}>
+        <Col xs={24} sm={8} style={{ textAlign: 'center', marginTop: '8px' }}>
           <Space wrap>
-            <Button 
-              icon={<TeamOutlined />} 
-              onClick={() => setActiveSection('analitics')}
-            >
-              Analitics
-            </Button>
-            <Button icon={<ShareAltOutlined />} />
-            <Button type="primary">Nose</Button>
+            {renderButton('analitics', 'Analitics', <DotChartOutlined />)}
+            {renderButton('calendario', 'Calendario', <CalendarOutlined />)}
+            {renderButton('noticias', 'Noticias!', <NotificationOutlined />)}
           </Space>
         </Col>
       </Row>

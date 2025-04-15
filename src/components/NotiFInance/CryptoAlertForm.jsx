@@ -4,8 +4,8 @@ import { Watchlist } from './WatchList';
 import { Explore } from './Explore';
 import { fetchCryptos } from '../../functions/fetchCryptos';
 import { fetchNews } from '../../functions/fetchNews'; 
-import { StatForum } from './StatForum'
-
+import { StatForum } from './StatForum';
+import UserAlerts from './UserAlert'; // Solo importa el componente
 
 const CryptoAlertForm = () => {
   const [form] = Form.useForm();
@@ -16,7 +16,6 @@ const CryptoAlertForm = () => {
   const [loadingNews, setLoadingNews] = useState(false);
   const [errorNews, setErrorNews] = useState(null);
 
-  // Cargar criptomonedas (sessionStorage para evitar múltiples solicitudes)
   useEffect(() => {
     const loadCryptos = async () => {
       const storedCryptos = sessionStorage.getItem('cryptos');
@@ -31,7 +30,6 @@ const CryptoAlertForm = () => {
     loadCryptos();
   }, []);
 
-  // Cargar noticias cuando cambia la criptomoneda seleccionada
   useEffect(() => {
     if (!selectedCrypto) return;
 
@@ -52,23 +50,25 @@ const CryptoAlertForm = () => {
   }, [selectedCrypto]);
 
   return (
-    <Row gutter={[16, 16]}>
-      <Col span={24} xs={24} md={12}>
-        <Watchlist
-          form={form}
-          cryptoOptions={cryptoOptions}
-          selectedNotification={selectedNotification}
-          selectNotification={setSelectedNotification}
-          setSelectedCrypto={setSelectedCrypto}
-        />
-      </Col>
-      <Col span={24} xs={24} md={12}>
-      <StatForum  symbol={selectedCrypto} />
+    <>
+      <UserAlerts /> {/* Componente autónomo */}
 
-        <Explore news={news} loading={loadingNews} error={errorNews} />
-    
-      </Col>
-    </Row>
+      <Row gutter={[16, 16]}>
+        <Col span={24} xs={24} md={12}>
+          <Watchlist
+            form={form}
+            cryptoOptions={cryptoOptions}
+            selectedNotification={selectedNotification}
+            selectNotification={setSelectedNotification}
+            setSelectedCrypto={setSelectedCrypto}
+          />
+        </Col>
+        <Col span={24} xs={24} md={12}>
+          <StatForum symbol={selectedCrypto} />
+          <Explore news={news} loading={loadingNews} error={errorNews} />
+        </Col>
+      </Row>
+    </>
   );
 };
 

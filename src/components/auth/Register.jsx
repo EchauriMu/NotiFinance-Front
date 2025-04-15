@@ -41,16 +41,12 @@ const Register = () => {
     <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
       <Card title="Registro" style={{ width: 400, textAlign: "center" }}>
         <Form onFinish={onFinish} layout="vertical">
-          <Form.Item label="Usuario" name="username" rules={[{ required: true, message: "Ingresa tu usuario" }]}>
+          <Form.Item label="Nombre de Usuario" name="username" rules={[{ required: true, message: "Ingresa tu usuario" }]}>
             <Input />
           </Form.Item>
 
           <Form.Item label="Correo Electrónico" name="email" rules={[{ required: true, message: "Ingresa tu correo" }]}>
             <Input type="email" />
-          </Form.Item>
-
-          <Form.Item label="Teléfono" name="phone" rules={[{ required: true, message: "Ingresa tu número de teléfono" }]}>
-            <Input />
           </Form.Item>
 
           <Form.Item label="Contraseña" name="password" rules={[{ required: true, message: "Ingresa tu contraseña" }]}>

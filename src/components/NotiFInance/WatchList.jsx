@@ -61,7 +61,7 @@ export const Watchlist = ({ form, cryptoOptions, selectedNotification, selectNot
   };
 
   return (
-    <Card title="Configurar Alerta de Precio">
+    <Card title="Configurar Nueva Alerta de Precio">
       <Alert
         message="Instrucciones"
         description="Seleccione una criptomoneda, ingrese un precio umbral y elija un solo medio de notificación."

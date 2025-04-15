@@ -38,6 +38,11 @@ const SidebarMain = () => {
         const { notificationSettings, watchlist } = await fetchSettings();
         setNotificationSettings(notificationSettings);
         setWatchlist(watchlist);
+        
+          // Guardamos los datos en sessionStorage
+          sessionStorage.setItem('userData', JSON.stringify(userDataResponse));
+          sessionStorage.setItem('notificationSettings', JSON.stringify(notificationSettings));
+          sessionStorage.setItem('watchlist', JSON.stringify(watchlist));
       } catch (error) {
         console.error('❌ Error al obtener los datos:', error);
       } finally {
@@ -45,7 +50,7 @@ const SidebarMain = () => {
         setTimeout(() => {
           setLoadingUserData(false);
           setLoadingSettings(false);
-        }, 3000); 
+        }, 2000); 
       }
     };
 

@@ -10,7 +10,7 @@ const styles = {
   card: {
     border: '1px solid rgba(255,255,255,0.1)',
     marginBottom: '20px',
-    padding: '20px',
+   
   },
   buttonGroup: {
     marginBottom: '20px',
@@ -62,7 +62,7 @@ const CryptoChart = () => {
    
       <Row gutter={[16, 16]}>
         <Col xs={24} md={24}>
-        <Card style={styles.card}>
+        <Card  title="Criptomonedas del mercado"style={styles.card}>
           {!selectedCrypto && !loadingChart && (
             <Alert
               message="¡Importante!"

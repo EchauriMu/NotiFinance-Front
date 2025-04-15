@@ -8,6 +8,8 @@ import Dashboard from './dashboard/dashboard';
 import CryptoAlertForm from './NotiFInance/CryptoAlertForm';
 import ConfigTab from './Config/ConfigMain';
 import Analitics from './Analitics/Analitics';
+import Calendario from './Calendar/Calendario'; // Importa la sección de Calendario si tienes un componente para ello
+import Noticias from './Noticias/Noticias'; // Importa la sección de Noticias si tienes un componente para ello
 
 const { Content, Footer } = Layout;
 const { Text } = Typography;
@@ -32,11 +34,13 @@ const styles = {
 };
 
 const sections = {
-  dashboard: <Dashboard />, 
-  monedas: <CryptoChart />, 
-  notifinance: <CryptoAlertForm />, 
+  dashboard: <Dashboard />,
+  monedas: <CryptoChart />,
+  notifinance: <CryptoAlertForm />,
   configuracion: <ConfigTab />,
-  analitics: <Analitics/>,
+  analitics: <Analitics />,
+  calendario: <Calendario />,  // Sección Calendario
+  noticias: <Noticias />,  // Sección Noticias
 };
 
 const CryptoLayout = () => {
@@ -50,7 +54,7 @@ const CryptoLayout = () => {
     };
 
     window.addEventListener('resize', handleResize);
-    handleResize();
+    handleResize();  // Verifica el tamaño inicial
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
@@ -71,12 +75,14 @@ const CryptoLayout = () => {
 
       <Row gutter={[0, 16]}>
         <Col xs={24} md={sidebarVisible ? 5 : 0}>
-          <Sidebar  />
+          <Sidebar />
         </Col>
 
         <Col xs={24} md={sidebarVisible ? 19 : 24}>
-          <CryptoHeader setActiveSection={setActiveSection} />
-          <Content style={styles.content}>{sections[activeSection]}</Content>
+          <CryptoHeader setActiveSection={setActiveSection} activeSection={activeSection} />
+          <Content style={styles.content}>
+            {sections[activeSection]}
+          </Content>
           <Footer style={styles.footer}>
             <Text style={{ color: 'rgba(255,255,255,0.45)' }}>NotiFinance beta</Text>
           </Footer>
