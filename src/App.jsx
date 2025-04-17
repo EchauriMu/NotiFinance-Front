@@ -5,6 +5,8 @@ import Login from "./components/auth/Login";
 import Register from "./components/auth/Register"; // Importa el componente de Registro
 import VerifyToken from "./components/auth/Verify"; // Importa el componente de Verificación
 import MainLayout from "./components/Layout";
+import Subscription from "./components/Subscriptions/Subscription";
+import Payments from "./components/Subscriptions/Payments";
 import { Spin } from "antd";
 
 const App = () => {
@@ -50,16 +52,24 @@ const App = () => {
 
   return (
     <Router>
-      <Routes>
-        <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
-        <Route path="/register" element={<Register />} /> {/* ✅ Nueva ruta de Registro */}
-        <Route path="/verify/:userId" element={<VerifyToken />} /> {/* ✅ Ruta de verificación */}
-        <Route
-          path="/"
-          element={isAuthenticated ? <MainLayout /> : <Navigate to="/login" replace />}
-        />
-      </Routes>
-    </Router>
+    <Routes>
+      <Route 
+        path="/login" 
+        element={isAuthenticated ? <Navigate to="/" replace /> : <Login setIsAuthenticated={setIsAuthenticated} />} 
+      />
+      <Route path="/register" element={<Register />} />
+      <Route path="/verify/:userId" element={<VerifyToken />} />
+      <Route path="/subscription" element={<Subscription />} />
+      <Route 
+        path="/payments" 
+        element={isAuthenticated ? <Payments /> : <Navigate to="/login" replace />}
+      />
+      <Route
+        path="/"
+        element={isAuthenticated ? <MainLayout /> : <Navigate to="/login" replace />}
+      />
+    </Routes>
+  </Router>
   );
 };
 

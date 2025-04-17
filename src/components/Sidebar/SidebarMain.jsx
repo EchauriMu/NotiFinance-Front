@@ -6,17 +6,23 @@ import LastActivity from './LastActivity';
 import TrackedCoins from './TrackedCoins';
 import NotificationsStatus from './NotificationsStatus';
 import SubscriptionInfo from './SubscriptionInfo';
+import LogoutButton from './Logout';  
 
 const styles = {
   sidebar: {
     backgroundColor: '#141414',
     padding: '15px',
     borderRight: '1px solid rgba(255,255,255,0.1)',
-    height: '100%'
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column'
   },
+  content: {
+    flex: 1
+  }
 };
 
-const SidebarMain = () => {
+const SidebarMain = ({ setIsAuthenticated }) => {
   const [userData, setUserData] = useState(null);
   const [notificationSettings, setNotificationSettings] = useState({
     email: false,
@@ -39,18 +45,16 @@ const SidebarMain = () => {
         setNotificationSettings(notificationSettings);
         setWatchlist(watchlist);
         
-          // Guardamos los datos en sessionStorage
-          sessionStorage.setItem('userData', JSON.stringify(userDataResponse));
-          sessionStorage.setItem('notificationSettings', JSON.stringify(notificationSettings));
-          sessionStorage.setItem('watchlist', JSON.stringify(watchlist));
+        // Guardamos los datos en sessionStorage
+        sessionStorage.setItem('userData', JSON.stringify(userDataResponse));
+        sessionStorage.setItem('notificationSettings', JSON.stringify(notificationSettings));
+        sessionStorage.setItem('watchlist', JSON.stringify(watchlist));
       } catch (error) {
         console.error('❌ Error al obtener los datos:', error);
       } finally {
-       
-        setTimeout(() => {
-          setLoadingUserData(false);
-          setLoadingSettings(false);
-        }, 2000); 
+        // Quité el setTimeout y actualizo los estados inmediatamente
+        setLoadingUserData(false);
+        setLoadingSettings(false);
       }
     };
 
@@ -59,11 +63,14 @@ const SidebarMain = () => {
 
   return (
     <div style={styles.sidebar}>
-      <UserInfo userData={userData} loading={loadingUserData} />
-      <LastActivity />
-      <TrackedCoins watchlist={watchlist} loading={loadingSettings} /> {/* Cargando watchlist */}
-      <NotificationsStatus loading={loadingSettings} notificationSettings={notificationSettings} />
-      <SubscriptionInfo userData={userData} loading={loadingUserData} /> {/* Pasamos los datos del usuario aquí */}
+      <div style={styles.content}>
+        <UserInfo userData={userData} loading={loadingUserData} />
+        <LastActivity />
+        <TrackedCoins watchlist={watchlist} loading={loadingSettings} />
+        <NotificationsStatus loading={loadingSettings} notificationSettings={notificationSettings} />
+        <SubscriptionInfo userData={userData} loading={loadingUserData} />
+      </div>
+      <LogoutButton setIsAuthenticated={setIsAuthenticated} />
     </div>
   );
 };
