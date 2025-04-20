@@ -1,8 +1,8 @@
-// src/components/Dashboard.js
 import React from 'react';
 import { Card, Row, Col, Typography, Progress, Space } from 'antd';
 import { BellOutlined, ApiOutlined } from '@ant-design/icons';
 import SystemStatus from './SystemStatus';
+import Resources from './Resources'; // 👈 Importamos Resources
 
 const { Title, Text } = Typography;
 
@@ -17,7 +17,7 @@ const Dashboard = () => {
           </Title>
           <Text type="secondary">Resumen de tus alertas de criptomonedas</Text>
 
-          <Row gutter={[16, 16]}>
+          <Row gutter={[16, 16]} style={{ marginTop: 16 }}>
             {/* Sección de Alertas */}
             <Col xs={24} md={12}>
               <Space direction="vertical" style={{ width: '100%' }}>
@@ -32,7 +32,7 @@ const Dashboard = () => {
                     <Text style={{ color: '#52c41a' }}>15</Text>
                     <Text type="secondary">/ 50</Text>
                   </Row>
-                  <Progress percent={(30 / 50) * 100} showInfo={false} />
+                  <Progress percent={(15 / 50) * 100} showInfo={false} />
                 </div>
 
                 <div>
@@ -84,12 +84,18 @@ const Dashboard = () => {
             </Col>
           </Row>
         </Card>
+
       </Col>
 
-      {/* Panel de Estado del Sistema */}
+      {/* Estado del Sistema */}
       <Col xs={24} lg={8}>
         <SystemStatus />
+        
       </Col>
+      <Col xs={24} lg={24}>
+        {/* Sección de Recursos */}
+        <Resources />
+        </Col>
     </Row>
   );
 };
