@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Typography, Card, Button, Divider, Space, Radio, Form, Input, Alert, Col, Row, notification, Checkbox } from 'antd';
+import { Typography, Card, Button, Divider, Space, Radio, Form, Input, Alert, Col, Row, notification, Checkbox, Spin } from 'antd';
 import { ArrowLeftOutlined, CreditCardOutlined, PayCircleOutlined, BankOutlined } from '@ant-design/icons';
+import axiosInstance from '../../api/axiosInstance';
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -10,6 +11,8 @@ const Payments = () => {
   const navigate = useNavigate();
   const [paymentMethod, setPaymentMethod] = useState('creditCard'); // Método de pago seleccionado
   const [form] = Form.useForm(); // Formulario de pago
+  const [loading, setLoading] = useState(false); // Para el spinner de carga
+  const [isFormDisabled, setIsFormDisabled] = useState(false); // Para deshabilitar el formulario
 
   const plan = state?.plan;
 
@@ -21,7 +24,7 @@ const Payments = () => {
         type="warning"
         showIcon
         action={
-          <Button type="primary" onClick={() => navigate('/subscription')} icon={<ArrowLeftOutlined />}>
+          <Button type="primary" onClick={() => navigate('/subscription')} icon={<ArrowLeftOutlined />} >
             Volver
           </Button>
         }
@@ -32,16 +35,76 @@ const Payments = () => {
 
   // Función para manejar el proceso de pago (simulación)
   const handlePayment = async (values) => {
-    // Aquí se simula la lógica del pago
-    // Si todo es correcto, mostramos una notificación de éxito
-    notification.success({
-      message: `Pago procesado con éxito`,
-      description: `Se ha realizado el pago para el plan ${plan.name} usando el método de pago ${paymentMethod === 'creditCard' ? 'Tarjeta de Crédito' : paymentMethod === 'paypal' ? 'PayPal' : 'Transferencia Bancaria'}.`,
-      icon: <CreditCardOutlined style={{ color: '#108ee9' }} />,
+    setLoading(true);
+    setIsFormDisabled(true); // Deshabilita el formulario
+
+    try {
+      // Simulación del pago
+      const paymentResponse = await simulatePayment(values);
+
+      if (paymentResponse.success) {
+        // Enviar la solicitud de actualización de suscripción al backend
+        const response = await updateSubscription(plan);
+
+        if (paymentResponse.success) {
+          // Almacenar la información de pago en el localStorage
+          localStorage.setItem('paymentInfo', JSON.stringify({
+            planName: plan.name,
+            planPrice: plan.price,
+            paymentMethod: paymentMethod === 'creditCard' ? 'Tarjeta de Crédito' : paymentMethod === 'paypal' ? 'PayPal' : 'Transferencia Bancaria',
+          }));
+        }
+        // Si todo es correcto, mostramos una notificación de éxito
+        notification.success({
+          message: `Pago procesado con éxito`,
+          description: `Se ha realizado el pago para el plan ${plan.name} usando el método de pago ${paymentMethod === 'creditCard' ? 'Tarjeta de Crédito' : paymentMethod === 'paypal' ? 'PayPal' : 'Transferencia Bancaria'}.`,
+          icon: <CreditCardOutlined style={{ color: '#108ee9' }} />,
+        });
+
+        // Redirigir a la página de agradecimiento
+        navigate('/thank-you');
+      } else {
+        // En caso de error en el pago
+        notification.error({
+          message: 'Error al procesar el pago',
+          description: paymentResponse.message,
+        });
+      }
+    } catch (error) {
+      notification.error({
+        message: 'Error al procesar el pago',
+        description: 'Hubo un problema al realizar el pago, por favor intente nuevamente.',
+      });
+    } finally {
+      setLoading(false);
+      setIsFormDisabled(false); // Habilita nuevamente el formulario
+    }
+  };
+
+  // Simula el proceso de pago (puedes reemplazarlo con una API real)
+  const simulatePayment = (values) => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({ success: true, message: 'Pago realizado con éxito' }); // Simulación exitosa del pago
+      }, 2000); // Simula un tiempo de espera
     });
-    
-    // Si necesitas redirigir después de realizar el pago
-    // navigate('/thank-you');
+  };
+
+  // Actualizar la suscripción en el backend
+  const updateSubscription = async (plan) => {
+    try {
+      const response = await axiosInstance.put('/subs/update', {
+        plan: plan.name, // Solo el nombre del plan se pasa al backend
+      });
+
+      if (response.status === 200) {
+        return response.data;
+      } else {
+        throw new Error('Error al actualizar la suscripción');
+      }
+    } catch (error) {
+      throw new Error('No se pudo actualizar la suscripción');
+    }
   };
 
   return (
@@ -66,9 +129,9 @@ const Payments = () => {
       </Card>
 
       <Title level={4}>Método de pago</Title>
-      <Radio.Group 
-        value={paymentMethod} 
-        onChange={(e) => setPaymentMethod(e.target.value)} 
+      <Radio.Group
+        value={paymentMethod}
+        onChange={(e) => setPaymentMethod(e.target.value)}
         style={{ marginBottom: 20 }}
       >
         <Row gutter={16}>
@@ -93,51 +156,51 @@ const Payments = () => {
         </Row>
       </Radio.Group>
 
-      <Form form={form} onFinish={handlePayment} layout="vertical">
-        <Form.Item 
-          name="cardHolderName" 
-          label="Titular de la tarjeta" 
-          rules={[{ required: true, message: 'Por favor ingresa el nombre del titular de la tarjeta' }]}
-        >
-          <Input placeholder="Nombre completo" />
-        </Form.Item>
+      <Spin spinning={loading} tip="Procesando pago..." size="large">
+        <Form form={form} onFinish={handlePayment} layout="vertical">
+          <Form.Item
+            name="cardHolderName"
+            label="Titular de la tarjeta"
+            rules={[{ required: true, message: 'Por favor ingresa el nombre del titular de la tarjeta' }]}
+          >
+            <Input placeholder="Nombre completo" disabled={isFormDisabled} />
+          </Form.Item>
 
-        <Form.Item 
-          name="cardNumber" 
-          label="Número de tarjeta" 
-          rules={[
-            { required: true, message: 'Por favor ingresa el número de la tarjeta' },
-            { len: 16, message: 'El número de tarjeta debe tener 16 dígitos', pattern: /^[0-9]+$/ }
-          ]}
-        >
-          <Input placeholder="1234 5678 9012 3456" maxLength={16} />
-        </Form.Item>
+          <Form.Item
+            name="cardNumber"
+            label="Número de tarjeta"
+            rules={[{ required: true, message: 'Por favor ingresa el número de la tarjeta' }, { len: 16, message: 'El número de tarjeta debe tener 16 dígitos', pattern: /^[0-9]+$/ }]}
+          >
+            <Input placeholder="1234 5678 9012 3456" maxLength={16} disabled={isFormDisabled} />
+          </Form.Item>
 
-        <Form.Item 
-          name="expirationDate" 
-          label="Fecha de expiración" 
-          rules={[{ required: true, message: 'Por favor ingresa la fecha de expiración' }]}
-        >
-          <Input placeholder="MM/AA" />
-        </Form.Item>
+          <Form.Item
+            name="expirationDate"
+            label="Fecha de expiración"
+            rules={[{ required: true, message: 'Por favor ingresa la fecha de expiración' }]}
+          >
+            <Input placeholder="MM/AA" disabled={isFormDisabled} />
+          </Form.Item>
 
-        <Form.Item 
-          name="agreeTerms"
-          valuePropName="checked"
-          rules={[{ validator: (_, value) => value ? Promise.resolve() : Promise.reject('Debes aceptar los términos y condiciones') }]}
-        >
-          <Checkbox>Acepto los términos y condiciones</Checkbox>
-        </Form.Item>
+          <Form.Item
+            name="agreeTerms"
+            valuePropName="checked"
+            rules={[{ validator: (_, value) => value ? Promise.resolve() : Promise.reject('Debes aceptar los términos y condiciones') }]}
+          >
+            <Checkbox disabled={isFormDisabled}>Acepto los términos y condiciones</Checkbox>
+          </Form.Item>
 
-        <Button 
-          type="primary" 
-          htmlType="submit" 
-          style={{ backgroundColor: plan.color, borderColor: plan.color }}
-          block
-        >
-          Confirmar y proceder al pago
-        </Button>
-      </Form>
+          <Button
+            type="primary"
+            htmlType="submit"
+            style={{ backgroundColor: plan.color, borderColor: plan.color }}
+            block
+            disabled={isFormDisabled}
+          >
+            Confirmar y proceder al pago
+          </Button>
+        </Form>
+      </Spin>
     </div>
   );
 };

@@ -7,6 +7,7 @@ import VerifyToken from "./components/auth/Verify"; // Importa el componente de 
 import MainLayout from "./components/Layout";
 import Subscription from "./components/Subscriptions/Subscription";
 import Payments from "./components/Subscriptions/Payments";
+import ThankYou from "./components/Subscriptions/ty";
 import { Spin } from "antd";
 
 const App = () => {
@@ -60,6 +61,16 @@ const App = () => {
       <Route path="/register" element={<Register />} />
       <Route path="/verify/:userId" element={<VerifyToken />} />
       <Route path="/subscription" element={<Subscription />} />
+
+      <Route 
+  path="/thank-you" 
+  element={
+    isAuthenticated && localStorage.getItem("paymentInfo")
+      ? <ThankYou />
+      : <Navigate to="/" replace />
+  }
+/>
+
       <Route 
         path="/payments" 
         element={isAuthenticated ? <Payments /> : <Navigate to="/login" replace />}

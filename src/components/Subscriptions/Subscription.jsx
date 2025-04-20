@@ -40,7 +40,7 @@ const plans = [
     }
   },
   {
-    name: 'NotiFinance Enterpise', price: '$49.99/mes', color: '#722ed1', badge: 'Nuevo • Para equipos',
+    name: 'NotiFinance Pro', price: '$19.99/mes', color: '#722ed1', badge: 'Nuevo • Para equipos',
     features: [
       'Hasta 10 alertas con condiciones avanzadas',
       'Gestión de usuarios y roles por equipo',

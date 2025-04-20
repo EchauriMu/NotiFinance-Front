@@ -6,29 +6,55 @@ const { Title, Text } = Typography;
 
 const plans = [
   {
-    name: 'Freemium',
-    description: 'Ideal para empezar. Incluye 1 alerta personalizada por correo electrónico.',
-    price: 'Gratis',
-    color: '#1668dc',
-    alerts: '1 alerta',
-    channels: ['Correo electrónico'],
+    name: 'Freemium', price: 'Gratis', color: '#1668dc', badge: 'Ideal para comenzar',
+    features: [
+      '1 alerta personalizada con condiciones básicas',
+      'Soporte vía email en horario laboral',
+      'Notificaciones por correo electrónico',
+      'Acceso a recursos educativos y documentación',
+      'Historial de alertas limitado a 7 días'
+    ],
+    details: {
+      incluye: 'Acceso a una alerta activa, visualización básica, uso individual.',
+      recomendado: 'Usuarios nuevos o personas que quieran probar el servicio.',
+      limitaciones: 'Sin acceso a integraciones externas ni soporte fuera de horario.',
+      tecnicos: 'Frecuencia de escaneo: cada 60 minutos.'
+    }
   },
   {
-    name: 'Premium',
-    description: 'Para usuarios activos. Hasta 5 alertas configurables vía WhatsApp, Discord y correo.',
-    price: '$9.99/mes',
-    color: '#faad14',
-    alerts: 'Hasta 5 alertas',
-    channels: ['Correo', 'WhatsApp', 'Discord'],
+    name: 'Premium', price: '$9.99/mes', color: '#faad14', badge: 'Más popular',
+    features: [
+      'Hasta 5 alertas configurables con múltiples condiciones',
+      'Soporte prioritario (respuesta en menos de 12h)',
+      'Notificaciones por WhatsApp, Discord y correo',
+      'Acceso anticipado a nuevas funciones',
+      'Historial de alertas de 30 días',
+      'Análisis básico de tendencias'
+    ],
+    details: {
+      incluye: 'Funciones ampliadas, más canales de notificación, soporte rápido.',
+      recomendado: 'Usuarios avanzados, pequeños emprendedores.',
+      limitaciones: 'No incluye panel de equipo ni integraciones API.',
+      tecnicos: 'Frecuencia de escaneo: cada 15 minutos.'
+    }
   },
   {
-    name: 'Analista Pro',
-    description: 'Ideal para equipos o analistas. Hasta 10 alertas, control de usuarios y múltiples canales.',
-    price: '$49.99/mes',
-    color: '#d09420',
-    alerts: 'Hasta 10 alertas',
-    channels: ['Correo', 'WhatsApp', 'Discord', 'Integraciones avanzadas'],
-  },
+    name: 'NotiFinance Pro', price: '$19.99/mes', color: '#722ed1', badge: 'Nuevo • Para equipos',
+    features: [
+      'Hasta 10 alertas con condiciones avanzadas',
+      'Gestión de usuarios y roles por equipo',
+      'Integraciones avanzadas (API, Zapier, Webhooks)',
+      'Panel de análisis detallado con exportación de datos',
+      'Soporte premium 24/7 con canal dedicado',
+      'Historial completo y búsqueda avanzada'
+    ],
+    details: {
+      incluye: 'Herramientas colaborativas, acceso total a funcionalidades y personalización.',
+      recomendado: 'Equipos financieros, analistas, startups en crecimiento.',
+      limitaciones: 'Ninguna funcionalidad limitada. Acceso completo.',
+      tecnicos: 'Frecuencia de escaneo: cada 2 minutos. SLA: 99.9%'
+    }
+  }
 ];
 
 const UpdatePlanModal = ({ open, onClose }) => {
@@ -57,12 +83,11 @@ const UpdatePlanModal = ({ open, onClose }) => {
               hoverable
             >
               <Title level={5}>{plan.name}</Title>
-              <Text type="secondary" style={{ fontSize: '13px' }}>{plan.description}</Text>
+              <Text type="secondary" style={{ fontSize: '13px' }}>{plan.badge}</Text>
               <ul style={{ paddingLeft: 16, marginTop: 12 }}>
-                <li><Text strong>{plan.alerts}</Text></li>
-                <li><Text type="secondary" style={{ fontSize: '12px' }}>
-                  Notificaciones: {plan.channels.join(', ')}
-                </Text></li>
+                {plan.features.slice(0,2).map((feature, idx) => (
+                  <li key={idx}><Text type="secondary" style={{ fontSize: '12px' }}>{feature}</Text></li>
+                ))}
               </ul>
               <div style={{ marginTop: '12px' }}>
                 <Text strong style={{ display: 'block' }}>{plan.price}</Text>
@@ -72,6 +97,7 @@ const UpdatePlanModal = ({ open, onClose }) => {
                 block
                 size="small"
                 style={{ marginTop: '12px', backgroundColor: plan.color }}
+                onClick={() => navigate('/payments', { state: { plan } })}
               >
                 Elegir
               </Button>
@@ -79,7 +105,7 @@ const UpdatePlanModal = ({ open, onClose }) => {
                 block
                 size="small"
                 style={{ marginTop: '8px' }}
-                onClick={() => navigate('/Subscription ')}
+                onClick={() => navigate('/Subscription')}
               >
                 Saber más
               </Button>

@@ -1,6 +1,8 @@
+// src/components/Dashboard.js
 import React from 'react';
-import { Card, Row, Col, Typography, Progress, Badge, Button, Space } from 'antd';
+import { Card, Row, Col, Typography, Progress, Space } from 'antd';
 import { BellOutlined, ApiOutlined } from '@ant-design/icons';
+import SystemStatus from './SystemStatus';
 
 const { Title, Text } = Typography;
 
@@ -10,10 +12,12 @@ const Dashboard = () => {
       {/* Panel Principal */}
       <Col xs={24} lg={16}>
         <Card>
-          <Title style={{marginTop:0}} level={4}>Bienvenido a NotiFInance</Title>
+          <Title style={{ marginTop: 0 }} level={4}>
+            Bienvenido a NotiFInance
+          </Title>
           <Text type="secondary">Resumen de tus alertas de criptomonedas</Text>
-          
-          <Row gutter={[16, 16]} style={{ }}>
+
+          <Row gutter={[16, 16]}>
             {/* Sección de Alertas */}
             <Col xs={24} md={12}>
               <Space direction="vertical" style={{ width: '100%' }}>
@@ -21,14 +25,14 @@ const Dashboard = () => {
                   <BellOutlined style={{ fontSize: '24px', color: '#1890ff' }} />
                   <Text strong>Alertas Activas</Text>
                 </Space>
-                
+
                 <div>
                   <Text type="secondary">Alertas utilizadas</Text>
                   <Row justify="space-between">
                     <Text style={{ color: '#52c41a' }}>15</Text>
                     <Text type="secondary">/ 50</Text>
                   </Row>
-                  <Progress percent={(30/50)*100} showInfo={false} />
+                  <Progress percent={(30 / 50) * 100} showInfo={false} />
                 </div>
 
                 <div>
@@ -37,7 +41,7 @@ const Dashboard = () => {
                     <Text style={{ color: '#52c41a' }}>3</Text>
                     <Text type="secondary">/ 10</Text>
                   </Row>
-                  <Progress percent={(3/10)*100} showInfo={false} />
+                  <Progress percent={(3 / 10) * 100} showInfo={false} />
                 </div>
 
                 <div>
@@ -46,7 +50,7 @@ const Dashboard = () => {
                     <Text style={{ color: '#52c41a' }}>8</Text>
                     <Text type="secondary">/ 100</Text>
                   </Row>
-                  <Progress percent={(8/100)*100} showInfo={false} />
+                  <Progress percent={(8 / 100) * 100} showInfo={false} />
                 </div>
               </Space>
             </Col>
@@ -65,7 +69,7 @@ const Dashboard = () => {
                     <Text>5</Text>
                     <Text type="secondary">/ 10</Text>
                   </Row>
-                  <Progress percent={(5/10)*100} showInfo={false} />
+                  <Progress percent={(5 / 10) * 100} showInfo={false} />
                 </div>
 
                 <div>
@@ -74,7 +78,7 @@ const Dashboard = () => {
                     <Text>3</Text>
                     <Text type="secondary">/ 5</Text>
                   </Row>
-                  <Progress percent={(3/5)*100} showInfo={false} />
+                  <Progress percent={(3 / 5) * 100} showInfo={false} />
                 </div>
               </Space>
             </Col>
@@ -84,24 +88,7 @@ const Dashboard = () => {
 
       {/* Panel de Estado del Sistema */}
       <Col xs={24} lg={8}>
-        <Card>
-          <Title style={{marginTop:0}} level={4}>Estado del Sistema</Title>
-          <Space direction="vertical" style={{ width: '100%' }}>
-            <Row justify="space-between">
-              <Text>Servicio de Alertas</Text>
-              <Badge status="success" text="Operativo" />
-            </Row>
-            <Row justify="space-between">
-              <Text>API de Precios</Text>
-              <Badge status="success" text="Operativo" />
-            </Row>
-            <Row justify="space-between">
-              <Text>Notificaciones</Text>
-              <Badge status="success" text="Operativo" />
-            </Row>
-            <Button type="primary">Ver estado completo</Button>
-          </Space>
-        </Card>
+        <SystemStatus />
       </Col>
     </Row>
   );

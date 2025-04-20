@@ -20,21 +20,41 @@ const SubscriptionInfo = ({ userData, loading }) => {
               status="success"
               text={
                 <Text style={{ color: 'white' }}>
-                  {userData?.role === 'basic'
-                    ? 'Plan Freemium'
-                    : userData?.role === 'premium'
-                    ? 'Plan Premium'
-                    : 'Plan Organization'}
+                  {(() => {
+                    switch (userData?.plan?.toLowerCase()) {
+                      case 'freemium':
+                        return 'Plan Freemium';
+                      case 'premium':
+                        return 'Plan Premium';
+                      case 'notifinance pro':
+                        return (
+                          <Space>
+                            Plan Pro
+                            {/* Aquí insertamos el GIF cuando el plan es Pro */}
+                            <img
+                              src="https://i.gifer.com/origin/18/1881d8691bd9ff18bea62c0a275e1da6_w200.webp"
+                              alt="Fuego"
+                              style={{ width: 30, height: 40, marginLeft: 0 }}
+                            />
+                          </Space>
+                        );
+                      default:
+                        return 'Plan Desconocido';
+                    }
+                  })()}
                 </Text>
               }
             />
 
-            <Text type="secondary" style={{ fontSize: '12px' }}>
-              Válido hasta: {new Date(userData?.subscriptionEndDate || '2025-03-15').toLocaleDateString('es-ES', {
-                day: '2-digit',
-                month: 'short',
-                year: 'numeric',
-              })}
+            <Text type="secondary" style={{ fontSize: '14px' }}>
+              Válido hasta:{' '}
+              {userData?.subscriptionExpiresAt
+                ? new Date(userData.subscriptionExpiresAt).toLocaleDateString('es-ES', {
+                    day: '2-digit',
+                    month: 'short',
+                    year: 'numeric',
+                  })
+                : 'Sin fecha'}
             </Text>
 
             <Button type="link" size="small" block onClick={() => setModalOpen(true)}>
