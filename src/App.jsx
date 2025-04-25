@@ -8,6 +8,7 @@ import MainLayout from "./components/Layout";
 import Subscription from "./components/Subscriptions/Subscription";
 import Payments from "./components/Subscriptions/Payments";
 import ThankYou from "./components/Subscriptions/ty";
+import NotiFinanceLanding from "./components/Landing";
 import { Spin } from "antd";
 
 const App = () => {
@@ -54,9 +55,11 @@ const App = () => {
   return (
     <Router>
     <Routes>
+    <Route path="/" element={<NotiFinanceLanding />} />
+
       <Route 
         path="/login" 
-        element={isAuthenticated ? <Navigate to="/" replace /> : <Login setIsAuthenticated={setIsAuthenticated} />} 
+        element={isAuthenticated ? <Navigate to="/home" replace /> : <Login setIsAuthenticated={setIsAuthenticated} />} 
       />
       <Route path="/register" element={<Register />} />
       <Route path="/verify/:userId" element={<VerifyToken />} />
@@ -76,7 +79,7 @@ const App = () => {
         element={isAuthenticated ? <Payments /> : <Navigate to="/login" replace />}
       />
       <Route
-        path="/"
+        path="/home"
         element={isAuthenticated ? <MainLayout /> : <Navigate to="/login" replace />}
       />
     </Routes>

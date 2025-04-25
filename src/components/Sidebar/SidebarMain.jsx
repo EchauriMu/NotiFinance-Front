@@ -69,8 +69,9 @@ const SidebarMain = ({ setIsAuthenticated }) => {
         <TrackedCoins watchlist={watchlist} loading={loadingSettings} />
         <NotificationsStatus loading={loadingSettings} notificationSettings={notificationSettings} />
         <SubscriptionInfo userData={userData} loading={loadingUserData} />
+        <LogoutButton setIsAuthenticated={setIsAuthenticated} />
       </div>
-      <LogoutButton setIsAuthenticated={setIsAuthenticated} />
+      
     </div>
   );
 };

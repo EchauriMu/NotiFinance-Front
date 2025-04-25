@@ -8,8 +8,11 @@ import Dashboard from './dashboard/dashboard';
 import CryptoAlertForm from './NotiFInance/CryptoAlertForm';
 import ConfigTab from './Config/ConfigMain';
 import Analitics from './Analitics/Analitics';
-import Calendario from './Calendar/Calendario'; // Importa la sección de Calendario si tienes un componente para ello
-import Noticias from './Noticias/Noticias'; // Importa la sección de Noticias si tienes un componente para ello
+import Calendario from './Calendar/Calendario';
+import Noticias from './Noticias/Noticias';
+import SubscriptionWarning from '../components/Subscriptions/SubsWarning'; 
+import SubscriptionExpiredNotice from './Subscriptions/SubsExpired';
+
 
 const { Content, Footer } = Layout;
 const { Text } = Typography;
@@ -39,8 +42,8 @@ const sections = {
   notifinance: <CryptoAlertForm />,
   configuracion: <ConfigTab />,
   analitics: <Analitics />,
-  calendario: <Calendario />,  // Sección Calendario
-  noticias: <Noticias />,  // Sección Noticias
+  calendario: <Calendario />,
+  noticias: <Noticias />,
 };
 
 const CryptoLayout = () => {
@@ -54,7 +57,7 @@ const CryptoLayout = () => {
     };
 
     window.addEventListener('resize', handleResize);
-    handleResize();  // Verifica el tamaño inicial
+    handleResize();
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
@@ -63,32 +66,38 @@ const CryptoLayout = () => {
   };
 
   return (
-    <Layout style={styles.layout}>
-      {!isMobile && (
-        <Button
-          type="primary"
-          icon={<MenuOutlined />}
-          style={styles.menuButton}
-          onClick={toggleSidebar}
-        />
-      )}
+    <>
+      <SubscriptionWarning /> {/* <-- warning para la advertencia de expiracion */}
+      <SubscriptionExpiredNotice/>
 
-      <Row gutter={[0, 16]}>
-        <Col xs={24} md={sidebarVisible ? 5 : 0}>
-          <Sidebar />
-        </Col>
 
-        <Col xs={24} md={sidebarVisible ? 19 : 24}>
-          <CryptoHeader setActiveSection={setActiveSection} activeSection={activeSection} />
-          <Content style={styles.content}>
-            {sections[activeSection]}
-          </Content>
-          <Footer style={styles.footer}>
-            <Text style={{ color: 'rgba(255,255,255,0.45)' }}>NotiFinance beta</Text>
-          </Footer>
-        </Col>
-      </Row>
-    </Layout>
+      <Layout style={styles.layout}>
+        {!isMobile && (
+          <Button
+            type="primary"
+            icon={<MenuOutlined />}
+            style={styles.menuButton}
+            onClick={toggleSidebar}
+          />
+        )}
+
+        <Row gutter={[0, 16]}>
+          <Col xs={24} md={sidebarVisible ? 5 : 0}>
+            <Sidebar />
+          </Col>
+
+          <Col xs={24} md={sidebarVisible ? 19 : 24}>
+            <CryptoHeader setActiveSection={setActiveSection} activeSection={activeSection} />
+            <Content style={styles.content}>
+              {sections[activeSection]}
+            </Content>
+            <Footer style={styles.footer}>
+              <Text style={{ color: 'rgba(255,255,255,0.45)' }}>NotiFinance beta</Text>
+            </Footer>
+          </Col>
+        </Row>
+      </Layout>
+    </>
   );
 };
 

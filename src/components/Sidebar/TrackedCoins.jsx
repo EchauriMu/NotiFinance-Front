@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Space, Typography, Tag, Skeleton } from 'antd';
 import { ThunderboltOutlined } from '@ant-design/icons';
 
@@ -17,7 +17,16 @@ const styles = {
 // Definir colores en el orden especificado
 const tagColors = ["gold", "blue", "green", "purple"];
 
-const TrackedCoins = ({ watchlist, loading }) => {
+const TrackedCoins = ({ loading }) => {
+  const [watchlist, setWatchlist] = useState([]);
+
+  useEffect(() => {
+    // Acceder a los datos guardados en sessionStorage
+    const storedData = sessionStorage.getItem('trackedSymbols');
+    if (storedData) {
+      setWatchlist(JSON.parse(storedData));  // Establecer los datos de la sesión
+    }
+  }, []);
 
   return (
     <div style={styles.statsCard}>
@@ -28,18 +37,23 @@ const TrackedCoins = ({ watchlist, loading }) => {
         </Space>
         <Space wrap>
           {loading ? (
-           
             <>
               <Skeleton.Button active size="small" shape="round" />
               <Skeleton.Button active size="small" shape="round" />
               <Skeleton.Button active size="small" shape="round" />
             </>
           ) : watchlist.length > 0 ? (
+            // Mostrar solo el símbolo de la moneda con un estilo bonito
             watchlist.map((coin, index) => {
               const color = tagColors[index % tagColors.length];
-               return <Tag key={index} color={color}>{coin.symbol}</Tag>;
+              return (
+                <Tag key={index} color={color} style={{ fontSize: '14px', marginBottom: '8px', }}>
+                  {coin.symbol}
+                </Tag>
+              );
             })
           ) : (
+            // Mensaje cuando no hay monedas en seguimiento
             <Text style={{ color: 'gray' }}>No hay monedas en seguimiento</Text>
           )}
         </Space>
@@ -50,7 +64,6 @@ const TrackedCoins = ({ watchlist, loading }) => {
 
 // 🛠️ Default Props para evitar errores si no recibe datos
 TrackedCoins.defaultProps = {
-  watchlist: [],
   loading: false
 };
 

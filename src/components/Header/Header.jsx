@@ -19,7 +19,7 @@ const CryptoHeader = ({ setActiveSection, activeSection }) => {
   }, []);
 
   const buttonStyle = (section) => ({
-    borderBottom: activeSection === section ? '4px solid orange' : 'none',
+    borderBottom: activeSection === section ? '5px solid orange' : 'none',
   });
 
   const renderButton = (section, label, icon) => (

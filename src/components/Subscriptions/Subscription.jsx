@@ -2,6 +2,7 @@ import React from 'react';
 import { Row, Col, Card, Typography, Button, Divider, Collapse, Badge, Space, Layout } from 'antd';
 import { CheckCircleOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
+
 const { Footer } = Layout;
 const { Title, Paragraph, Text } = Typography, { Panel } = Collapse;
 
@@ -40,7 +41,7 @@ const plans = [
     }
   },
   {
-    name: 'NotiFinance Pro', price: '$19.99/mes', color: '#722ed1', badge: 'Nuevo • Para equipos',
+    name: 'NotiFinance Pro', price: '$19.99/mes', color: '#722ed1', badge: 'Nuevo • Para profesionales',
     features: [
       'Hasta 10 alertas con condiciones avanzadas',
       'Gestión de usuarios y roles por equipo',
@@ -60,8 +61,12 @@ const plans = [
 
 const Subscription = () => {
   const navigate = useNavigate();
+
+  const userData = JSON.parse(sessionStorage.getItem('userData'));
+  const currentPlan = userData?.plan || 'Freemium';
+
   return (
-    <div style={{ padding:'0px 60px', minHeight: '100vh' }}>
+    <div style={{ padding: '0px 60px', minHeight: '100vh' }}>
       <div style={{ textAlign: 'center', marginBottom: 60 }}>
         <Title>Mejora tu experiencia con nuestros planes</Title>
         <Paragraph type="secondary" style={{ maxWidth: 700, margin: '0 auto' }}>
@@ -72,14 +77,24 @@ const Subscription = () => {
       <Row gutter={[32, 32]} justify="center" style={{ marginBottom: 80 }}>
         {plans.map(plan => {
           const planColor = plan.color;
-          const badgeColor = plan.name === 'NotiFinance Enterpise' ? 'purple' : plan.name === 'Premium' ? 'volcano' : 'blue';
+          const isCurrentPlan = plan.name === currentPlan;
+          const badgeColor = plan.name === 'NotiFinance Pro' ? 'purple' : plan.name === 'Premium' ? 'volcano' : 'blue';
+
+          // 🔄 Combinar el texto del badge si es el plan actual
+          const badgeText = isCurrentPlan ? `${plan.badge} • Plan actual` : plan.badge;
 
           return (
             <Col key={plan.name} xs={24} sm={12} md={8}>
-              <Badge.Ribbon text={plan.badge} color={badgeColor}>
+              <Badge.Ribbon text={badgeText} color={badgeColor}>
                 <Card
-                  bordered hoverable
-                  style={{ borderTop: `8px solid ${planColor}`, borderRadius: 16, transition: '0.3s', boxShadow: '0 4px 12px rgba(0,0,0,0.06)' }}
+                  bordered
+                  hoverable
+                  style={{
+                    borderTop: `8px solid ${planColor}`,
+                    borderRadius: 16,
+                    transition: '0.3s',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.06)'
+                  }}
                   bodyStyle={{ minHeight: 350 }}
                   onMouseEnter={e => {
                     e.currentTarget.style.boxShadow = `0 0 20px ${planColor}, 0 0 30px ${planColor}66`;
@@ -108,10 +123,24 @@ const Subscription = () => {
                     <Panel header="Detalles técnicos" key="4"><Text>{plan.details.tecnicos}</Text></Panel>
                   </Collapse>
 
-                  <Button type="primary" block style={{ marginTop: 20, backgroundColor: planColor, borderColor: planColor }} 
-                  onClick={() => navigate('/payments', { state: { plan } })}
+                  <Button
+                    type="primary"
+                    block
+                    disabled={isCurrentPlan}
+                    style={{
+                      marginTop: 20,
+                      backgroundColor: planColor,
+                      borderColor: planColor,
+                      opacity: isCurrentPlan ? 0.6 : 1,
+                      cursor: isCurrentPlan ? 'not-allowed' : 'pointer',
+                    }}
+                    onClick={() => {
+                      if (!isCurrentPlan) {
+                        navigate('/payments', { state: { plan } });
+                      }
+                    }}
                   >
-                    Elegir este plan
+                    {isCurrentPlan ? 'Plan actual' : 'Elegir este plan'}
                   </Button>
                 </Card>
               </Badge.Ribbon>
@@ -123,14 +152,22 @@ const Subscription = () => {
       <div style={{ maxWidth: 900, margin: '0 auto' }}>
         <Title level={3}>Preguntas frecuentes</Title>
         <Collapse accordion>
-          <Panel header="¿Puedo cambiar de plan más adelante?" key="1"><Paragraph>Sí, puedes cambiar o cancelar tu plan en cualquier momento desde tu perfil. No hay penalizaciones.</Paragraph></Panel>
-          <Panel header="¿Qué métodos de pago aceptan?" key="2"><Paragraph>Aceptamos tarjetas de crédito, débito y pagos vía PayPal. También puedes solicitar factura para pagos empresariales.</Paragraph></Panel>
-          <Panel header="¿Qué pasa si excedo el número de alertas?" key="3"><Paragraph>Recibirás una notificación y tendrás la opción de actualizar tu plan o eliminar alertas antiguas.</Paragraph></Panel>
-          <Panel header="¿Puedo compartir mi cuenta con otros?" key="4"><Paragraph>Solo el plan NotiFinance Enterpise permite gestión de usuarios y roles. Para uso individual, recomendamos Premium.</Paragraph></Panel>
+          <Panel header="¿Puedo cambiar de plan más adelante?" key="1">
+            <Paragraph>Sí, puedes cambiar o cancelar tu plan en cualquier momento desde tu perfil. No hay penalizaciones.</Paragraph>
+          </Panel>
+          <Panel header="¿Qué métodos de pago aceptan?" key="2">
+            <Paragraph>Aceptamos tarjetas de crédito, débito y pagos vía PayPal. También puedes solicitar factura para pagos empresariales.</Paragraph>
+          </Panel>
+          <Panel header="¿Qué pasa si excedo el número de alertas?" key="3">
+            <Paragraph>Recibirás una notificación y tendrás la opción de actualizar tu plan o eliminar alertas antiguas.</Paragraph>
+          </Panel>
+          <Panel header="¿Puedo compartir mi cuenta con otros?" key="4">
+            <Paragraph>Solo el plan NotiFinance Pro permite gestión de usuarios y roles. Para uso individual, recomendamos Premium.</Paragraph>
+          </Panel>
         </Collapse>
       </div>
 
-      <Footer style={{ background:'#18171c', borderTop: '2px solid #fff', textAlign: 'center', marginTop:30 }}>
+      <Footer style={{ background: '#18171c', borderTop: '2px solid #fff', textAlign: 'center', marginTop: 30 }}>
         <Text style={{ color: 'rgba(255,255,255,0.45)' }}>NotiFinance beta</Text>
       </Footer>
     </div>

@@ -5,7 +5,7 @@ import { Explore } from './Explore';
 import { fetchCryptos } from '../../functions/fetchCryptos';
 import { fetchNews } from '../../functions/fetchNews'; 
 import { StatForum } from './StatForum';
-import UserAlerts from './UserAlert'; // Solo importa el componente
+import UserAlerts from './UserAlert';
 
 const CryptoAlertForm = () => {
   const [form] = Form.useForm();
@@ -15,6 +15,9 @@ const CryptoAlertForm = () => {
   const [news, setNews] = useState([]);
   const [loadingNews, setLoadingNews] = useState(false);
   const [errorNews, setErrorNews] = useState(null);
+
+  const [refreshAlerts, setRefreshAlerts] = useState(false);
+  const triggerRefresh = () => setRefreshAlerts(prev => !prev);
 
   useEffect(() => {
     const loadCryptos = async () => {
@@ -51,7 +54,7 @@ const CryptoAlertForm = () => {
 
   return (
     <>
-      <UserAlerts /> {/* Componente autónomo */}
+      <UserAlerts refresh={refreshAlerts} />
 
       <Row gutter={[16, 16]}>
         <Col span={24} xs={24} md={12}>
@@ -61,6 +64,7 @@ const CryptoAlertForm = () => {
             selectedNotification={selectedNotification}
             selectNotification={setSelectedNotification}
             setSelectedCrypto={setSelectedCrypto}
+            onAlertCreated={triggerRefresh}
           />
         </Col>
         <Col span={24} xs={24} md={12}>

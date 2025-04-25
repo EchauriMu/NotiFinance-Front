@@ -1,51 +1,41 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Tag, Typography, Button, Spin, Alert, Tooltip, Skeleton } from 'antd';
+import { Card, Tag, Typography, Button, Alert, Tooltip, Skeleton } from 'antd';
 import axiosInstance from '../../api/axiosInstance';
 import { MailOutlined, WhatsAppOutlined, DiscordOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 
 const { Text } = Typography;
 
-const getStatus = (isActive, isFulfilled) => {
-  if (isFulfilled) return 'Cumplida';
-  if (!isActive) return 'Inactiva';
-  return 'Activa';
-};
+const getStatus = (isActive, isFulfilled) => isFulfilled ? 'Cumplida' : !isActive ? 'Inactiva' : 'Activa';
 
-const statusColor = {
-  Activa: 'green',
-  Cumplida: 'blue',
-  Inactiva: 'red'
-};
+const statusColor = { Activa: 'green', Cumplida: 'blue', Inactiva: 'red' };
+const typeIcons = { email: <MailOutlined />, whatsapp: <WhatsAppOutlined />, discord: <DiscordOutlined /> };
 
-const typeIcons = {
-  email: <MailOutlined />,
-  whatsapp: <WhatsAppOutlined />,
-  discord: <DiscordOutlined />
-};
-
-const UserAlerts = () => {
+const UserAlerts = ({ refresh }) => {
   const [alerts, setAlerts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const fetchAlerts = async () => {
-    try {
-      const response = await axiosInstance.get('/alert/get/id');
-      setAlerts(response.data || []);
-    } catch (err) {
-      setError('Error al obtener las alertas del usuario.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
+    const fetchAlerts = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const response = await axiosInstance.get('/alert/get/id');
+        setAlerts(response.data);
+      } catch (err) {
+        setError(err.response?.data?.code === 'NONE_ALERTS' ? 'No tienes alertas disponibles en este momento.' : 'Error al cargar alertas.');
+      } finally {
+        setLoading(false);
+      }
+    };
     fetchAlerts();
-  }, []);
+  }, [refresh]);
+  
 
-
-  if (error) return <Alert message={error} type="error" />;
+  if (loading) return <Skeleton active />;
+  if (error) return <Alert message={error} type="info" showIcon description='Crea tu primer alerta!' 
+  style={{fontSize:14, marginBottom:15}} />;
 
   return (
     <Card title="Alertas del Usuario" style={{ marginBottom: 24 }}>

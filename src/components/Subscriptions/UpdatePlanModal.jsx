@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, Row, Col, Card, Typography, Button } from 'antd';
+import { Modal, Row, Col, Card, Typography, Button, Badge } from 'antd';
 import { useNavigate } from 'react-router-dom';
 
 const { Title, Text } = Typography;
@@ -59,6 +59,8 @@ const plans = [
 
 const UpdatePlanModal = ({ open, onClose }) => {
   const navigate = useNavigate();
+  const userData = JSON.parse(sessionStorage.getItem('userData'));
+  const currentPlan = userData?.plan || 'Freemium';
 
   return (
     <Modal
@@ -74,44 +76,62 @@ const UpdatePlanModal = ({ open, onClose }) => {
       </div>
 
       <Row gutter={[32, 32]}>
-        {plans.map((plan) => (
-          <Col key={plan.name} xs={24} sm={12} md={8}>
-            <Card
-              style={{ borderLeft: `4px solid ${plan.color}` }}
-              size="small"
-              bordered
-              hoverable
-            >
-              <Title level={5}>{plan.name}</Title>
-              <Text type="secondary" style={{ fontSize: '13px' }}>{plan.badge}</Text>
-              <ul style={{ paddingLeft: 16, marginTop: 12 }}>
-                {plan.features.slice(0,2).map((feature, idx) => (
-                  <li key={idx}><Text type="secondary" style={{ fontSize: '12px' }}>{feature}</Text></li>
-                ))}
-              </ul>
-              <div style={{ marginTop: '12px' }}>
-                <Text strong style={{ display: 'block' }}>{plan.price}</Text>
-              </div>
-              <Button
-                type="primary"
-                block
-                size="small"
-                style={{ marginTop: '12px', backgroundColor: plan.color }}
-                onClick={() => navigate('/payments', { state: { plan } })}
-              >
-                Elegir
-              </Button>
-              <Button
-                block
-                size="small"
-                style={{ marginTop: '8px' }}
-                onClick={() => navigate('/Subscription')}
-              >
-                Saber más
-              </Button>
-            </Card>
-          </Col>
-        ))}
+        {plans.map(plan => {
+          const isCurrentPlan = plan.name === currentPlan;
+          const badgeText = isCurrentPlan ? 'Plan actual' : plan.badge;
+          const badgeColor = isCurrentPlan ? 'green' : 'blue';
+
+          return (
+            <Col key={plan.name} xs={24} sm={12} md={8}>
+              <Badge.Ribbon text={badgeText} color={badgeColor}>
+                <Card
+                  style={{ borderLeft: `4px solid ${plan.color}` }}
+                  size="small"
+                  bordered
+                  hoverable={!isCurrentPlan}
+                >
+                  <Title level={5}>{plan.name}</Title>
+                  <ul style={{ paddingLeft: 16, marginTop: 12 }}>
+                    {plan.features.slice(0, 2).map((feature, idx) => (
+                      <li key={idx}>
+                        <Text type="secondary" style={{ fontSize: '12px' }}>{feature}</Text>
+                      </li>
+                    ))}
+                  </ul>
+                  <div style={{ marginTop: '12px' }}>
+                    <Text strong style={{ display: 'block' }}>{plan.price}</Text>
+                  </div>
+                  <Button
+                    type="primary"
+                    block
+                    size="small"
+                    disabled={isCurrentPlan}
+                    style={{
+                      marginTop: '12px',
+                      backgroundColor: plan.color,
+                      borderColor: plan.color
+                    }}
+                    onClick={() => {
+                      if (!isCurrentPlan) {
+                        navigate('/payments', { state: { plan } });
+                      }
+                    }}
+                  >
+                    {isCurrentPlan ? 'Plan actual' : 'Elegir'}
+                  </Button>
+                  <Button
+                    block
+                    size="small"
+                    style={{ marginTop: '8px' }}
+                    onClick={() => navigate('/Subscription')}
+                  >
+                    Saber más
+                  </Button>
+                </Card>
+              </Badge.Ribbon>
+            </Col>
+          );
+        })}
       </Row>
     </Modal>
   );
