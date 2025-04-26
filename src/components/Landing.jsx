@@ -1,13 +1,18 @@
 import React, { useState } from 'react';
-import { 
-  Layout, Typography, Button, Card, Row, Col, Statistic, 
-  Tag, Divider, Avatar, Input, Carousel, Form, notification
+import {
+  Layout, Typography, Button, Card, Row, Col, Statistic,
+  Tag, Divider, Avatar, Input, Carousel, Form, notification, Drawer, Grid
 } from 'antd';
-import { 
+import {
   ArrowUpOutlined, ArrowDownOutlined, BellOutlined, UserOutlined,
   LineChartOutlined, StarOutlined, DollarOutlined, RocketOutlined,
-  SafetyOutlined, ThunderboltOutlined, MailOutlined
+  SafetyOutlined, ThunderboltOutlined, MailOutlined, MenuOutlined
 } from '@ant-design/icons';
+
+import { useNavigate } from 'react-router-dom';
+
+
+
 
 const { Header, Content, Footer } = Layout;
 const { Title, Text, Paragraph } = Typography;
@@ -25,23 +30,23 @@ export default function PaginaInicioNotiFinance() {
   ];
 
   const caracteristicas = [
-    { 
-      titulo: 'Alertas en tiempo real', 
+    {
+      titulo: 'Alertas en tiempo real',
       descripcion: 'Recibe notificaciones instantáneas cuando las criptomonedas alcanzan tus umbrales',
       icono: <BellOutlined style={{ fontSize: 24, color: '#1890ff' }} />
     },
-    { 
-      titulo: 'Análisis de mercado', 
+    {
+      titulo: 'Análisis de mercado',
       descripcion: 'Análisis avanzados y tendencias para guiar tus decisiones de inversión',
       icono: <LineChartOutlined style={{ fontSize: 24, color: '#1890ff' }} />
     },
-    { 
-      titulo: 'Listas personalizadas', 
+    {
+      titulo: 'Listas personalizadas',
       descripcion: 'Crea listas personalizadas de criptomonedas para monitorear de cerca',
       icono: <StarOutlined style={{ fontSize: 24, color: '#1890ff' }} />
     },
-    { 
-      titulo: 'Plataforma segura', 
+    {
+      titulo: 'Plataforma segura',
       descripcion: 'Tus datos están protegidos con los más altos estándares de seguridad',
       icono: <SafetyOutlined style={{ fontSize: 24, color: '#1890ff' }} />
     }
@@ -80,10 +85,10 @@ export default function PaginaInicioNotiFinance() {
     }, 1500);
   };
 
-  const estiloHeader = { 
-    background: '#001529', 
-    display: 'flex', 
-    alignItems: 'center', 
+  const estiloHeader = {
+    background: '#001529',
+    display: 'flex',
+    alignItems: 'center',
     justifyContent: 'space-between',
     padding: '0 50px',
     position: 'fixed',
@@ -91,8 +96,8 @@ export default function PaginaInicioNotiFinance() {
     width: '100%'
   };
 
-  const estiloHero = { 
-    height: '500px', 
+  const estiloHero = {
+    height: '500px',
     background: 'linear-gradient(135deg, #001529 0%, #003366 100%)',
     borderRadius: '0 0 10px 10px',
     display: 'flex',
@@ -100,34 +105,96 @@ export default function PaginaInicioNotiFinance() {
     marginBottom: '30px'
   };
 
+  const { useBreakpoint } = Grid;
+
+
+  const [open, setOpen] = useState(false);
+  const screens = useBreakpoint();
+
+
+  const handleNavigate = (path) => {
+    navigate(path);
+    setOpen(false); // cerrar el drawer en móvil
+  };
+
+  const menuButtons = (
+    <>
+      <Button type="link" style={{ color: 'white' }} onClick={() => handleNavigate('/subscription')}>Precios</Button>
+      <Button type="link" style={{ color: 'white' }} onClick={() => handleNavigate('/about')}>Nosotros</Button>
+      <Button type="primary" onClick={() => handleNavigate('/login')}>Iniciar Sesión</Button>
+      <Button onClick={() => handleNavigate('/register')}>Registrarse</Button>
+    </>
+  );
+  const navigate = useNavigate(); // ✅ DENTRO del componente
+
+
   return (
+
+
     <Layout className="notifinance-landing">
+
+
+      {/* ------------------------------------ Sección: Header (Encabezado) ------------------------------------ */}
       <Header style={estiloHeader}>
+
+        {/* ------------------------------------ Sección: Logo y Nombre de Marca ------------------------------------ */}
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <DollarOutlined style={{ fontSize: '28px', color: '#1890ff', marginRight: '10px' }} />
-          <Title level={3} style={{ color: 'white', margin: 0 }}>NotiFinance</Title>
+          <Title level={2} style={{ margin: 0 }}>
+            <span style={{ color: 'white' }}>Noti</span>
+            <span style={{ color: '#fa8c16' }}>Finance</span>
+          </Title>
         </div>
-        <div>
-          <Button type="link" style={{ color: 'white', marginRight: '20px' }}>Características</Button>
-          <Button type="link" style={{ color: 'white', marginRight: '20px' }}>Precios</Button>
-          <Button type="link" style={{ color: 'white', marginRight: '20px' }}>Nosotros</Button>
-          <Button type="primary" style={{ marginRight: '10px' }}>Iniciar Sesión</Button>
-          <Button>Registrarse</Button>
+
+        {/* ------------------------------------ Sección: Menú de Navegación Responsivo ------------------------------------ */}
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          {screens.md ? (
+            // 🌐 Vista de escritorio: mostrar los botones directamente
+            <div style={{ display: 'flex', gap: '10px' }}>
+              {menuButtons}
+            </div>
+          ) : (
+            // 📱 Vista móvil: ícono de menú y Drawer lateral
+            <>
+              <MenuOutlined
+                onClick={() => setOpen(true)}
+                style={{ fontSize: '24px', color: 'white' }}
+              />
+              <Drawer
+                title="Menú"
+                placement="right"
+                onClose={() => setOpen(false)}
+                open={open}
+              >
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  {menuButtons}
+                </div>
+              </Drawer>
+            </>
+          )}
         </div>
+
       </Header>
-      
+
+
+
       <Content style={{ padding: '0 50px', marginTop: 64 }}>
         {/* Sección Hero */}
         <div style={estiloHero}>
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-            <Title style={{ color: 'white', fontSize: '48px', marginBottom: '20px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            <Title level={3} style={{ color: 'white', marginBottom: '20px' }}>
               Mantente Adelante en el<br />Mercado Cripto
             </Title>
+            <Paragraph style={{ color: 'white', fontSize: '18px', marginBottom: '10px' }}>
+              Notificaciones en tiempo real y análisis de mercado
+            </Paragraph>
+            <Paragraph style={{ color: 'white', fontSize: '18px', marginBottom: '10px' }}>
+              para ayudarte a tomar decisiones informadas,
+            </Paragraph>
             <Paragraph style={{ color: 'white', fontSize: '18px', marginBottom: '30px' }}>
-              Notificaciones en tiempo real y análisis de mercado para ayudarte a tomar decisiones informadas
+              Todo en una sola plataforma.
             </Paragraph>
             <div>
-              <Button type="primary" size="large" style={{ marginRight: '15px', height: '50px', fontSize: '16px' }}>
+              <Button onClick={() => navigate('/register')} type="primary" size="large" style={{ marginRight: '15px', height: '50px', fontSize: '16px' }}>
                 Comenzar Gratis
               </Button>
               <Button size="large" style={{ height: '50px', fontSize: '16px' }}>
@@ -136,14 +203,19 @@ export default function PaginaInicioNotiFinance() {
             </div>
           </div>
           <div style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            <img 
-              src="/api/placeholder/500/400" 
-              alt="Vista previa del Panel NotiFinance" 
-              style={{ maxWidth: '100%', borderRadius: '8px', boxShadow: '0 10px 30px rgba(0,0,0,0.3)' }}
+            <img
+              src="https://itt0resources.blob.core.windows.net/notifinance/1.png"
+              alt="Vista previa del Panel NotiFinance"
+              style={{
+                maxWidth: '90%',
+                maxHeight: '100%',
+                borderRadius: '40px',
+              }}
             />
           </div>
+
         </div>
-        
+
         {/* Sección Tendencias del Mercado */}
         <Card title={
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -159,10 +231,10 @@ export default function PaginaInicioNotiFinance() {
                     <Avatar style={{ backgroundColor: '#1890ff', marginRight: '10px' }}>{cripto.icono}</Avatar>
                     <Text strong>{cripto.nombre}</Text>
                   </div>
-                  <Statistic 
-                    value={cripto.precio} 
-                    precision={2} 
-                    prefix="$" 
+                  <Statistic
+                    value={cripto.precio}
+                    precision={2}
+                    prefix="$"
                     valueStyle={{ color: '#1890ff' }}
                   />
                   <div style={{ marginTop: '10px' }}>
@@ -175,8 +247,10 @@ export default function PaginaInicioNotiFinance() {
               </Col>
             ))}
             <Col xs={24} sm={12} md={8} lg={6} xl={4}>
-              <Card bordered={false} style={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center',
-                alignItems: 'center', background: '#f5f5f5', cursor: 'pointer' }}>
+              <Card bordered={false} style={{
+                height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center',
+                alignItems: 'center', background: 'linear-gradient(135deg, #001529 0%, #003366 100%)', cursor: 'pointer'
+              }}>
                 <div style={{ textAlign: 'center' }}>
                   <Button type="primary" shape="circle" icon={<RocketOutlined />} size="large" style={{ marginBottom: '10px' }} />
                   <br />
@@ -186,12 +260,12 @@ export default function PaginaInicioNotiFinance() {
             </Col>
           </Row>
         </Card>
-        
+
         {/* Sección Características */}
         <Title level={2} style={{ textAlign: 'center', marginBottom: '40px' }}>
           ¿Por Qué Elegir NotiFinance?
         </Title>
-        
+
         <Row gutter={[32, 32]} style={{ marginBottom: '50px' }}>
           {caracteristicas.map((caracteristica, index) => (
             <Col xs={24} sm={12} lg={6} key={index}>
@@ -204,13 +278,13 @@ export default function PaginaInicioNotiFinance() {
             </Col>
           ))}
         </Row>
-        
+
         {/* Cómo Funciona */}
-        <Card style={{ marginBottom: '50px', background: '#f7f7f7' }} bodyStyle={{ padding: '40px' }}>
+        <Card style={{ marginBottom: '50px', background: 'linear-gradient(135deg, #001529 0%, #003366 100%)', }} bodyStyle={{ padding: '40px' }}>
           <Title level={2} style={{ textAlign: 'center', marginBottom: '40px' }}>
             Cómo Funciona
           </Title>
-          
+
           <Row gutter={[48, 48]} align="middle">
             <Col xs={24} md={8}>
               <div style={{ textAlign: 'center' }}>
@@ -235,12 +309,12 @@ export default function PaginaInicioNotiFinance() {
             </Col>
           </Row>
         </Card>
-        
+
         {/* Testimonios */}
         <Title level={2} style={{ textAlign: 'center', marginBottom: '40px' }}>
           Lo que Dicen Nuestros Usuarios
         </Title>
-        
+
         <Carousel autoplay style={{ marginBottom: '50px' }}>
           {testimonios.map((testimonio, index) => (
             <div key={index}>
@@ -259,7 +333,7 @@ export default function PaginaInicioNotiFinance() {
             </div>
           ))}
         </Carousel>
-        
+
         {/* Sección CTA */}
         <Card style={{ marginBottom: '50px', background: 'linear-gradient(135deg, #1890ff 0%, #0050b3 100%)', padding: '40px' }}>
           <Row gutter={48} align="middle">
@@ -278,7 +352,7 @@ export default function PaginaInicioNotiFinance() {
             </Col>
           </Row>
         </Card>
-        
+
         {/* Boletín */}
         <Card style={{ marginBottom: '50px' }}>
           <Title level={3} style={{ textAlign: 'center', marginBottom: '20px' }}>
@@ -302,7 +376,7 @@ export default function PaginaInicioNotiFinance() {
           </Form>
         </Card>
       </Content>
-      
+
       <Footer style={{ textAlign: 'center', background: '#001529', color: 'white', padding: '40px 50px' }}>
         <Row gutter={[48, 32]}>
           <Col xs={24} sm={12} md={6}>
@@ -314,7 +388,7 @@ export default function PaginaInicioNotiFinance() {
               Tu plataforma completa de notificaciones y análisis de mercado de criptomonedas.
             </Paragraph>
           </Col>
-          
+
           <Col xs={24} sm={12} md={6}>
             <Title level={4} style={{ color: 'white' }}>Enlaces Rápidos</Title>
             <ul style={{ listStyle: 'none', padding: 0, color: '#ccc' }}>
@@ -324,7 +398,7 @@ export default function PaginaInicioNotiFinance() {
               <li style={{ marginBottom: '10px' }}><a style={{ color: '#ccc' }}>Sobre Nosotros</a></li>
             </ul>
           </Col>
-          
+
           <Col xs={24} sm={12} md={6}>
             <Title level={4} style={{ color: 'white' }}>Recursos</Title>
             <ul style={{ listStyle: 'none', padding: 0, color: '#ccc' }}>
@@ -334,7 +408,7 @@ export default function PaginaInicioNotiFinance() {
               <li style={{ marginBottom: '10px' }}><a style={{ color: '#ccc' }}>Preguntas Frecuentes</a></li>
             </ul>
           </Col>
-          
+
           <Col xs={24} sm={12} md={6}>
             <Title level={4} style={{ color: 'white' }}>Contacto</Title>
             <ul style={{ listStyle: 'none', padding: 0, color: '#ccc' }}>
@@ -344,9 +418,9 @@ export default function PaginaInicioNotiFinance() {
             </ul>
           </Col>
         </Row>
-        
+
         <Divider style={{ borderColor: '#333', margin: '30px 0' }} />
-        
+
         <div>
           <Text style={{ color: '#ccc' }}>© 2025 NotiFinance. Todos los derechos reservados.</Text>
         </div>
