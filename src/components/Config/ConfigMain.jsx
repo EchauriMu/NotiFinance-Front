@@ -5,6 +5,7 @@ import EmailConfig from './EmailConfig';
 import WhatsAppConfig from './WhatsAppConfig';
 import DiscordConfig from './DiscordConfig';
 import {SettingOutlined}  from '@ant-design/icons';
+import ProfileSettings from './Setting';
 
 
 const { Title, Text } = Typography;
@@ -32,7 +33,7 @@ const ConfigMain = () => {
         <Col span={24}  xs={24} md={12}>
         <Card title='Configuracion del perfil' style={{height:'100%'}}>
         <SettingOutlined style={{ fontSize: '24px', color: '#1890FF' }} />
-    
+      <ProfileSettings/>
     
         </Card>
       </Col>

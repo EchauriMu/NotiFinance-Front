@@ -1,10 +1,16 @@
-// src/components/Resources.js
 import React from "react";
 import { Row, Col, Typography, Card } from "antd";
+import { useNavigate } from "react-router-dom"; // Importa useNavigate
 
 const { Title, Link, Text } = Typography;
 
 const Resources = () => {
+  const navigate = useNavigate(); // Inicializa navigate
+
+  const handleLinkClick = (path) => {
+    navigate(path); // Redirige a la ruta correspondiente
+  };
+
   return (
     <Card style={{ marginTop: 24 }}>
       <Title level={4}>Recursos para usuarios</Title>
@@ -12,11 +18,10 @@ const Resources = () => {
         {/* Columna Izquierda */}
         <Col xs={24} sm={8} md={6}>
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            <Link href="#">Introducción a NotiFinance</Link>
-            <Link href="#">Cómo crear tu primera alerta</Link>
-            <Link href="#">Guía de planes y beneficios</Link>
-            <Link href="#">Documentación de API GraphQL</Link>
-            <Link href="#">Conexión WebSocket (beta)</Link>
+            <Link onClick={() => handleLinkClick("/intro")}>Introducción a NotiFinance</Link>
+            <Link onClick={() => handleLinkClick("/howtocreate")}>Cómo crear tu primera alerta</Link>
+            <Link onClick={() => handleLinkClick("/subscription")}>Guía de planes y beneficios</Link>
+            <Link onClick={() => handleLinkClick("/graphql-doc")}>Documentación de API</Link>
           </div>
         </Col>
 
@@ -26,7 +31,7 @@ const Resources = () => {
             <Col xs={24} md={12}>
               <Card
                 title="Área de prueba GraphQL"
-                extra={<Link href="#">Probar</Link>}
+                extra={<Link onClick={() => handleLinkClick("/graphql-test")}>Probar</Link>}
                 bordered={false}
               >
                 <Text>Consulta precios de criptos y convierte monedas desde aquí.</Text>
@@ -35,7 +40,7 @@ const Resources = () => {
             <Col xs={24} md={12}>
               <Card
                 title="Soporte y feedback"
-                extra={<Link href="#">Ir</Link>}
+                extra={<Link onClick={() => handleLinkClick("/support")}>Ir</Link>}
                 bordered={false}
               >
                 <Text>¿Dudas o sugerencias? Escríbenos y recibe ayuda inmediata.</Text>
@@ -44,7 +49,7 @@ const Resources = () => {
             <Col xs={24} md={12}>
               <Card
                 title="Simulador de alertas"
-                extra={<Link href="#">Probar</Link>}
+                extra={<Link onClick={() => handleLinkClick("/alert-simulator")}>Probar</Link>}
                 bordered={false}
               >
                 <Text>Simula notificaciones según tu plan para visualizar su comportamiento.</Text>
@@ -53,7 +58,7 @@ const Resources = () => {
             <Col xs={24} md={12}>
               <Card
                 title="Complementos"
-                extra={<Link href="#">Ver</Link>}
+                extra={<Link onClick={() => handleLinkClick("/add-ons")}>Ver</Link>}
                 bordered={false}
               >
                 <Text>Extensiones y herramientas para integrar NotiFinance en otras plataformas.</Text>

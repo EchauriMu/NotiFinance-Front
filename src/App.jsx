@@ -9,6 +9,10 @@ import Subscription from "./components/Subscriptions/Subscription";
 import Payments from "./components/Subscriptions/Payments";
 import ThankYou from "./components/Subscriptions/ty";
 import NotiFinanceLanding from "./components/Landing";
+import ForgotPassword from "./components/auth/forgot";
+import ResetPassword from "./components/auth/Reset"
+import Intro from "./components/General/intro";
+
 import { Spin } from "antd";
 
 const App = () => {
@@ -54,36 +58,48 @@ const App = () => {
 
   return (
     <Router>
-    <Routes>
-    <Route path="/" element={<NotiFinanceLanding />} />
+      <Routes>
+        <Route path="/" element={<NotiFinanceLanding />} />
 
-      <Route 
-        path="/login" 
-        element={isAuthenticated ? <Navigate to="/home" replace /> : <Login setIsAuthenticated={setIsAuthenticated} />} 
-      />
-      <Route path="/register" element={<Register />} />
-      <Route path="/verify/:userId" element={<VerifyToken />} />
-      <Route path="/subscription" element={<Subscription />} />
+        <Route
+          path="/login"
+          element={isAuthenticated ? <Navigate to="/home" replace /> : <Login setIsAuthenticated={setIsAuthenticated} />}
+        />
+        <Route path="/register" element={<Register />} />
+        <Route path="/verify/:userId" element={<VerifyToken />} />
+        <Route path="/subscription" element={<Subscription />} />
 
-      <Route 
-  path="/thank-you" 
-  element={
-    isAuthenticated && localStorage.getItem("paymentInfo")
-      ? <ThankYou />
-      : <Navigate to="/" replace />
-  }
-/>
 
-      <Route 
-        path="/payments" 
-        element={isAuthenticated ? <Payments /> : <Navigate to="/login" replace />}
-      />
-      <Route
-        path="/home"
-        element={isAuthenticated ? <MainLayout /> : <Navigate to="/login" replace />}
-      />
-    </Routes>
-  </Router>
+        <Route path="/forgot" element={<ForgotPassword />} />
+        <Route path="/reset/:token" element={<ResetPassword />} />
+
+
+        <Route
+          path="/thank-you"
+          element={
+            isAuthenticated && localStorage.getItem("paymentInfo")
+              ? <ThankYou />
+              : <Navigate to="/" replace />
+          }
+        />
+
+        <Route
+          path="/payments"
+          element={isAuthenticated ? <Payments /> : <Navigate to="/login" replace />}
+        />
+
+        <Route
+          path="/intro"
+          element={isAuthenticated ? <Intro /> : <Navigate to="/login" replace />}
+        />
+
+
+        <Route
+          path="/home"
+          element={isAuthenticated ? <MainLayout /> : <Navigate to="/login" replace />}
+        />
+      </Routes>
+    </Router>
   );
 };
 
