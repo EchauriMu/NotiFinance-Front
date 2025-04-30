@@ -1,10 +1,12 @@
-import React, { useState } from "react";
-import { Form, Input, Button, Card, Spin, notification } from "antd";
+import React, { useState, useEffect } from "react";
+import { Form, Input, Button, Spin, notification } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import axiosInstance from "../../api/axiosInstance";
+import { ArrowRightOutlined } from "@ant-design/icons";
 
 const Register = () => {
   const [loading, setLoading] = useState(false);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth); // Track window width for responsive styles
   const navigate = useNavigate();
 
   const onFinish = async (values) => {
@@ -37,34 +39,162 @@ const Register = () => {
     }
   };
 
+  // Escuchar los cambios de tamaño de la ventana
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  // Estilos en línea
+  const styles = {
+    registerPage: {
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      minHeight: "100vh",
+      background: "#18171c",
+      padding: "20px",
+    },
+    registerContainer: {
+      display: "flex",
+      flexDirection: windowWidth <= 768 ? "column" : "row", // Responsive direction based on window width
+      width: "100%",
+      maxWidth: "900px",
+      borderRadius: "16px",
+      overflow: "hidden",
+      boxShadow: "0 8px 24px rgba(149, 157, 165, 0.2)",
+      background: "#141414",
+    },
+    imageContainer: {
+      flex: "1 1 50%",
+      background: "#141414",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      position: "relative",
+      padding: "20px",
+      minHeight: "200px",
+    },
+    formContainer: {
+      flex: "1 1 50%",
+      padding: "40px",
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center",
+    },
+    formItem: {
+      marginBottom: "16px",
+    },
+    input: {
+      borderRadius: "8px",
+      height: "45px",
+    },
+    button: {
+      height: "45px",
+      borderRadius: "8px",
+      background: "#ffa500",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    linkText: {
+      textAlign: "center",
+      color: "#6B7280",
+      fontSize: "14px",
+    },
+    link: {
+      color: "#6B46C1",
+    },
+    image: {
+      borderRadius: 50,
+      maxHeight: "80%",
+      maxWidth: "80%",
+      objectFit: "contain",
+      zIndex: 1,
+    },
+  };
+
   return (
-    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
-      <Card title="Registro" style={{ width: 400, textAlign: "center" }}>
-        <Form onFinish={onFinish} layout="vertical">
-          <Form.Item label="Nombre de Usuario" name="username" rules={[{ required: true, message: "Ingresa tu usuario" }]}>
-            <Input />
-          </Form.Item>
-
-          <Form.Item label="Correo Electrónico" name="email" rules={[{ required: true, message: "Ingresa tu correo" }]}>
-            <Input type="email" />
-          </Form.Item>
-
-          <Form.Item label="Contraseña" name="password" rules={[{ required: true, message: "Ingresa tu contraseña" }]}>
-            <Input.Password />
-          </Form.Item>
-
-          <Form.Item>
-            <Button type="primary" htmlType="submit" block disabled={loading}>
-              {loading ? <Spin /> : "Registrarse"}
-            </Button>
-          </Form.Item>
-        </Form>
-
-        {/* 🔗 Enlace para iniciar sesión */}
-        <div style={{ marginTop: 10 }}>
-          ¿Ya tienes cuenta? <Link to="/login">Inicia sesión aquí</Link>
+    <div style={styles.registerPage}>
+      <div style={styles.registerContainer}>
+        {/* Imagen lateral o superior (según viewport) */}
+        <div style={styles.imageContainer}>
+          <img
+            src="https://itt0resources.blob.core.windows.net/notifinance/1.png"
+            alt="Imagen de registro"
+            style={styles.image}
+          />
         </div>
-      </Card>
+
+        {/* Formulario de registro */}
+        <div style={styles.formContainer}>
+          <div style={{ marginBottom: "24px" }}>
+            <h2 style={styles.logo}>Regístrate en tu cuenta.</h2>
+          </div>
+
+          <Form onFinish={onFinish} layout="vertical" style={{ width: "100%" }}>
+            <Form.Item
+              label="Nombre de Usuario"
+              name="username"
+              rules={[{ required: true, message: "Ingresa tu usuario" }]}
+              style={styles.formItem}
+            >
+              <Input style={styles.input} size="large" />
+            </Form.Item>
+
+            <Form.Item
+              label="Correo Electrónico"
+              name="email"
+              rules={[{ required: true, message: "Ingresa tu correo" }]}
+              style={styles.formItem}
+            >
+              <Input type="email" style={styles.input} size="large" />
+            </Form.Item>
+
+            <Form.Item
+              label="Contraseña"
+              name="password"
+              rules={[{ required: true, message: "Ingresa tu contraseña" }]}
+              style={styles.formItem}
+            >
+              <Input.Password style={styles.input} size="large" />
+            </Form.Item>
+
+            <Form.Item style={styles.formItem}>
+              <Button
+                type="primary"
+                htmlType="submit"
+                block
+                disabled={loading}
+                style={styles.button}
+              >
+                {loading ? (
+                  <Spin size="small" />
+                ) : (
+                  <>
+                    {windowWidth <= 768 ? "Registrarse" : "Registrarse"}
+                    <ArrowRightOutlined style={{ marginLeft: "8px" }} />
+                  </>
+                )}
+              </Button>
+            </Form.Item>
+          </Form>
+
+          {/* Enlace para iniciar sesión */}
+          <div style={styles.linkText}>
+            ¿Ya tienes cuenta?{" "}
+            <Link to="/login" style={styles.link}>
+              Inicia sesión aquí
+            </Link>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

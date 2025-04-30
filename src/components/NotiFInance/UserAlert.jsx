@@ -38,12 +38,7 @@ const UserAlerts = ({ refresh }) => {
           setModalVisible(true); // Mostrar el modal cuando se alcanza el límite
         }
 
-        // Mostrar notificación de error
-        notification.error({
-          message: 'Error',
-          description: errorMessage,
-          placement: 'bottomRight',
-        });
+     
 
         setError(errorMessage);
       } finally {
@@ -81,17 +76,12 @@ const UserAlerts = ({ refresh }) => {
       if (errorCode === 'LIMIT_ERROR') {
         errorMessage = 'Ya alcanzaste el límite de alertas activas permitido en tu plan.';
         setModalVisible(true); // Mostrar el modal cuando se alcanza el límite
-      } else if (errorCode === 'NO_ALERT_SERVICE') {
-        errorMessage = 'No tienes un servicio de alerta disponible para este tipo.';
-      } else if (errorCode === 'INTERNAL_ERROR') {
+      }
+      else if (errorCode === 'INTERNAL_ERROR') {
         errorMessage = 'Ha ocurrido un error interno en el servidor.';
       }
 
-      notification.error({
-        message: 'Error',
-        description: errorMessage,
-        placement: 'bottomRight',
-      });
+
     }
   };
 
@@ -122,7 +112,7 @@ const UserAlerts = ({ refresh }) => {
       <Card title="Alertas del Usuario" style={{ marginBottom: 24 }}>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
           {alerts.map((alert, index) => {
-            const status = getStatus(alert.isActive, alert.isFulfilled);
+            const status = getStatus(alert.isActive);
             const icon = typeIcons[alert.typeNotification];
 
             return (
