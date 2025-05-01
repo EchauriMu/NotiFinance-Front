@@ -54,6 +54,8 @@ const Payments = () => {
             paymentMethod: paymentMethod === 'creditCard' ? 'Tarjeta de Crédito' : paymentMethod === 'paypal' ? 'PayPal' : 'Transferencia Bancaria',
           }));
         }
+            // Redirigir a la página de agradecimiento
+            navigate('/thank-you');
         // Si todo es correcto, mostramos una notificación de éxito
         notification.success({
           message: `Pago procesado con éxito`,
@@ -61,8 +63,7 @@ const Payments = () => {
           icon: <CreditCardOutlined style={{ color: '#108ee9' }} />,
         });
 
-        // Redirigir a la página de agradecimiento
-        navigate('/thank-you');
+    
       } else {
         // En caso de error en el pago
         notification.error({

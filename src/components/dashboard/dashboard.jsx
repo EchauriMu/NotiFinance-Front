@@ -4,6 +4,7 @@ import { BellOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import SystemStatus from './SystemStatus';
 import Resources from './Resources';
 import axiosInstance from '../../api/axiosInstance';
+import { fetchUserData } from '../../functions/fetchUserData';
 
 const { Title, Text } = Typography;
 
@@ -14,13 +15,18 @@ const Dashboard = () => {
   const [alerts, setAlerts] = useState([]);
 
   useEffect(() => {
-    const userData = JSON.parse(sessionStorage.getItem('userData'));
-    if (userData) {
-      setUserPlan(userData.plan || 'Freemium');
-    }
-
-    fetchAlerts();
+    const fetchData = async () => {
+      const userData = await fetchUserData();
+      if (userData) {
+        setUserPlan(userData.plan || 'Freemium');
+      }
+  
+      fetchAlerts();
+    };
+  
+    fetchData();
   }, []);
+  
 
   const fetchAlerts = async () => {
     try {

@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Tag, Typography, Button, Alert, Tooltip, Skeleton, message, notification } from 'antd';
+import { Card, Tag, Typography, Button, Alert, Tooltip, Skeleton, notification } from 'antd';
 import axiosInstance from '../../api/axiosInstance';
 import { MailOutlined, WhatsAppOutlined, DiscordOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import LimitAlertModal from './LimitModl';
+import io from 'socket.io-client';  // Importamos Socket.io
 
 const { Text } = Typography;
 
@@ -16,7 +17,51 @@ const UserAlerts = ({ refresh }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [modalVisible, setModalVisible] = useState(false); // Estado para controlar el modal
+  const [socket, setSocket] = useState(null); // Estado para almacenar el socket
 
+  const [userId, setUserId] = useState(null); // Estado para almacenar el ID del usuario
+
+  useEffect(() => {
+    // Obtener userData desde sessionStorage
+    const userData = JSON.parse(sessionStorage.getItem('userData'));
+    
+    if (userData) {
+      setUserId(userData.id); // Establecer el userId desde sessionStorage
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!userId) return; // Si el userId aún no está disponible, no hacer nada
+
+    // Conectar al WebSocket
+    const newSocket = io('http://localhost:3000');
+    console.log('conexion a ws correcta!');
+    setSocket(newSocket);
+
+    // Suscribirse a las alertas del usuario
+    newSocket.emit('subscribeAlerts', userId);
+
+    // Escuchar las actualizaciones de las alertas
+    newSocket.on('alertUpdated', (data) => {
+      console.log('Alerta actualizada:', data);
+      // Actualizar el estado de las alertas con los datos recibidos
+      setAlerts((prevAlerts) =>
+        prevAlerts.map((alert) =>
+          alert._id === data.alertId
+            ? { ...alert, isActive: data.isActive, updatedAt: data.updatedAt }
+            : alert
+        )
+      );
+    
+    });
+
+    // Cleanup cuando el componente se desmonte
+    return () => {
+      newSocket.disconnect();
+    };
+  }, [userId]); // Solo se ejecuta cuando el userId cambia
+
+  // Fetch inicial de alertas
   useEffect(() => {
     const fetchAlerts = async () => {
       setLoading(true);
@@ -28,7 +73,6 @@ const UserAlerts = ({ refresh }) => {
         const errorCode = err.response?.data?.code;
         let errorMessage = 'Error al cargar alertas.';
 
-        // Manejo de errores por código
         if (errorCode === 'NONE_ALERTS') {
           errorMessage = 'No tienes alertas disponibles en este momento.';
         } else if (errorCode === 'NO_ALERT_SERVICE') {
@@ -37,8 +81,6 @@ const UserAlerts = ({ refresh }) => {
           errorMessage = 'Ya alcanzaste el límite de alertas activas permitido en tu plan.';
           setModalVisible(true); // Mostrar el modal cuando se alcanza el límite
         }
-
-     
 
         setError(errorMessage);
       } finally {
@@ -68,20 +110,22 @@ const UserAlerts = ({ refresh }) => {
     } catch (error) {
       console.error(error);
 
-      // Mostrar notificación de error para cualquier tipo de error
       const errorCode = error.response?.data?.code;
       let errorMessage = 'Error al actualizar la alerta.';
 
-      // Manejo de errores
       if (errorCode === 'LIMIT_ERROR') {
         errorMessage = 'Ya alcanzaste el límite de alertas activas permitido en tu plan.';
-        setModalVisible(true); // Mostrar el modal cuando se alcanza el límite
+        setModalVisible(true);
       }
       else if (errorCode === 'INTERNAL_ERROR') {
         errorMessage = 'Ha ocurrido un error interno en el servidor.';
       }
 
-
+      notification.error({
+        message: 'Error',
+        description: errorMessage,
+        placement: 'bottomRight',
+      });
     }
   };
 
@@ -94,7 +138,7 @@ const UserAlerts = ({ refresh }) => {
     );
   }
 
-  // Si hay un error, mostramos el Alert
+  // Si hay un error
   if (error) {
     return (
       <Alert

@@ -13,6 +13,8 @@ import {
   SmileOutlined,
   CreditCardOutlined,
   CheckCircleOutlined,
+  NumberOutlined,
+  ClockCircleOutlined,
 } from '@ant-design/icons';
 
 const { Title, Paragraph, Text } = Typography;
@@ -21,12 +23,23 @@ const ThankYou = () => {
   const navigate = useNavigate();
   const [paymentInfo, setPaymentInfo] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [timestamp, setTimestamp] = useState('');
+  const [transactionId, setTransactionId] = useState('');
 
   useEffect(() => {
     const storedPaymentInfo = localStorage.getItem('paymentInfo');
 
     if (storedPaymentInfo) {
-      setPaymentInfo(JSON.parse(storedPaymentInfo));
+      const parsed = JSON.parse(storedPaymentInfo);
+      setPaymentInfo(parsed);
+
+      // Agrega marca de tiempo y número de transacción simulado
+      const now = new Date();
+      const formattedDate = now.toLocaleString();
+      const fakeTransactionId = 'TX-' + Math.floor(100000000 + Math.random() * 900000000);
+      setTimestamp(formattedDate);
+      setTransactionId(fakeTransactionId);
+
       setLoading(false);
     } else {
       notification.error({
@@ -35,7 +48,7 @@ const ThankYou = () => {
           'No encontramos información de un pago reciente. Por favor realiza una compra primero.',
         placement: 'topRight',
       });
-      setTimeout(() => navigate('/'), 1500); // Redirige después de 1.5s
+      setTimeout(() => navigate('/'), 1500);
     }
   }, [navigate]);
 
@@ -83,6 +96,20 @@ const ThankYou = () => {
               <Text strong>Total</Text>
               <Text>{paymentInfo.planPrice}</Text>
             </div>
+
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <Text strong>
+                <NumberOutlined /> Transacción
+              </Text>
+              <Text>{transactionId}</Text>
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <Text strong>
+                <ClockCircleOutlined /> Fecha y hora
+              </Text>
+              <Text>{timestamp}</Text>
+            </div>
           </Space>
         </Card>
 
@@ -91,8 +118,8 @@ const ThankYou = () => {
           size="large"
           block
           onClick={() => {
-            localStorage.removeItem('paymentInfo'); // Limpia la info
-            navigate('/');
+            localStorage.removeItem('paymentInfo');
+            navigate('/home');
           }}
           icon={<SmileOutlined />}
         >

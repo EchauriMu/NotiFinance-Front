@@ -73,15 +73,11 @@ const App = () => {
         <Route path="/forgot" element={<ForgotPassword />} />
         <Route path="/reset/:token" element={<ResetPassword />} />
 
-
         <Route
           path="/thank-you"
-          element={
-            isAuthenticated && localStorage.getItem("paymentInfo")
-              ? <ThankYou />
-              : <Navigate to="/" replace />
-          }
+          element={isAuthenticated ? <ThankYou /> : <Navigate to="/login" replace />}
         />
+
 
         <Route
           path="/payments"
