@@ -1,12 +1,16 @@
 import axiosInstance from '../api/axiosInstance';
+import axios from 'axios';
 
 // Función para obtener los datos del usuario (perfil)
 export const fetchUserData = async () => {
   try {
+
+       // Verificamos si el servidor está activo con la ruta /status
+    const ws = await axios.get('https://ntwebsocket.onrender.com/');
+   
+
     const response = await axiosInstance.get('/user/profile');
     const { data } = response.data; 
-
-    console.log('📥 [API] Datos de usuario recibidos:', data);
 
     const userData = {
       id: data._id,
@@ -40,6 +44,10 @@ export const fetchSettings = async () => {
       discord: false,
     };
     const watchlist = response.data.watchlist || [];
+
+       // Guardar en sessionStorage
+       sessionStorage.setItem('notificationSettings', JSON.stringify(notificationSettings));
+  
 
     return { notificationSettings, watchlist };
   } catch (error) {

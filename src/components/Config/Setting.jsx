@@ -9,6 +9,7 @@ const ProfileSettings = () => {
   const [formName] = Form.useForm();
   const [formPasswordRecovery] = Form.useForm();
   const [loading, setLoading] = useState(false);
+  const [isSessionEndingModalOpen, setIsSessionEndingModalOpen] = useState(false); // Para el modal de aviso de sesión
 
   const handleNameSubmit = async () => {
     try {
@@ -19,8 +20,9 @@ const ProfileSettings = () => {
       });
 
       message.success('Nombre actualizado correctamente');
-      setIsNameModalOpen(false);
-      formName.resetFields();
+      
+      // Mostrar modal de aviso de cierre de sesión
+      setIsSessionEndingModalOpen(true);
     } catch (error) {
       console.error('Error actualizando nombre:', error);
       message.error(error.response?.data?.message || 'Error al actualizar el nombre');
@@ -42,8 +44,9 @@ const ProfileSettings = () => {
           description: 'Revisa tu correo electrónico para restablecer tu contraseña.',
           placement: 'bottomRight',
         });
-        setIsPasswordModalOpen(false);
-        formPasswordRecovery.resetFields();
+
+        // Mostrar modal de aviso de cierre de sesión
+        setIsSessionEndingModalOpen(true);
       }
     } catch (error) {
       const errorMessage = error.response?.data?.message || 'Ocurrió un error al enviar el correo';
@@ -54,6 +57,38 @@ const ProfileSettings = () => {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      // Llamada al endpoint de logout para limpiar la cookie
+      await axiosInstance.post('/auth/logout');
+      
+      // Eliminar datos de sessionStorage
+      sessionStorage.removeItem('userData');
+      sessionStorage.removeItem('notificationSettings');
+      sessionStorage.removeItem('watchlist');
+      
+      // Eliminar token de localStorage si existe
+      localStorage.removeItem('token');
+      
+      message.success('Has cerrado sesión correctamente');
+      
+      // Recargamos la página
+      window.location.reload();
+      
+    } catch (error) {
+      console.error('Error al cerrar sesión:', error);
+      
+      // Aún así, limpiamos los datos locales
+      sessionStorage.clear();
+      localStorage.removeItem('token');
+      
+      message.error('Error al cerrar sesión');
+      
+      // Recargamos la página incluso si hubo un error
+      window.location.reload();
     }
   };
 
@@ -84,8 +119,7 @@ const ProfileSettings = () => {
           <Form.Item
             label="Nuevo Nombre"
             name="name"
-            rules={[{ required: true, message: 'Por favor ingresa tu nuevo nombre' }]}
-          >
+            rules={[{ required: true, message: 'Por favor ingresa tu nuevo nombre' }]}>
             <Input placeholder="Escribe tu nuevo nombre" />
           </Form.Item>
         </Form>
@@ -95,29 +129,38 @@ const ProfileSettings = () => {
       <Modal
         title="Recuperar Contraseña"
         open={isPasswordModalOpen}
-        onOk={handlePasswordRecoverySubmit}
+        onOk={handlePasswordRecoverySubmit} // Se ejecuta la misma función
         onCancel={() => {
           setIsPasswordModalOpen(false);
           formPasswordRecovery.resetFields();
         }}
         okText="Enviar"
         cancelText="Cancelar"
-        okButtonProps={{ disabled: loading }}
+        okButtonProps={{ disabled: loading }} // Deshabilitamos el botón mientras cargamos
       >
         <Form form={formPasswordRecovery} layout="vertical">
           <Form.Item
             label="Nombre de Usuario"
             name="username"
-            rules={[{ required: true, message: 'Ingresa tu nombre de usuario' }]}
-          >
+            rules={[{ required: true, message: 'Ingresa tu nombre de usuario' }]}>
             <Input placeholder="Tu nombre de usuario" />
           </Form.Item>
-          <Form.Item>
-            <Button type="primary" onClick={handlePasswordRecoverySubmit} block disabled={loading}>
-              {loading ? <Spin /> : 'Enviar Correo de Recuperación'}
-            </Button>
-          </Form.Item>
         </Form>
+      </Modal>
+
+      {/* Modal de aviso de cierre de sesión y recarga de página */}
+      <Modal
+        title="Aviso"
+        open={isSessionEndingModalOpen}
+        onOk={() => {
+          handleLogout(); // Cerrar sesión y recargar
+          setIsSessionEndingModalOpen(false); // Cerrar el modal
+        }}
+        onCancel={() => setIsSessionEndingModalOpen(false)} // Simplemente cerramos el modal sin hacer nada
+        okText="OK"
+        cancelButtonProps={{ style: { display: 'none' } }} // Ocultamos el botón de cancelar
+      >
+        <p>Tu sesión se cerrará y la página se recargará. ¡Gracias por usar la aplicación!</p>
       </Modal>
     </>
   );

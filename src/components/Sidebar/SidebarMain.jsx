@@ -44,12 +44,7 @@ const SidebarMain = ({ setIsAuthenticated }) => {
         const { notificationSettings, watchlist } = await fetchSettings();
         setNotificationSettings(notificationSettings);
         setWatchlist(watchlist);
-        
-        // Guardamos los datos en sessionStorage
-        sessionStorage.setItem('userData', JSON.stringify(userDataResponse));
-        sessionStorage.setItem('notificationSettings', JSON.stringify(notificationSettings));
-        sessionStorage.setItem('watchlist', JSON.stringify(watchlist));
-      } catch (error) {
+           } catch (error) {
         console.error('❌ Error al obtener los datos:', error);
       } finally {
         // Quité el setTimeout y actualizo los estados inmediatamente

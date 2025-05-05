@@ -17,7 +17,14 @@ const icons = {
   whatsapp: <WhatsAppOutlined style={{ color: 'green', fontSize: 36 }} />
 };
 
-export const Watchlist = ({ form, cryptoOptions, selectedNotification, selectNotification, setSelectedCrypto, onAlertCreated }) => {
+export const Watchlist = ({
+  form,
+  cryptoOptions,
+  selectedNotification,
+  selectNotification,
+  setSelectedCrypto,
+  onAlertCreated
+}) => {
   const [loading, setLoading] = useState(false);
   const [showLimit, setShowLimit] = useState(false);
   const [showService, setShowService] = useState(false);
@@ -27,7 +34,9 @@ export const Watchlist = ({ form, cryptoOptions, selectedNotification, selectNot
     if (!selectedNotification || !crypto) {
       return notification.error({
         message: 'Error',
-        description: !crypto ? 'Selecciona una criptomoneda' : 'Selecciona un medio de notificación',
+        description: !crypto
+          ? 'Selecciona una criptomoneda'
+          : 'Selecciona un medio de notificación',
         placement: 'topRight'
       });
     }
@@ -54,8 +63,14 @@ export const Watchlist = ({ form, cryptoOptions, selectedNotification, selectNot
     } catch (error) {
       const code = error.response?.data?.code;
       if (code === 'NO_ALERT_SERVICE') setShowService(true);
-      else if (code === 'LIMIT_ERROR' || error.response?.status === 429) setShowLimit(true);
-      else notification.error({ message: 'Error', description: 'Error al crear alerta', placement: 'topRight' });
+      else if (code === 'LIMIT_ERROR' || error.response?.status === 429)
+        setShowLimit(true);
+      else
+        notification.error({
+          message: 'Error',
+          description: 'Error al crear alerta',
+          placement: 'topRight'
+        });
     } finally {
       setLoading(false);
     }
@@ -67,23 +82,54 @@ export const Watchlist = ({ form, cryptoOptions, selectedNotification, selectNot
         <Alert
           message="Instrucciones"
           description="Seleccione una criptomoneda, ingrese un precio umbral y elija un medio de notificación."
-          type="info" showIcon style={{ marginBottom: 16 }}
+          type="info"
+          showIcon
+          style={{ marginBottom: 16 }}
         />
         <Form form={form} layout="vertical" onFinish={handleFinish}>
-          <Form.Item name="crypto" label="Seleccionar Criptomoneda" rules={[{ required: true, message: 'Este campo es requerido' }]}>
+          <Form.Item
+            name="crypto"
+            label="Seleccionar Criptomoneda"
+            rules={[{ required: true, message: 'Este campo es requerido' }]}
+          >
             <Select
               placeholder="Selecciona una crypto"
               showSearch
               disabled={loading}
-              filterOption={(input, option) => option.children.toLowerCase().includes(input.toLowerCase())}
+              filterOption={(input, option) =>
+                option.children.toLowerCase().includes(input.toLowerCase())
+              }
               onChange={setSelectedCrypto}
             >
-              {cryptoOptions.map(opt => <Option key={opt.value} value={opt.value}>{opt.label}</Option>)}
+              {cryptoOptions.map((opt) => (
+                <Option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </Option>
+              ))}
             </Select>
           </Form.Item>
 
-          <Form.Item name="threshold" label="Precio Umbral" rules={[{ required: true, message: 'Ingresa un precio umbral' }]}>
-            <Input prefix="$" placeholder="Ingresa el precio umbral" type="number" disabled={loading} />
+          <Form.Item
+            name="threshold"
+            label="Precio Umbral"
+            rules={[
+              { required: true, message: 'Ingresa un precio umbral' },
+              {
+                validator: (_, value) =>
+                  value >= 0
+                    ? Promise.resolve()
+                    : Promise.reject(
+                        new Error('El precio no puede ser negativo')
+                      )
+              }
+            ]}
+          >
+            <Input
+              prefix="$"
+              placeholder="Ingresa el precio umbral"
+              type="number"
+              disabled={loading}
+            />
           </Form.Item>
 
           <Form.Item name="notifications" label="Medios de Notificación">
@@ -97,7 +143,10 @@ export const Watchlist = ({ form, cryptoOptions, selectedNotification, selectNot
                       textAlign: 'center',
                       cursor: loading ? 'not-allowed' : 'pointer',
                       opacity: loading ? 0.5 : 1,
-                      border: selectedNotification === type ? '5px solid green' : '1px solid #d9d9d9'
+                      border:
+                        selectedNotification === type
+                          ? '5px solid green'
+                          : '1px solid #d9d9d9'
                     }}
                   >
                     {icon}
@@ -109,13 +158,26 @@ export const Watchlist = ({ form, cryptoOptions, selectedNotification, selectNot
           </Form.Item>
 
           <Form.Item>
-            <Button type="primary" htmlType="submit" block disabled={loading}>Crear Alerta</Button>
+            <Button
+              type="primary"
+              htmlType="submit"
+              block
+              disabled={loading}
+            >
+              Crear Alerta
+            </Button>
           </Form.Item>
         </Form>
       </Spin>
 
-      <ServiceNotRegisteredModal visible={showService} onClose={() => setShowService(false)} />
-      <LimitReachedModal visible={showLimit} onClose={() => setShowLimit(false)} />
+      <ServiceNotRegisteredModal
+        visible={showService}
+        onClose={() => setShowService(false)}
+      />
+      <LimitReachedModal
+        visible={showLimit}
+        onClose={() => setShowLimit(false)}
+      />
     </Card>
   );
 };
