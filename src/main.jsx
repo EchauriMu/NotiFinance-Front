@@ -13,9 +13,9 @@ const darkTheme = {
 }
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
+
     <ConfigProvider theme={darkTheme}>
       <App />
     </ConfigProvider>
-  </StrictMode>
+ 
 )

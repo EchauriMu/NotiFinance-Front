@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Tag, Typography, Button, Alert, Tooltip, Skeleton, notification } from 'antd';
 import axiosInstance from '../../api/axiosInstance';
-import { MailOutlined, WhatsAppOutlined, DiscordOutlined } from '@ant-design/icons';
+import { MailOutlined, WhatsAppOutlined, DiscordOutlined, DeleteOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import LimitAlertModal from './LimitModl';
-import io from 'socket.io-client';  // Importamos Socket.io
+import io from 'socket.io-client';
 
 const { Text } = Typography;
 
@@ -16,79 +16,74 @@ const UserAlerts = ({ refresh }) => {
   const [alerts, setAlerts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [modalVisible, setModalVisible] = useState(false); // Estado para controlar el modal
-  const [socket, setSocket] = useState(null); // Estado para almacenar el socket
-
-  const [userId, setUserId] = useState(null); // Estado para almacenar el ID del usuario
+  const [modalVisible, setModalVisible] = useState(false);
+  const [socket, setSocket] = useState(null);
+  const [userId, setUserId] = useState(null);
+  const [userPlan, setUserPlan] = useState('Freemium');
 
   useEffect(() => {
-    // Obtener userData desde sessionStorage
     const userData = JSON.parse(sessionStorage.getItem('userData'));
-    
     if (userData) {
-      setUserId(userData.id); // Establecer el userId desde sessionStorage
+      setUserId(userData.id);
+      setUserPlan(userData.plan);
     }
   }, []);
 
   useEffect(() => {
-    if (!userId) return; // Si el userId aún no está disponible, no hacer nada
+    if (!userId) return;
 
-    // Conectar al WebSocket
-    const newSocket = io('http://localhost:3000');
+    const newSocket = io('https://ntwebsocket.onrender.com');
     console.log('conexion a ws correcta!');
     setSocket(newSocket);
 
-    // Suscribirse a las alertas del usuario
     newSocket.emit('subscribeAlerts', userId);
 
-    // Escuchar las actualizaciones de las alertas
     newSocket.on('alertUpdated', (data) => {
-      console.log('Alerta actualizada:', data);
-      // Actualizar el estado de las alertas con los datos recibidos
+
       setAlerts((prevAlerts) =>
         prevAlerts.map((alert) =>
           alert._id === data.alertId
-            ? { ...alert, isActive: data.isActive, updatedAt: data.updatedAt }
+            ? { ...alert, isActive: data.isActive, updatedAt: data.updatedAt ,  isFulfilled: data.isFulfilled }
             : alert
         )
       );
-    
     });
 
-    // Cleanup cuando el componente se desmonte
     return () => {
       newSocket.disconnect();
     };
-  }, [userId]); // Solo se ejecuta cuando el userId cambia
+  }, [userId]);
 
-  // Fetch inicial de alertas
   useEffect(() => {
-    const fetchAlerts = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const response = await axiosInstance.get('/alert/get/id');
-        setAlerts(response.data);
-      } catch (err) {
-        const errorCode = err.response?.data?.code;
-        let errorMessage = 'Error al cargar alertas.';
-
-        if (errorCode === 'NONE_ALERTS') {
-          errorMessage = 'No tienes alertas disponibles en este momento.';
-        } else if (errorCode === 'NO_ALERT_SERVICE') {
-          errorMessage = 'No tienes un servicio de alerta disponible para este tipo.';
-        } else if (errorCode === 'LIMIT_ERROR') {
-          errorMessage = 'Ya alcanzaste el límite de alertas activas permitido en tu plan.';
-          setModalVisible(true); // Mostrar el modal cuando se alcanza el límite
-        }
-
-        setError(errorMessage);
-      } finally {
-        setLoading(false);
-      }
-    };
+  
     fetchAlerts();
   }, [refresh]);
+
+  //traer datois xd
+  const fetchAlerts = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await axiosInstance.get('/alert/get/id');
+      setAlerts(response.data);
+    } catch (err) {
+      const errorCode = err.response?.data?.code;
+      let errorMessage = 'Error al cargar alertas.';
+
+      if (errorCode === 'NONE_ALERTS') {
+        errorMessage = 'No tienes alertas disponibles en este momento.';
+      } else if (errorCode === 'NO_ALERT_SERVICE') {
+        errorMessage = 'No tienes un servicio de alerta disponible para este tipo.';
+      } else if (errorCode === 'LIMIT_ERROR') {
+        errorMessage = 'Ya alcanzaste el límite de alertas activas permitido en tu plan.';
+        setModalVisible(true);
+      }
+
+      setError(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const toggleActiveStatus = async (alertId, currentStatus) => {
     try {
@@ -109,15 +104,13 @@ const UserAlerts = ({ refresh }) => {
       );
     } catch (error) {
       console.error(error);
-
       const errorCode = error.response?.data?.code;
       let errorMessage = 'Error al actualizar la alerta.';
 
       if (errorCode === 'LIMIT_ERROR') {
         errorMessage = 'Ya alcanzaste el límite de alertas activas permitido en tu plan.';
         setModalVisible(true);
-      }
-      else if (errorCode === 'INTERNAL_ERROR') {
+      } else if (errorCode === 'INTERNAL_ERROR') {
         errorMessage = 'Ha ocurrido un error interno en el servidor.';
       }
 
@@ -129,7 +122,29 @@ const UserAlerts = ({ refresh }) => {
     }
   };
 
-  // Mostrar el Skeleton cuando está cargando
+  const deleteAlert = async(alertId) =>{
+    try {
+      await axiosInstance.delete(`/alert/delete/${alertId}`);
+      notification.success({
+        message: 'Alerta Eliminada correctamente!',
+        description: 'La alerta fue eliminada',
+        placement: 'bottomRight',
+      });
+      fetchAlerts();
+    } catch (error) {
+      console.error(error);
+      const errorCode = error.response?.data?.code;
+      let errorMessage = 'Error al actualizar la alerta.';
+
+      notification.error({
+        message: 'Error',
+        description: errorMessage,
+        placement: 'bottomRight',
+      });
+    }
+    
+  }
+
   if (loading) {
     return (
       <Card title="Alertas del Usuario" style={{ marginBottom: 24 }}>
@@ -138,7 +153,6 @@ const UserAlerts = ({ refresh }) => {
     );
   }
 
-  // Si hay un error
   if (error) {
     return (
       <Alert
@@ -168,9 +182,26 @@ const UserAlerts = ({ refresh }) => {
                   padding: 10,
                   borderRadius: 10,
                   boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+                  position: 'relative'
                 }}
                 bodyStyle={{ padding: 12 }}
               >
+                {/* Botón eliminar (solo si no es Freemium) */}
+                {userPlan !== 'Freemium' && (
+                  <Button
+                    type="text"
+                    icon={<DeleteOutlined />}
+                    size="large"
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 190,
+                      color: '#ff4d4f'
+                    }}
+                    onClick={() => {deleteAlert(alert._id)}}
+                  />
+                )}
+
                 <div style={{ marginBottom: 6 }}>
                   <Tag color="gold">{alert.cryptoSymbol}</Tag>{' '}
                   <Text strong>${alert.targetPrice}</Text>
@@ -188,13 +219,10 @@ const UserAlerts = ({ refresh }) => {
                 </div>
 
                 <div style={{ marginTop: 6, display: 'flex', gap: 4, flexWrap: 'wrap', justifyContent: 'center' }}>
-                  {/* Tag de estado (Activa/Inactiva/Cumplida) */}
                   <Tag color={statusColor[status]} style={{ fontSize: 14 }}>
                     {status}
                   </Tag>
-
-                  {/* Tag de cumplimiento (Cumplida/No Cumplida) */}
-                  <Tag color={alert.isFulfilled ? 'blue' : 'blue'} style={{ fontSize: 14 }}>
+                  <Tag color={alert.isFulfilled ? 'blue' : 'yellow'} style={{ fontSize: 14 }}>
                     {alert.isFulfilled ? 'Cumplida' : 'No Cumplida'}
                   </Tag>
                 </div>
@@ -204,7 +232,12 @@ const UserAlerts = ({ refresh }) => {
                     type="primary"
                     size="small"
                     onClick={() => toggleActiveStatus(alert._id, alert.isActive)}
-                    style={{ padding: '0 8px', fontSize: 12 }}
+                    style={{
+                      padding: '0 8px',
+                      fontSize: 12,
+                      backgroundColor: alert.isActive ? 'red' : '#6abe39',
+                      borderColor: alert.isActive ? 'white' : 'green'
+                    }}
                   >
                     {alert.isActive ? 'Desactivar' : 'Activar'}
                   </Button>
@@ -215,7 +248,6 @@ const UserAlerts = ({ refresh }) => {
         </div>
       </Card>
 
-      {/* Mostrar el modal cuando haya un error de límite de alertas activas */}
       <LimitAlertModal visible={modalVisible} onClose={() => setModalVisible(false)} />
     </>
   );

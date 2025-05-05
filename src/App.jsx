@@ -11,6 +11,9 @@ import ThankYou from "./components/Subscriptions/ty";
 import NotiFinanceLanding from "./components/Landing";
 import ForgotPassword from "./components/auth/forgot";
 import ResetPassword from "./components/auth/Reset"
+import CryptoList from "./components/List";
+import './App.css';
+
 import Intro from "./components/General/intro";
 
 import { Spin } from "antd";
@@ -68,6 +71,7 @@ const App = () => {
         <Route path="/register" element={<Register />} />
         <Route path="/verify/:userId" element={<VerifyToken />} />
         <Route path="/subscription" element={<Subscription />} />
+        <Route path="/list" element={<CryptoList />} />
 
 
         <Route path="/forgot" element={<ForgotPassword />} />

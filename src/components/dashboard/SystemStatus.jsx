@@ -100,8 +100,6 @@ const SystemStatus = () => {
             text={status.api_precios}
           />
         </Row>
-
-        <Button type="primary">Ver estado completo</Button>
       </Space>
     </Card>
   );

@@ -54,19 +54,19 @@ export default function PaginaInicioNotiFinance() {
 
   const testimonios = [
     {
-      nombre: "Alex Rodríguez",
+      nombre: "Sergio Alberto",
       rol: "Inversor de Cripto",
       contenido: "NotiFinance ha revolucionado cómo monitoreo mis inversiones. Las alertas en tiempo real me han ayudado a tomar decisiones oportunas.",
       avatar: "/api/placeholder/64/64"
     },
     {
-      nombre: "Sara Gómez",
+      nombre: "Amir Orozco",
       rol: "Trader diario",
       contenido: "He probado muchos servicios de notificación de cripto, pero NotiFinance destaca por su precisión y opciones de personalización.",
       avatar: "/api/placeholder/64/64"
     },
     {
-      nombre: "Miguel Chen",
+      nombre: "Eduardo Echauri",
       rol: "Analista Financiero",
       contenido: "Las herramientas de análisis de mercado de NotiFinance me brindan información que no podría obtener en otro lugar.",
       avatar: "/api/placeholder/64/64"
@@ -101,7 +101,7 @@ export default function PaginaInicioNotiFinance() {
     background: 'linear-gradient(135deg, #001529 0%, #003366 100%)',
     borderRadius: '0 0 10px 10px',
     display: 'flex',
-    padding: '50px',
+    padding: '20px',
     marginBottom: '30px'
   };
 
@@ -139,7 +139,7 @@ export default function PaginaInicioNotiFinance() {
 
         {/* ------------------------------------ Sección: Logo y Nombre de Marca ------------------------------------ */}
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <Title level={2} style={{ margin: 0 }}>
+          <Title level={2} style={{ margin: 0 , fontWeight:700}}>
             <span style={{ color: 'white' }}>Noti</span>
             <span style={{ color: '#fa8c16' }}>Finance</span>
           </Title>
@@ -194,10 +194,10 @@ export default function PaginaInicioNotiFinance() {
               Todo en una sola plataforma.
             </Paragraph>
             <div>
-              <Button onClick={() => navigate('/register')} type="primary" size="large" style={{ marginRight: '15px', height: '50px', fontSize: '16px' }}>
+              <Button onClick={() => navigate('/register')} type="primary" size="large" style={{ marginRight: '15px', height: '40px', fontSize: '16px' }}>
                 Comenzar Gratis
               </Button>
-              <Button size="large" style={{ height: '50px', fontSize: '16px' }}>
+              <Button size="large" style={{ marginTop:10,height: '40px', fontSize: '16px' }}>
                 Saber Más
               </Button>
             </div>
@@ -247,12 +247,12 @@ export default function PaginaInicioNotiFinance() {
               </Col>
             ))}
             <Col xs={24} sm={12} md={8} lg={6} xl={4}>
-              <Card bordered={false} style={{
+              <Card onClick={() => navigate('/list')}  bordered={false} style={{
                 height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center',
                 alignItems: 'center', background: 'linear-gradient(135deg, #001529 0%, #003366 100%)', cursor: 'pointer'
               }}>
                 <div style={{ textAlign: 'center' }}>
-                  <Button type="primary" shape="circle" icon={<RocketOutlined />} size="large" style={{ marginBottom: '10px' }} />
+                  <Button  type="primary" shape="circle" icon={<RocketOutlined />} size="large" style={{ marginBottom: '10px' }} />
                   <br />
                   <Text strong>Ver Todos los Mercados</Text>
                 </div>

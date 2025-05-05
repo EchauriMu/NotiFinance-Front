@@ -6,6 +6,13 @@ const SubscriptionWarning = () => {
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
 
+  // Función para obtener la fecha actual en Tepic (GMT-6)
+  const getDateInTepic = () => {
+    const date = new Date();
+    // Formato YYYY-MM-DD (sin horas, minutos ni segundos)
+    return date.toLocaleDateString('en-CA'); // Este formato es YYYY-MM-DD
+  };
+
   useEffect(() => {
     const userDataStr = sessionStorage.getItem('userData');
     if (!userDataStr) return;
@@ -16,17 +23,15 @@ const SubscriptionWarning = () => {
 
       if (!subscriptionExpiresAt) return;
 
+      // Obtener la fecha de expiración solo con el formato YYYY-MM-DD
       const expirationDate = new Date(subscriptionExpiresAt);
-      const today = new Date();
+      const expirationDateStr = expirationDate.toLocaleDateString('en-CA'); // YYYY-MM-DD
 
-      // Normalizamos ambas fechas a medianoche para comparar solo fechas
-      expirationDate.setHours(0, 0, 0, 0);
-      today.setHours(0, 0, 0, 0);
+      // Obtener la fecha actual en Tepic en formato YYYY-MM-DD
+      const todayInTepic = getDateInTepic();
 
-      const timeDiff = expirationDate - today;
-      const daysRemaining = timeDiff / (1000 * 60 * 60 * 24);
-
-      if (daysRemaining === 1) {
+      // Comparar solo las fechas (sin horas, minutos, segundos)
+      if (expirationDateStr === todayInTepic) {
         setShowModal(true);
       }
     } catch (error) {
@@ -55,7 +60,7 @@ const SubscriptionWarning = () => {
     >
       <div style={{ fontSize: 18 }}>
         <p>
-          Tu suscripción vence en menos de 24 horas. Las alertas activas se desactivarán al expirar.
+          Tu suscripción vence hoy. Las alertas activas se desactivarán al expirar.
         </p>
         <p>
           Si superas los límites del plan Freemium, tus recursos serán recortados automáticamente.
