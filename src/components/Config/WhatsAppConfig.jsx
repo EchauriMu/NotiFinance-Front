@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Button, Modal, Form, Input, Alert, Steps, Spin, Badge } from 'antd';
-import { WhatsAppOutlined } from '@ant-design/icons';
-import axiosInstance from '../../api/axiosInstance'; 
+import {
+  Card, Button, Modal, Form, Input, Alert, Steps, Spin, Badge, notification
+} from 'antd';
+import {
+  WhatsAppOutlined,
+  DeleteOutlined,
+  ExclamationCircleOutlined
+} from '@ant-design/icons';
+import axiosInstance from '../../api/axiosInstance';
 
 const { Step } = Steps;
 
@@ -11,29 +17,25 @@ const WhatsAppConfig = () => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [verificationCode, setVerificationCode] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  const [loading, setLoading] = useState(false); 
+  const [loading, setLoading] = useState(false);
   const [isWhatsappVerified, setIsWhatsappVerified] = useState(false);
   const [whatsappPhoneNumber, setWhatsappPhoneNumber] = useState('');
-
+  const [isDeleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [isReloadModalVisible, setReloadModalVisible] = useState(false);
 
   useEffect(() => {
     const notificationSettings = JSON.parse(sessionStorage.getItem('notificationSettings')) || {};
+    const whatsappUrl = notificationSettings.whatsapp;
 
-        // Verificar si WhatsApp ya está configurado en sessionStorage
-        const whatsappUrl = notificationSettings.whatsapp;
-    
-     // Si la URL de WhatsApp está disponible, extraemos el número de teléfono de la URL
-     if (whatsappUrl && whatsappUrl.includes('alert/')) {
+    if (whatsappUrl && whatsappUrl.includes('alert/')) {
       const phoneNumberFromUrl = whatsappUrl.split('alert/')[1];
-      setWhatsappPhoneNumber(phoneNumberFromUrl); // Establecer el número de teléfono desde la URL
-      setIsWhatsappVerified(true); // WhatsApp ya está verificado
+      setWhatsappPhoneNumber(phoneNumberFromUrl);
+      setIsWhatsappVerified(true);
     }
   }, []);
 
   const handlePhoneNumberChange = (e) => {
     const value = e.target.value;
-
-    // Permitir solo números y limitar a 10 dígitos
     if (/^\d{0,10}$/.test(value)) {
       setPhoneNumber(value);
     }
@@ -73,19 +75,68 @@ const WhatsAppConfig = () => {
       if (response.status === 200) {
         setWhatsappStep(2);
         setErrorMessage('');
-        
         sessionStorage.setItem('whatsappVerified', 'true');
         setIsWhatsappVerified(true);
 
-        setTimeout(() => {
-          window.location.reload();
-        }, 3000);
+        notification.success({
+          message: 'WhatsApp Verificado',
+          description: 'Tu número ha sido verificado correctamente.',
+          placement: 'bottomRight',
+        });
+
+        // Mostrar modal de recarga
+        setReloadModalVisible(true);
       }
     } catch (error) {
       setErrorMessage(error.response?.data?.message || 'Error al verificar el código.');
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleDeleteNotificationSetting = async () => {
+    try {
+      const response = await axiosInstance.delete('/user/deleted/notisetting', {
+        data: { type: 'whatsapp' }
+      });
+
+      if (response.status === 200) {
+        setIsWhatsappVerified(false);
+        setWhatsappPhoneNumber('');
+
+        notification.success({
+          message: 'Configuración de WhatsApp eliminada',
+          description: 'La configuración y las alertas de WhatsApp han sido eliminadas correctamente.',
+          placement: 'bottomRight',
+        });
+
+        // Mostrar modal de recarga obligatoria
+        setReloadModalVisible(true);
+      }
+    } catch (error) {
+      notification.error({
+        message: 'Error al eliminar configuración de WhatsApp',
+        description: error.response?.data?.message || 'Ocurrió un error al intentar eliminar la configuración.',
+        placement: 'bottomRight',
+      });
+    }
+  };
+
+  const showDeleteModal = () => {
+    setDeleteModalVisible(true);
+  };
+
+  const handleDeleteModalCancel = () => {
+    setDeleteModalVisible(false);
+  };
+
+  const handleDeleteModalOk = () => {
+    handleDeleteNotificationSetting();
+    setDeleteModalVisible(false);
+  };
+
+  const handleForceReload = () => {
+    window.location.reload();
   };
 
   return (
@@ -96,18 +147,57 @@ const WhatsAppConfig = () => {
             <WhatsAppOutlined style={{ fontSize: '24px', color: 'green' }} />
             <strong style={{ marginLeft: '8px' }}>WhatsApp</strong>
           </div>
-          
-          <Badge count={isWhatsappVerified ? "Activo" : "Inactivo"} style={{ backgroundColor: isWhatsappVerified ? '#52c41a' : '#f5222d' }} />
-          
+
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <Badge
+              count={isWhatsappVerified ? 'Activo' : 'Inactivo'}
+              style={{ backgroundColor: isWhatsappVerified ? '#52c41a' : '#f5222d' }}
+            />
+            {!isWhatsappVerified && (
+              <ExclamationCircleOutlined style={{ fontSize: '20px', color: '#f5222d', marginLeft: '8px' }} />
+            )}
+            {isWhatsappVerified && (
+              <DeleteOutlined
+                style={{ fontSize: '20px', color: '#f5222d', marginLeft: '8px', cursor: 'pointer' }}
+                onClick={showDeleteModal}
+              />
+            )}
+          </div>
         </div>
         <div style={{ marginTop: '8px', fontSize: '16px', fontWeight: 'bold' }}>{whatsappPhoneNumber}</div>
-        {/* Solo mostramos el botón si WhatsApp no está configurado */}
+
         {!isWhatsappVerified && (
           <Button type="primary" onClick={() => setModalOpen(true)} block style={{ marginTop: '8px' }}>
             Configurar WhatsApp
           </Button>
         )}
       </Card>
+
+      <Modal
+        title="Confirmar eliminación"
+        visible={isDeleteModalVisible}
+        onOk={handleDeleteModalOk}
+        onCancel={handleDeleteModalCancel}
+        okText="Eliminar"
+        cancelText="Cancelar"
+      >
+        <p>
+          Al eliminar esta configuración, tus alertas de WhatsApp se eliminarán permanentemente. ¿Estás seguro de que
+          deseas continuar?
+        </p>
+      </Modal>
+
+      <Modal
+        title="Recargar página"
+        visible={isReloadModalVisible}
+        onOk={handleForceReload}
+        cancelButtonProps={{ style: { display: 'none' } }} // Ocultar botón "Cancelar"
+        closable={false} // No se puede cerrar con la X
+        maskClosable={false} // No se puede cerrar haciendo clic afuera
+        okText="Recargar ahora"
+      >
+        <p>La operación se completó correctamente. La página debe recargarse para aplicar los cambios.</p>
+      </Modal>
 
       <Modal
         title="Verificación de WhatsApp"
@@ -136,7 +226,12 @@ const WhatsAppConfig = () => {
                 />
               </Form.Item>
               {errorMessage && <Alert message={errorMessage} type="error" />}
-              <Button type="primary" onClick={handleSendCode} block disabled={loading || phoneNumber.length !== 10}>
+              <Button
+                type="primary"
+                onClick={handleSendCode}
+                block
+                disabled={loading || phoneNumber.length !== 10}
+              >
                 {loading ? <Spin /> : 'Enviar Código'}
               </Button>
             </>
@@ -152,7 +247,12 @@ const WhatsAppConfig = () => {
                 />
               </Form.Item>
               {errorMessage && <Alert message={errorMessage} type="error" />}
-              <Button type="primary" onClick={handleVerifyCode} block disabled={loading || !/^\d{6}$/.test(verificationCode)}>
+              <Button
+                type="primary"
+                onClick={handleVerifyCode}
+                block
+                disabled={loading || !/^\d{6}$/.test(verificationCode)}
+              >
                 {loading ? <Spin /> : 'Confirmar Código'}
               </Button>
             </>
@@ -161,7 +261,7 @@ const WhatsAppConfig = () => {
           {whatsappStep === 2 && (
             <Alert
               message="WhatsApp Verificado"
-              description="Tu número ha sido confirmado correctamente. Recargando la página..."
+              description="Tu número ha sido confirmado correctamente."
               type="success"
               showIcon
             />

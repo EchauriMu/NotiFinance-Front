@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Typography, Card, Button, Divider, Space, Radio, Form, Input, Alert, Col, Row, notification, Checkbox, Spin } from 'antd';
-import { ArrowLeftOutlined, CreditCardOutlined, PayCircleOutlined, BankOutlined } from '@ant-design/icons';
+import { Typography, Card, Button, Divider, Space, Form, Input, Alert, notification, Spin, Switch } from 'antd';
+import { ArrowLeftOutlined, CreditCardOutlined } from '@ant-design/icons';
 import axiosInstance from '../../api/axiosInstance';
 
 const { Title, Text, Paragraph } = Typography;
@@ -9,10 +9,10 @@ const { Title, Text, Paragraph } = Typography;
 const Payments = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
-  const [paymentMethod, setPaymentMethod] = useState('creditCard'); // Método de pago seleccionado
-  const [form] = Form.useForm(); // Formulario de pago
-  const [loading, setLoading] = useState(false); // Para el spinner de carga
-  const [isFormDisabled, setIsFormDisabled] = useState(false); // Para deshabilitar el formulario
+  const [form] = Form.useForm();
+  const [loading, setLoading] = useState(false);
+  const [isFormDisabled, setIsFormDisabled] = useState(false);
+  const [autoRenew, setAutoRenew] = useState(false); // Estado para el auto-cobro
 
   const plan = state?.plan;
 
@@ -43,29 +43,31 @@ const Payments = () => {
       const paymentResponse = await simulatePayment(values);
 
       if (paymentResponse.success) {
-        // Enviar la solicitud de actualización de suscripción al backend
-        const response = await updateSubscription(plan);
+        // Calcular la fecha de cobro (30 días desde hoy)
+        const currentDate = new Date();
+        const nextBillingDate = new Date(currentDate.setDate(currentDate.getDate() + 30));
+        const formattedNextBillingDate = nextBillingDate.toISOString().split('T')[0]; // Formateo de fecha a YYYY-MM-DD
 
-        if (paymentResponse.success) {
-          // Almacenar la información de pago en el localStorage
-          localStorage.setItem('paymentInfo', JSON.stringify({
-            planName: plan.name,
-            planPrice: plan.price,
-            paymentMethod: paymentMethod === 'creditCard' ? 'Tarjeta de Crédito' : paymentMethod === 'paypal' ? 'PayPal' : 'Transferencia Bancaria',
-          }));
-        }
-            // Redirigir a la página de agradecimiento
-            navigate('/thank-you');
-        // Si todo es correcto, mostramos una notificación de éxito
+        // Simular actualización de suscripción
+        const response = await updateSubscription(plan, values, autoRenew); // Pasamos autoRenew al backend
+
+        // Guardar la información del pago en el localStorage
+        localStorage.setItem('paymentInfo', JSON.stringify({
+          planName: plan.name,
+          paymentMethod: 'Tarjeta de Crédito', // Aquí puedes cambiar el método si es necesario
+          planPrice: plan.price,
+        }));
+
+        // Redirigir a la página de agradecimiento
+        navigate('/thank-you');
+
+        // Notificación de éxito
         notification.success({
           message: `Pago procesado con éxito`,
-          description: `Se ha realizado el pago para el plan ${plan.name} usando el método de pago ${paymentMethod === 'creditCard' ? 'Tarjeta de Crédito' : paymentMethod === 'paypal' ? 'PayPal' : 'Transferencia Bancaria'}.`,
+          description: `Se ha realizado el pago para el plan ${plan.name} usando el método de pago ${'Tarjeta de Crédito'}.`,
           icon: <CreditCardOutlined style={{ color: '#108ee9' }} />,
         });
-
-    
       } else {
-        // En caso de error en el pago
         notification.error({
           message: 'Error al procesar el pago',
           description: paymentResponse.message,
@@ -87,15 +89,19 @@ const Payments = () => {
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve({ success: true, message: 'Pago realizado con éxito' }); // Simulación exitosa del pago
-      }, 2000); // Simula un tiempo de espera
+      }, 1000); // Simula un tiempo de espera
     });
   };
 
   // Actualizar la suscripción en el backend
-  const updateSubscription = async (plan) => {
+  const updateSubscription = async (plan, values, autoRenew) => {
     try {
       const response = await axiosInstance.put('/subs/update', {
         plan: plan.name, // Solo el nombre del plan se pasa al backend
+        last4: values.cardNumber.slice(-4), // Últimos 4 dígitos de la tarjeta
+        cvv: values.cvv, // CVV ingresado
+        FC: values.expirationDate, // Fecha de expiración de la tarjeta
+        autoRenew: autoRenew, // Estado de auto-renovación
       });
 
       if (response.status === 200) {
@@ -130,65 +136,51 @@ const Payments = () => {
       </Card>
 
       <Title level={4}>Método de pago</Title>
-      <Radio.Group
-        value={paymentMethod}
-        onChange={(e) => setPaymentMethod(e.target.value)}
-        style={{ marginBottom: 20 }}
-      >
-        <Row gutter={16}>
-          <Col span={8}>
-            <Radio value="creditCard">
-              <CreditCardOutlined style={{ fontSize: 24, color: '#108ee9' }} />
-              <Text>Tarjeta de Crédito/Débito</Text>
-            </Radio>
-          </Col>
-          <Col span={8}>
-            <Radio value="paypal">
-              <PayCircleOutlined style={{ fontSize: 24, color: '#003366' }} />
-              <Text>PayPal</Text>
-            </Radio>
-          </Col>
-          <Col span={8}>
-            <Radio value="bankTransfer">
-              <BankOutlined style={{ fontSize: 24, color: '#2f54eb' }} />
-              <Text>Transferencia Bancaria</Text>
-            </Radio>
-          </Col>
-        </Row>
-      </Radio.Group>
+      <div style={{ display: 'flex', alignItems: 'center', marginBottom: 20 }}>
+        <CreditCardOutlined style={{ fontSize: 24, color: '#108ee9', marginRight: 8 }} />
+        <Text style={{ fontSize: 16 }}>Pago con Tarjeta de Crédito</Text>
+      </div>
 
       <Spin spinning={loading} tip="Procesando pago..." size="large">
         <Form form={form} onFinish={handlePayment} layout="vertical">
           <Form.Item
             name="cardHolderName"
             label="Titular de la tarjeta"
-            rules={[{ required: true, message: 'Por favor ingresa el nombre del titular de la tarjeta' }]}
-          >
+            rules={[{ required: true, message: 'Por favor ingresa el nombre del titular de la tarjeta' }]} >
             <Input placeholder="Nombre completo" disabled={isFormDisabled} />
           </Form.Item>
 
           <Form.Item
             name="cardNumber"
             label="Número de tarjeta"
-            rules={[{ required: true, message: 'Por favor ingresa el número de la tarjeta' }, { len: 16, message: 'El número de tarjeta debe tener 16 dígitos', pattern: /^[0-9]+$/ }]}
-          >
+            rules={[{ required: true, message: 'Por favor ingresa el número de la tarjeta' },
+              { len: 16, message: 'El número de tarjeta debe tener 16 dígitos', pattern: /^[0-9]+$/ }]} >
             <Input placeholder="1234 5678 9012 3456" maxLength={16} disabled={isFormDisabled} />
           </Form.Item>
 
           <Form.Item
             name="expirationDate"
             label="Fecha de expiración"
-            rules={[{ required: true, message: 'Por favor ingresa la fecha de expiración' }]}
-          >
+            rules={[{ required: true, message: 'Por favor ingresa la fecha de expiración' }]} >
             <Input placeholder="MM/AA" disabled={isFormDisabled} />
           </Form.Item>
 
           <Form.Item
-            name="agreeTerms"
-            valuePropName="checked"
-            rules={[{ validator: (_, value) => value ? Promise.resolve() : Promise.reject('Debes aceptar los términos y condiciones') }]}
-          >
-            <Checkbox disabled={isFormDisabled}>Acepto los términos y condiciones</Checkbox>
+            name="cvv"
+            label="CVV"
+            rules={[{ required: true, message: 'Por favor ingresa el código CVV' }]} >
+            <Input placeholder="123" maxLength={3} disabled={isFormDisabled} />
+          </Form.Item>
+
+          {/* Switch para Auto-renovación */}
+          <Form.Item label="¿Activar auto-cobro?">
+            <Switch
+              checked={autoRenew}
+              onChange={(checked) => setAutoRenew(checked)}
+            />
+            <Text style={{ marginLeft: 10 }}>
+              {autoRenew ? 'Auto-cobro activado' : 'Auto-cobro desactivado'}
+            </Text>
           </Form.Item>
 
           <Button
@@ -196,8 +188,7 @@ const Payments = () => {
             htmlType="submit"
             style={{ backgroundColor: plan.color, borderColor: plan.color }}
             block
-            disabled={isFormDisabled}
-          >
+            disabled={isFormDisabled}>
             Confirmar y proceder al pago
           </Button>
         </Form>

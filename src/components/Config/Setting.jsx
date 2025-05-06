@@ -1,27 +1,26 @@
 import React, { useState } from 'react';
-import { Button, Space, Modal, Form, Input, message, Spin, notification } from 'antd';
-import axiosInstance from '../../api/axiosInstance'; // Tu instancia de Axios
+import { Button, Space, Modal, Form, Input, message, notification, Divider } from 'antd';
+import axiosInstance from '../../api/axiosInstance';
+import MediaSettingsModal from './MediaSettingsModal';
+import BillingSettingsModal from './BillingSettingsModal';
 
 const ProfileSettings = () => {
   const [isNameModalOpen, setIsNameModalOpen] = useState(false);
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
-
+  const [isMediaModalOpen, setIsMediaModalOpen] = useState(false);
+  const [isBillingModalOpen, setIsBillingModalOpen] = useState(false);
   const [formName] = Form.useForm();
   const [formPasswordRecovery] = Form.useForm();
   const [loading, setLoading] = useState(false);
-  const [isSessionEndingModalOpen, setIsSessionEndingModalOpen] = useState(false); // Para el modal de aviso de sesión
+  const [isSessionEndingModalOpen, setIsSessionEndingModalOpen] = useState(false);
 
   const handleNameSubmit = async () => {
     try {
       const values = await formName.validateFields();
-
       await axiosInstance.patch('/config/change-username', {
-        newUsername: values.name, // Solo enviamos el newUsername
+        newUsername: values.name,
       });
-
       message.success('Nombre actualizado correctamente');
-      
-      // Mostrar modal de aviso de cierre de sesión
       setIsSessionEndingModalOpen(true);
     } catch (error) {
       console.error('Error actualizando nombre:', error);
@@ -33,7 +32,6 @@ const ProfileSettings = () => {
     try {
       const values = await formPasswordRecovery.validateFields();
       setLoading(true);
-
       const response = await axiosInstance.post('/reset/send', {
         username: values.username,
       });
@@ -44,8 +42,6 @@ const ProfileSettings = () => {
           description: 'Revisa tu correo electrónico para restablecer tu contraseña.',
           placement: 'bottomRight',
         });
-
-        // Mostrar modal de aviso de cierre de sesión
         setIsSessionEndingModalOpen(true);
       }
     } catch (error) {
@@ -62,48 +58,41 @@ const ProfileSettings = () => {
 
   const handleLogout = async () => {
     try {
-      // Llamada al endpoint de logout para limpiar la cookie
       await axiosInstance.post('/auth/logout');
-      
-      // Eliminar datos de sessionStorage
-      sessionStorage.removeItem('userData');
-      sessionStorage.removeItem('notificationSettings');
-      sessionStorage.removeItem('watchlist');
-      
-      // Eliminar token de localStorage si existe
-      localStorage.removeItem('token');
-      
-      message.success('Has cerrado sesión correctamente');
-      
-      // Recargamos la página
-      window.location.reload();
-      
-    } catch (error) {
-      console.error('Error al cerrar sesión:', error);
-      
-      // Aún así, limpiamos los datos locales
       sessionStorage.clear();
       localStorage.removeItem('token');
-      
+      message.success('Has cerrado sesión correctamente');
+      window.location.reload();
+    } catch (error) {
+      console.error('Error al cerrar sesión:', error);
+      sessionStorage.clear();
+      localStorage.removeItem('token');
       message.error('Error al cerrar sesión');
-      
-      // Recargamos la página incluso si hubo un error
       window.location.reload();
     }
   };
 
   return (
     <>
-      <Space direction="vertical" size="middle" style={{ width: '100%', marginTop: 20 }}>
+      <Space direction="vertical" size="large" style={{ width: '100%', marginTop: 0 }}>
+
+        {/* Configuración de Perfil */}
+        <Divider orientation="left">Configuración de Perfil</Divider>
         <Button type="primary" block onClick={() => setIsNameModalOpen(true)}>
           Cambiar Nombre
         </Button>
         <Button type="default" block onClick={() => setIsPasswordModalOpen(true)}>
           Recuperar Contraseña
         </Button>
+
+        {/* Configuración de Facturación */}
+        <Divider orientation="left">Configuración de Facturación</Divider>
+        <Button type="default" block onClick={() => setIsBillingModalOpen(true)}>
+          Abrir Configuración de Facturación
+        </Button>
       </Space>
 
-      {/* Modal para cambiar nombre */}
+      {/* Modales */}
       <Modal
         title="Cambiar Nombre"
         open={isNameModalOpen}
@@ -119,49 +108,54 @@ const ProfileSettings = () => {
           <Form.Item
             label="Nuevo Nombre"
             name="name"
-            rules={[{ required: true, message: 'Por favor ingresa tu nuevo nombre' }]}>
+            rules={[{ required: true, message: 'Por favor ingresa tu nuevo nombre' }]}
+          >
             <Input placeholder="Escribe tu nuevo nombre" />
           </Form.Item>
         </Form>
       </Modal>
 
-      {/* Modal para recuperación de contraseña */}
       <Modal
         title="Recuperar Contraseña"
         open={isPasswordModalOpen}
-        onOk={handlePasswordRecoverySubmit} // Se ejecuta la misma función
+        onOk={handlePasswordRecoverySubmit}
         onCancel={() => {
           setIsPasswordModalOpen(false);
           formPasswordRecovery.resetFields();
         }}
         okText="Enviar"
         cancelText="Cancelar"
-        okButtonProps={{ disabled: loading }} // Deshabilitamos el botón mientras cargamos
+        okButtonProps={{ disabled: loading }}
       >
         <Form form={formPasswordRecovery} layout="vertical">
           <Form.Item
             label="Nombre de Usuario"
             name="username"
-            rules={[{ required: true, message: 'Ingresa tu nombre de usuario' }]}>
+            rules={[{ required: true, message: 'Ingresa tu nombre de usuario' }]}
+          >
             <Input placeholder="Tu nombre de usuario" />
           </Form.Item>
         </Form>
       </Modal>
 
-      {/* Modal de aviso de cierre de sesión y recarga de página */}
+      {/* Modal de sesión */}
       <Modal
         title="Aviso"
         open={isSessionEndingModalOpen}
         onOk={() => {
-          handleLogout(); // Cerrar sesión y recargar
-          setIsSessionEndingModalOpen(false); // Cerrar el modal
+          handleLogout();
+          setIsSessionEndingModalOpen(false);
         }}
-        onCancel={() => setIsSessionEndingModalOpen(false)} // Simplemente cerramos el modal sin hacer nada
+        onCancel={() => setIsSessionEndingModalOpen(false)}
         okText="OK"
-        cancelButtonProps={{ style: { display: 'none' } }} // Ocultamos el botón de cancelar
+        cancelButtonProps={{ style: { display: 'none' } }}
       >
         <p>Tu sesión se cerrará y la página se recargará. ¡Gracias por usar la aplicación!</p>
       </Modal>
+
+      {/* Modales externos */}
+      <MediaSettingsModal open={isMediaModalOpen} onClose={() => setIsMediaModalOpen(false)} />
+      <BillingSettingsModal open={isBillingModalOpen} onClose={() => setIsBillingModalOpen(false)} />
     </>
   );
 };

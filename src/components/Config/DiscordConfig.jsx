@@ -1,55 +1,60 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Button, Modal, Form, Input, Space, Typography, message, notification, Badge } from 'antd';
-import { DiscordOutlined, SettingOutlined, CheckCircleOutlined } from '@ant-design/icons';
-import axiosInstance from '../../api/axiosInstance'; 
+import {
+  Card, Button, Modal, Form, Input, Space, Typography, notification, Badge
+} from 'antd';
+import {
+  DiscordOutlined, SettingOutlined, CheckCircleOutlined, DeleteOutlined
+} from '@ant-design/icons';
+import axiosInstance from '../../api/axiosInstance';
 
 const DiscordConfig = () => {
   const [isModalOpen, setModalOpen] = useState(false);
-  const [webhookUrl, setWebhookUrl] = useState("");
+  const [webhookUrl, setWebhookUrl] = useState('');
   const [loading, setLoading] = useState(false);
-  const [isDiscordVerified, setIsDiscordVerified] = useState(false); // Estado para verificar si el webhook de Discord está configurado
+  const [isDiscordVerified, setIsDiscordVerified] = useState(false);
+  const [webhookName, setWebhookName] = useState('');
+  const [isDeleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [isReloadModalVisible, setReloadModalVisible] = useState(false);
 
   useEffect(() => {
-    // Obtener la configuración de notificaciones desde sessionStorage
     const notificationSettings = JSON.parse(sessionStorage.getItem('notificationSettings')) || {};
+    const discordUrl = notificationSettings.discord;
 
-    // Verificar si la URL del webhook de Discord está configurada
-    if (notificationSettings.discord && notificationSettings.discord !== "") {
-      setIsDiscordVerified(true); // Si está configurado, marcar como activo
-    } else {
-      setIsDiscordVerified(false); // Si no está configurado, marcar como inactivo
+    if (discordUrl && discordUrl !== '') {
+      setWebhookUrl(discordUrl);
+      setIsDiscordVerified(true);
+      fetchWebhookDetails(discordUrl);
     }
   }, []);
 
-  // Notificación de éxito
-  const notifySuccess = () => {
+  const fetchWebhookDetails = async (url) => {
+    try {
+      const res = await fetch(url);
+      const data = await res.json();
+      if (data.name) {
+        setWebhookName(data.name);
+      }
+    } catch (error) {
+      console.error("Error al obtener detalles del webhook:", error);
+    }
+  };
+
+  const notifySuccess = (msg) => {
     notification.success({
-      message: "Webhook de Discord guardado",
-      description: "Tu webhook de Discord ha sido configurado correctamente.",
-      placement: "bottomRight",
+      message: 'Éxito',
+      description: msg,
+      placement: 'bottomRight',
     });
   };
 
-  // Notificación de error
-  const notifyError = (message) => {
+  const notifyError = (msg) => {
     notification.error({
-      message: "Error",
-      description: message,
-      placement: "bottomRight",
+      message: 'Error',
+      description: msg,
+      placement: 'bottomRight',
     });
   };
 
-  // Notificación de recarga
-  const notifyReload = () => {
-    notification.info({
-      message: "Recarga en 3 segundos",
-      description: "La página se recargará automáticamente en 3 segundos para reflejar los cambios.",
-      placement: "bottomRight",
-      duration: 3, // Duración de 3 segundos
-    });
-  };
-
-  // Verificar si la URL del webhook es válida
   const isValidDiscordWebhook = (url) => {
     return /^https:\/\/discord\.com\/api\/webhooks\/[\w-]+\/[\w-]+$/.test(url.trim());
   };
@@ -65,32 +70,48 @@ const DiscordConfig = () => {
     try {
       setLoading(true);
 
-      const res = await axiosInstance.post('/user/settings/discord', {
+      await axiosInstance.post('/user/settings/discord', {
         discord: trimmedUrl,
       });
 
-      notifySuccess(); // Mostrar notificación de éxito
-      setModalOpen(false);
-
-      // Guardamos la configuración en sessionStorage
       sessionStorage.setItem('notificationSettings', JSON.stringify({ discord: trimmedUrl }));
-
-      // Marcamos como activo
       setIsDiscordVerified(true);
-
-      // Notificación de recarga
-      notifyReload();
-
-      setTimeout(() => {
-        // Recargar la página después de 3 segundos
-        window.location.reload();
-      }, 3000);
+      notifySuccess("Webhook de Discord guardado correctamente.");
+      setModalOpen(false);
+      setReloadModalVisible(true);
     } catch (error) {
       console.error("Error al guardar webhook:", error);
       notifyError("Hubo un error al guardar el webhook");
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleDeleteNotificationSetting = async () => {
+    try {
+      await axiosInstance.delete('/user/deleted/notisetting', {
+        data: { type: 'discord' }
+      });
+
+      setIsDiscordVerified(false);
+      setWebhookUrl('');
+      setWebhookName('');
+      sessionStorage.removeItem('notificationSettings');
+
+      notifySuccess("La configuración de Discord ha sido eliminada correctamente.");
+      setReloadModalVisible(true);
+    } catch (error) {
+      notifyError(error.response?.data?.message || "Ocurrió un error al intentar eliminar la configuración.");
+    }
+  };
+
+  const handleDeleteModalOk = () => {
+    handleDeleteNotificationSetting();
+    setDeleteModalVisible(false);
+  };
+
+  const handleForceReload = () => {
+    window.location.reload();
   };
 
   return (
@@ -101,21 +122,35 @@ const DiscordConfig = () => {
             <DiscordOutlined style={{ fontSize: '24px', color: '#5865F2' }} />
             <strong style={{ marginLeft: '8px' }}>Discord</strong>
           </div>
-          <Badge 
-            count={isDiscordVerified ? "Activo" : "Inactivo"} 
-            style={{ backgroundColor: isDiscordVerified ? '#52c41a' : '#f5222d' }} 
-          />
+
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <Badge
+              count={isDiscordVerified ? 'Activo' : 'Inactivo'}
+              style={{ backgroundColor: isDiscordVerified ? '#52c41a' : '#f5222d' }}
+            />
+            {isDiscordVerified && (
+              <DeleteOutlined
+                style={{ fontSize: '20px', color: '#f5222d', marginLeft: '8px', cursor: 'pointer' }}
+                onClick={() => setDeleteModalVisible(true)}
+              />
+            )}
+          </div>
         </div>
-        <Button 
-          type="primary" 
-          onClick={() => setModalOpen(true)} 
-          block 
-          style={{ marginTop: '8px' }}
-        >
-          Configurar Discord
-        </Button>
+
+        {webhookName && (
+          <div style={{ marginTop: '8px', fontWeight: 'bold' }}>
+            WebHook: {webhookName}
+          </div>
+        )}
+
+        {!isDiscordVerified && (
+          <Button type="primary" onClick={() => setModalOpen(true)} block style={{ marginTop: '8px' }}>
+            Configurar Discord
+          </Button>
+        )}
       </Card>
 
+      {/* Modal de configuración */}
       <Modal
         title={
           <Space>
@@ -137,10 +172,10 @@ const DiscordConfig = () => {
               allowClear
             />
           </Form.Item>
-          <Button 
-            type="primary" 
-            block 
-            icon={<CheckCircleOutlined />} 
+          <Button
+            type="primary"
+            block
+            icon={<CheckCircleOutlined />}
             onClick={handleSave}
             disabled={!webhookUrl.trim()}
             loading={loading}
@@ -148,6 +183,31 @@ const DiscordConfig = () => {
             Guardar Webhook
           </Button>
         </Form>
+      </Modal>
+
+      {/* Modal de confirmación de eliminación */}
+      <Modal
+        title="Confirmar eliminación"
+        open={isDeleteModalVisible}
+        onOk={handleDeleteModalOk}
+        onCancel={() => setDeleteModalVisible(false)}
+        okText="Eliminar"
+        cancelText="Cancelar"
+      >
+        <p>Al eliminar esta configuración, tus alertas de Discord se eliminarán permanentemente. ¿Deseas continuar?</p>
+      </Modal>
+
+      {/* Modal de recarga forzosa */}
+      <Modal
+        title="Recargar página"
+        open={isReloadModalVisible}
+        onOk={handleForceReload}
+        cancelButtonProps={{ style: { display: 'none' } }}
+        closable={false}
+        maskClosable={false}
+        okText="Recargar ahora"
+      >
+        <p>La operación se completó correctamente. La página debe recargarse para aplicar los cambios.</p>
       </Modal>
     </>
   );

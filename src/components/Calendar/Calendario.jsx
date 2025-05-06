@@ -1,103 +1,159 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, Modal, Row, Col, List, Button } from 'antd';
-import dayjs from 'dayjs'; // Importamos dayjs
+import { Calendar, Modal, Row, Col, Typography, Skeleton, Divider, Alert, Button, Space } from 'antd';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
 
-const EventCalendar = () => {
+dayjs.extend(utc);
+
+const { Title, Text } = Typography;
+
+const Calendario = () => {
   const [events, setEvents] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [eventsOnSelectedDate, setEventsOnSelectedDate] = useState([]);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [userRole, setUserRole] = useState('basic'); // default to basic
 
-  // Fetch de eventos desde la API
+  // Cargar userData desde sessionStorage
   useEffect(() => {
-    const fetchEvents = async () => {
-      const response = await fetch('https://developers.coinmarketcal.com/v1/events?max=5&dateRangeStart=2025-05-01&dateRangeEnd=2025-05-07', {
-        headers: {
-          'x-api-key': 'SgwTxzBFp6103JuQLwBSJ6Up3zdJeSkI6HHGU6jm',
-        },
-      });
-      console.log(data);
-      const data = await response.json();
-      setEvents(data.body);
-    };
-
-    fetchEvents();
+    const userDataRaw = sessionStorage.getItem('userData');
+    if (userDataRaw) {
+      try {
+        const userData = JSON.parse(userDataRaw);
+        setUserRole(userData.role || 'basic');
+      } catch (e) {
+        console.error('Error al parsear userData:', e);
+      }
+    }
   }, []);
 
-  // Función para manejar la selección de una fecha
-  const handleDateSelect = (date) => {
+  const fetchEvents = async (date) => {
+    const dateFormatted = dayjs(date).utc().format('YYYY-MM-DD');
+    const url = `https://cors-anywhere.herokuapp.com/https://developers.coinmarketcal.com/v1/events?max=5&dateRangeStart=${dateFormatted}&dateRangeEnd=${dateFormatted}`;
+    
+    const response = await fetch(url, {
+      headers: {
+        'x-api-key': 'SgwTxzBFp6103JuQLwBSJ6Up3zdJeSkI6HHGU6jm',
+        'Access-Control-Allow-Origin': '*',
+      },
+    });
+    const data = await response.json();
+    return data.body || [];
+  };
+
+  const handleDateClick = async (date) => {
     setSelectedDate(date);
-    const dateStr = date.format('YYYY-MM-DD');
-    const eventsOnThisDate = events.filter((event) => event.date_event.startsWith(dateStr));
-    setEventsOnSelectedDate(eventsOnThisDate);
-    setModalVisible(true);
+    setIsModalVisible(true);
+    setLoading(true);
+    const eventsForSelectedDate = await fetchEvents(date);
+    setEvents(eventsForSelectedDate);
+    setLoading(false);
   };
 
-  // Renderizar las celdas del calendario con eventos
-  const dateCellRender = (date) => {
-    const dateStr = date.format('YYYY-MM-DD');
-    const eventsOnDay = events.filter((event) => event.date_event.startsWith(dateStr));
-
-    return (
-      <ul>
-        {eventsOnDay.map((event) => (
-          <li key={event.id} style={{ cursor: 'pointer', color: '#1890ff' }}>
-            {event.title.en}
-          </li>
-        ))}
-      </ul>
-    );
+  const handleCloseModal = () => {
+    setIsModalVisible(false);
+    setEvents([]);
   };
 
-  // Render modal con la lista de eventos del día seleccionado
-  const renderEventModal = () => {
-    return (
-      <Modal
-        title={`Eventos en ${selectedDate ? selectedDate.format('MMMM D, YYYY') : ''}`}
-        visible={modalVisible}
-        onCancel={() => setModalVisible(false)}
-        footer={<Button onClick={() => setModalVisible(false)}>Cerrar</Button>}
-      >
-        <Row gutter={16}>
-          <Col span={24}>
-            {eventsOnSelectedDate.length === 0 ? (
-              <p>No hay eventos para esta fecha.</p>
-            ) : (
-              <List
-                itemLayout="horizontal"
-                dataSource={eventsOnSelectedDate}
-                renderItem={(event) => (
-                  <List.Item>
-                    <List.Item.Meta
-                      title={event.title.en}
-                      description={
-                        <>
-                          <p><strong>Categoría:</strong> {event.categories.map((category) => category.name).join(', ')}</p>
-                          <p><strong>Fuente:</strong> <a href={event.source} target="_blank" rel="noopener noreferrer">Ver evento</a></p>
-                        </>
-                      }
-                    />
-                  </List.Item>
-                )}
-              />
-            )}
-          </Col>
-        </Row>
-      </Modal>
-    );
+  const handleAddEvent = () => {
+    console.log("Añadir evento");
+  };
+
+  const handleMyEvents = () => {
+    console.log("Ver mis eventos");
   };
 
   return (
-    <div>
-      <h2>Calendario de Eventos</h2>
-      <Calendar
-        dateCellRender={dateCellRender}
-        onSelect={handleDateSelect}
-        fullscreen={false} // Desactivamos fullscreen para un mejor control de tamaño
+    <div style={{ padding: '0px 24px' }}>
+      <Title level={3}>Calendario de Eventos</Title>
+
+      <Alert
+        message="Información sobre la Fecha"
+        description="La fecha mostrada está en formato UTC. Puede variar respecto a tu fecha local."
+        type="info"
+        showIcon
+        style={{ marginBottom: 16 }}
       />
-      {renderEventModal()}
+
+      {/* Mostrar botones solo si el usuario NO es básico */}
+      {userRole !== 'basic' && (
+        <Space style={{ marginBottom: 24 }}>
+          <Button type="primary" onClick={handleAddEvent}>Añadir Evento</Button>
+          <Button onClick={handleMyEvents}>Mis Eventos</Button>
+        </Space>
+      )}
+
+      <Calendar
+        onSelect={handleDateClick}
+        fullscreen={true}
+      />
+
+      <Modal
+        title={`Eventos para ${selectedDate ? dayjs(selectedDate).format('DD/MM/YYYY') : ''}`}
+        visible={isModalVisible}
+        onCancel={handleCloseModal}
+        footer={null}
+        width={600}
+      >
+        {loading ? (
+          <Skeleton active paragraph={{ rows: 4 }} />
+        ) : events.length === 0 ? (
+          <Text>No hay eventos para esta fecha.</Text>
+        ) : (
+          events.map(event => (
+            <div key={event.id}>
+              <Row style={{ marginBottom: 16 }}>
+                <Col span={24}>
+                  <Title level={4}>{event.title.en}</Title>
+                  <Text>Fecha: {dayjs(event.date_event).format('DD/MM/YYYY')}</Text>
+                </Col>
+              </Row>
+
+              <Divider />
+
+              <Row style={{ marginBottom: 16 }}>
+                <Col span={24}>
+                  <Text><strong>Coin: </strong>{event.coins[0].name} ({event.coins[0].symbol})</Text>
+                </Col>
+              </Row>
+
+              <Row style={{ marginBottom: 16 }}>
+                <Col span={24}>
+                  <Text><strong>Descripción: </strong>{event['-']}</Text>
+                </Col>
+              </Row>
+
+              <Row style={{ marginBottom: 16 }}>
+                <Col span={24}>
+                  <Text><strong>Categorías: </strong>{event.categories.map(cat => cat.name).join(', ')}</Text>
+                </Col>
+              </Row>
+
+              <Row style={{ marginBottom: 16 }}>
+                <Col span={24}>
+                  <img
+                    src={event.proof}
+                    alt={event.title.en}
+                    style={{ maxWidth: '100%', borderRadius: 8, boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)' }}
+                  />
+                </Col>
+              </Row>
+
+              <Divider />
+
+              <Row>
+                <Col span={24}>
+                  <Text><strong>Fuente: </strong>
+                    <a href={event.source} target="_blank" rel="noopener noreferrer">{event.source}</a>
+                  </Text>
+                </Col>
+              </Row>
+            </div>
+          ))
+        )}
+      </Modal>
     </div>
   );
 };
 
-export default EventCalendar;
+export default Calendario;
