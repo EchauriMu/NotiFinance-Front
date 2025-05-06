@@ -29,11 +29,11 @@ const Calendario = () => {
 
   const fetchEvents = async (date) => {
     const dateFormatted = dayjs(date).utc().format('YYYY-MM-DD');
-    const url = `https://cors-anywhere.herokuapp.com/https://developers.coinmarketcal.com/v1/events?max=5&dateRangeStart=${dateFormatted}&dateRangeEnd=${dateFormatted}`;
+    const url = `https://developers.coinmarketcal.com/v1/events?max=5&dateRangeStart=${dateFormatted}&dateRangeEnd=${dateFormatted}`;
     
     const response = await fetch(url, {
       headers: {
-        'x-api-key': 'SgwTxzBFp6103JuQLwBSJ6Up3zdJeSkI6HHGU6jm',
+        'x-api-key': 'wir1KlPUH6axyTxoAX7tI6B09K3kiysI2xDmlvNw',
         'Access-Control-Allow-Origin': '*',
       },
     });
