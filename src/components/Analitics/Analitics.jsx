@@ -28,7 +28,10 @@ import {
   MoreOutlined,
   UserOutlined,
   CalendarOutlined,
-  SearchOutlined, // Icono para el filtro/buscador
+  SearchOutlined,
+  SolutionOutlined, // Icono para el botón de aplicar
+  TwitterSquareFilled,
+  LinkOutlined,
 } from '@ant-design/icons';
 import axiosInstance from '../../api/axiosInstance';
 import { fetchCryptos } from '../../functions/fetchCryptos';
@@ -43,7 +46,7 @@ const { TextArea } = Input;
 const { Option } = Select;
 const { Text, Paragraph, Title } = Typography;
 
-// --- Componente PredictionCard (Sin cambios respecto a la versión anterior) ---
+// --- Componente PredictionCard (Sin cambios) ---
 const PredictionCard = ({ prediction, isAnalystUser, onEdit, onDelete }) => {
     const menu = (
       <Menu>
@@ -97,14 +100,13 @@ const PredictionCard = ({ prediction, isAnalystUser, onEdit, onDelete }) => {
     );
 
     return (
-        // Ajuste del tamaño de columna para que se vean mejor 2 por fila en pantallas medianas
-      <Col xs={24} sm={12} md={12} lg={12} xl={12} style={{ display: 'flex' }}> {/* Responsive Grid */}
+      <Col xs={24} sm={12} md={12} lg={12} xl={12} style={{ display: 'flex' }}>
         <Card
           title={cardTitle}
           extra={cardExtra}
           hoverable
-          style={{ borderRadius: '8px', width: '100%', display: 'flex', flexDirection: 'column' }} // Ocupa todo el ancho de Col y flex column
-          bodyStyle={{ paddingTop: '12px', flexGrow: 1 }} // El cuerpo crece para llenar espacio
+          style={{ borderRadius: '8px', width: '100%', display: 'flex', flexDirection: 'column' }}
+          bodyStyle={{ paddingTop: '12px', flexGrow: 1 }}
         >
           <Paragraph
             ellipsis={{ rows: 4, expandable: true, symbol: 'leer más' }}
@@ -112,7 +114,7 @@ const PredictionCard = ({ prediction, isAnalystUser, onEdit, onDelete }) => {
             {prediction.predictionText}
           </Paragraph>
            {dayjs(prediction.updatedAt).diff(dayjs(prediction.createdAt), 'minute') > 1 && (
-              <Text type="secondary" style={{ fontSize: '0.75em', display: 'block', marginTop: 'auto', paddingTop: '8px' }}> {/* marginTop: auto empuja hacia abajo */}
+              <Text type="secondary" style={{ fontSize: '0.75em', display: 'block', marginTop: 'auto', paddingTop: '8px' }}>
                 Actualizado: {dayjs(prediction.updatedAt).format('DD/MM/YY HH:mm')}
               </Text>
             )}
@@ -121,17 +123,27 @@ const PredictionCard = ({ prediction, isAnalystUser, onEdit, onDelete }) => {
     );
   };
 
+
 // --- Componente Principal Analitics ---
 const Analitics = () => {
-  const [predictions, setPredictions] = useState([]); // Todas las predicciones originales
+  const [predictions, setPredictions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  // Modal de Crear/Editar Predicción
+  const [isPredictionModalVisible, setIsPredictionModalVisible] = useState(false);
   const [editingPrediction, setEditingPrediction] = useState(null);
-  const [modalLoading, setModalLoading] = useState(false);
+  const [predictionModalLoading, setPredictionModalLoading] = useState(false);
+  const [predictionForm] = Form.useForm();
+
+  // Modal de Aplicar para Analista
+  const [isApplyModalVisible, setIsApplyModalVisible] = useState(false);
+  const [applyFormLoading, setApplyFormLoading] = useState(false);
+  const [applyForm] = Form.useForm();
+
+
   const [cryptoOptions, setCryptoOptions] = useState([]);
-  const [form] = Form.useForm();
-  const [selectedCryptoFilter, setSelectedCryptoFilter] = useState(null); // Estado para el filtro
+  const [selectedCryptoFilter, setSelectedCryptoFilter] = useState(null);
 
   const userRole = useMemo(() => {
     const userDataString = sessionStorage.getItem('userData');
@@ -148,8 +160,9 @@ const Analitics = () => {
   }, []);
 
   const isAnalystUser = userRole === 'analist';
+  const isBasicUser = userRole === 'basic' || userRole === 'freemium'; // Ajusta según tus roles
 
-  // Fetch predictions (igual que antes)
+
   const fetchPredictions = async () => {
     setLoading(true);
     setError(null);
@@ -168,101 +181,81 @@ const Analitics = () => {
     }
   };
 
-  // Load cryptos (igual que antes)
   const loadCryptos = async () => {
     const storedCryptos = sessionStorage.getItem('cryptos');
-    if (storedCryptos) {
-        setCryptoOptions(JSON.parse(storedCryptos));
-    } else {
-        try {
-            const cryptosList = await fetchCryptos();
-            // Añadir opción "Todas" al principio si aún no existe
-            const optionsWithAll = [{ value: null, label: 'Todas las Criptomonedas' }, ...cryptosList];
-            setCryptoOptions(optionsWithAll);
-            sessionStorage.setItem('cryptos', JSON.stringify(cryptosList)); // Guardar solo las cryptos, no la opción "Todas"
-        } catch (error) {
-            console.error("Error loading crypto options:", error);
-             // Setear al menos la opción "Todas" en caso de error
-            setCryptoOptions([{ value: null, label: 'Todas las Criptomonedas' }]);
-            notification.error({ message: "Error al cargar lista de criptomonedas." });
-        }
+    const baseOptions = storedCryptos ? JSON.parse(storedCryptos) : await fetchCryptos().catch(() => []);
+    if (!storedCryptos && baseOptions.length > 0) {
+        sessionStorage.setItem('cryptos', JSON.stringify(baseOptions));
     }
+    setCryptoOptions([{ value: null, label: 'Todas las Criptomonedas' }, ...baseOptions]);
   };
-
 
   useEffect(() => {
     fetchPredictions();
     loadCryptos();
   }, []);
 
-  // --- Filtrar Predicciones ---
   const filteredPredictions = useMemo(() => {
     if (!selectedCryptoFilter) {
-      return predictions; // Si no hay filtro, mostrar todas
+      return predictions;
     }
     return predictions.filter(p => p.cryptoSymbol === selectedCryptoFilter);
-  }, [predictions, selectedCryptoFilter]); // Recalcular solo si cambian las predicciones o el filtro
+  }, [predictions, selectedCryptoFilter]);
 
-  // --- Manejadores de Modal y CRUD (sin cambios) ---
-   const showCreateModal = () => {
+  // --- Manejadores de Modal de Predicción ---
+  const showCreatePredictionModal = () => {
     setEditingPrediction(null);
-    form.resetFields();
-    setIsModalVisible(true);
+    predictionForm.resetFields();
+    setIsPredictionModalVisible(true);
   };
 
-  const showEditModal = (prediction) => {
+  const showEditPredictionModal = (prediction) => {
     setEditingPrediction(prediction);
-    form.setFieldsValue({
+    predictionForm.setFieldsValue({
       cryptoSymbol: prediction.cryptoSymbol,
       predictionText: prediction.predictionText,
     });
-    setIsModalVisible(true);
+    setIsPredictionModalVisible(true);
   };
 
-  const handleCancel = () => {
-    setIsModalVisible(false);
+  const handlePredictionModalCancel = () => {
+    setIsPredictionModalVisible(false);
     setEditingPrediction(null);
-    form.resetFields();
+    predictionForm.resetFields();
   };
 
-  const handleFormSubmit = async (values) => {
-    setModalLoading(true);
+  const handlePredictionFormSubmit = async (values) => {
+    setPredictionModalLoading(true);
     const endpoint = editingPrediction
       ? `/prediction/update/${editingPrediction._id}`
       : '/prediction/create';
     const method = editingPrediction ? 'patch' : 'post';
-    const successMessage = editingPrediction
-      ? 'Predicción actualizada'
-      : 'Predicción creada';
-    const errorMessage = editingPrediction
-      ? 'Error al actualizar'
-      : 'Error al crear';
+    const successMessage = editingPrediction ? 'Predicción actualizada' : 'Predicción creada';
+    const errorMessage = editingPrediction ? 'Error al actualizar' : 'Error al crear';
 
     try {
       await axiosInstance[method](endpoint, values);
       notification.success({ message: successMessage });
-      setIsModalVisible(false);
+      setIsPredictionModalVisible(false);
       setEditingPrediction(null);
-      form.resetFields();
-      fetchPredictions(); // Recargar predicciones después de crear/editar
+      predictionForm.resetFields();
+      fetchPredictions();
     } catch (err) {
-      console.error(errorMessage, err);
       notification.error({
         message: 'Error',
         description: err.response?.data?.message || errorMessage,
       });
     } finally {
-      setModalLoading(false);
+      setPredictionModalLoading(false);
     }
   };
 
-  const handleDelete = async (predictionId) => {
+  const handleDeletePrediction = async (predictionId) => {
     try {
       await axiosInstance.delete(`/prediction/delete/${predictionId}`);
       notification.success({ message: 'Predicción eliminada' });
-      fetchPredictions(); // Recargar predicciones después de eliminar
+      fetchPredictions();
     } catch (err) {
-      console.error('Error deleting prediction:', err);
       notification.error({
         message: 'Error',
         description: err.response?.data?.message || 'Error al eliminar',
@@ -270,50 +263,91 @@ const Analitics = () => {
     }
   };
 
+  // --- Manejadores de Modal de Aplicación para Analista ---
+  const showApplyModal = () => {
+    applyForm.resetFields();
+    setIsApplyModalVisible(true);
+  };
+
+  const handleApplyModalCancel = () => {
+    setIsApplyModalVisible(false);
+  };
+
+  const handleApplyFormSubmit = async (values) => {
+    setApplyFormLoading(true);
+    
+    try {
+      const response = await axiosInstance.post('/user/apply-for-analyst', values);
+  
+      notification.success({
+        message: 'Solicitud Enviada',
+        description: response.data.message || 'Hemos recibido tu solicitud para ser analista. Nos pondremos en contacto contigo pronto.',
+      });
+      setIsApplyModalVisible(false);
+      applyForm.resetFields(); // Resetea el formulario
+    } catch (err) {
+      notification.error({
+        message: 'Error al Enviar Solicitud',
+        description: err.response?.data?.message || 'No se pudo enviar tu solicitud en este momento.',
+      });
+    } finally {
+      setApplyFormLoading(false);
+    }
+  };
+
+
   // --- Renderizado ---
   return (
     <div>
-      {/* --- Cabecera con Título y Botón Crear --- */}
       <Row justify="space-between" align="middle" style={{ marginBottom: 20 }}>
         <Col>
            <Title level={3} style={{ margin: 0 }}>Predicciones de Analistas</Title>
         </Col>
         <Col>
-          {isAnalystUser && (
-            <Button
-              type="primary"
-              icon={<PlusOutlined />}
-              onClick={showCreateModal}
-            >
-              Nueva Predicción
-            </Button>
-          )}
+            <Space>
+                {isBasicUser && ( // Botón para aplicar a analista
+                    <Button
+                    type="default"
+                    icon={<SolutionOutlined />}
+                    onClick={showApplyModal}
+                    >
+                    Quiero ser Analista
+                    </Button>
+                )}
+                {isAnalystUser && (
+                    <Button
+                    type="primary"
+                    icon={<PlusOutlined />}
+                    onClick={showCreatePredictionModal}
+                    >
+                    Nueva Predicción
+                    </Button>
+                )}
+            </Space>
         </Col>
       </Row>
 
-      {/* --- Filtro por Criptomoneda --- */}
       <Row style={{ marginBottom: 24 }}>
-          <Col xs={24} md={8} lg={6}> {/* Ajusta el tamaño según necesites */}
+          <Col xs={24} md={8} lg={6}>
              <Select
                 showSearch
                 placeholder="Filtrar por Criptomoneda"
                 optionFilterProp="children"
-                onChange={(value) => setSelectedCryptoFilter(value)} // Actualiza el estado del filtro
+                onChange={(value) => setSelectedCryptoFilter(value)}
                 filterOption={(input, option) =>
                   (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
                 }
                 style={{ width: '100%' }}
-                allowClear // Permite limpiar la selección
-                value={selectedCryptoFilter} // Valor controlado
-                options={cryptoOptions.map(crypto => ({ // Usar formato de options para Select
+                allowClear
+                value={selectedCryptoFilter}
+                options={cryptoOptions.map(crypto => ({
                     value: crypto.value,
                     label: crypto.label
                 }))}
-                suffixIcon={<SearchOutlined />} // Icono de búsqueda
+                suffixIcon={<SearchOutlined />}
             />
           </Col>
       </Row>
-
 
       {error && <Alert message={error} type="error" showIcon style={{ marginBottom: 16 }} />}
 
@@ -321,15 +355,15 @@ const Analitics = () => {
         <div style={{ textAlign: 'center', padding: '50px' }}>
           <Spin size="large" />
         </div>
-      ) : filteredPredictions.length > 0 ? ( // Usar filteredPredictions aquí
-        <Row gutter={[16, 24]}> {/* Aumentar gutter vertical */}
-          {filteredPredictions.map((prediction) => ( // Usar filteredPredictions aquí
+      ) : filteredPredictions.length > 0 ? (
+        <Row gutter={[16, 24]}>
+          {filteredPredictions.map((prediction) => (
             <PredictionCard
               key={prediction._id}
               prediction={prediction}
               isAnalystUser={isAnalystUser}
-              onEdit={showEditModal}
-              onDelete={handleDelete}
+              onEdit={showEditPredictionModal}
+              onDelete={handleDeletePrediction}
             />
           ))}
         </Row>
@@ -342,43 +376,41 @@ const Analitics = () => {
         />
       )}
 
-      {/* --- Modal (sin cambios) --- */}
+      {/* --- Modal Crear/Editar Predicción --- */}
        <Modal
         title={editingPrediction ? 'Editar Predicción' : 'Crear Nueva Predicción'}
-        open={isModalVisible}
-        onCancel={handleCancel}
-        confirmLoading={modalLoading}
+        open={isPredictionModalVisible}
+        onCancel={handlePredictionModalCancel}
+        confirmLoading={predictionModalLoading}
         footer={[
-          <Button key="back" onClick={handleCancel} disabled={modalLoading}>
+          <Button key="back" onClick={handlePredictionModalCancel} disabled={predictionModalLoading}>
             Cancelar
           </Button>,
           <Button
             key="submit"
             type="primary"
-            loading={modalLoading}
-            onClick={() => form.submit()}
+            loading={predictionModalLoading}
+            onClick={() => predictionForm.submit()}
           >
             {editingPrediction ? 'Guardar Cambios' : 'Crear Predicción'}
           </Button>,
         ]}
       >
-        <Spin spinning={modalLoading}>
-          <Form form={form} layout="vertical" onFinish={handleFormSubmit}>
+        <Spin spinning={predictionModalLoading}>
+          <Form form={predictionForm} layout="vertical" onFinish={handlePredictionFormSubmit}>
             <Form.Item
               name="cryptoSymbol"
               label="Criptomoneda"
               rules={[{ required: true, message: 'Selecciona una criptomoneda' }]}
             >
-              {/* Usar options en lugar de mapear Option directamente */}
                <Select
                 showSearch
                 placeholder="Selecciona o busca una criptomoneda"
-                optionFilterProp="label" // Filtrar por etiqueta visible
+                optionFilterProp="label"
                 filterOption={(input, option) =>
                   (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
                 }
-                loading={!cryptoOptions.length}
-                // Quitar la opción "Todas" del modal
+                loading={!cryptoOptions.filter(opt => opt.value !== null).length}
                 options={cryptoOptions.filter(opt => opt.value !== null).map(crypto => ({
                     value: crypto.value,
                     label: crypto.label
@@ -398,6 +430,77 @@ const Analitics = () => {
           </Form>
         </Spin>
       </Modal>
+
+      {/* --- Modal Aplicar para ser Analista --- */}
+      <Modal
+        title="Aplicar para ser Analista de NotiFinance"
+        open={isApplyModalVisible}
+        onCancel={handleApplyModalCancel}
+        confirmLoading={applyFormLoading}
+        footer={[
+            <Button key="cancelApply" onClick={handleApplyModalCancel} disabled={applyFormLoading}>
+                Cancelar
+            </Button>,
+            <Button
+                key="submitApply"
+                type="primary"
+                loading={applyFormLoading}
+                onClick={() => applyForm.submit()}
+            >
+                Enviar Solicitud
+            </Button>,
+        ]}
+        width={600}
+      >
+        <Spin spinning={applyFormLoading}>
+            <Form form={applyForm} layout="vertical" onFinish={handleApplyFormSubmit}>
+                <Paragraph>
+                    Completa el siguiente formulario para que podamos evaluar tu perfil.
+                    Buscamos personas con conocimiento demostrable en el análisis de criptomonedas.
+                </Paragraph>
+                <Form.Item
+                    name="motivation"
+                    label="Motivo"
+                    rules={[{ required: true, message: 'Cuéntanos por qué quieres ser analista.' }]}
+                >
+                    <TextArea rows={3} placeholder="Explica tu interés en ser analista en NotiFinance..." />
+                </Form.Item>
+                <Form.Item
+                    name="experience"
+                    label="Experiencia y Conocimiento"
+                    rules={[{ required: true, message: 'Describe tu experiencia y conocimientos.' }]}
+                >
+                    <TextArea rows={4} placeholder="Detalla tu experiencia en análisis de criptomonedas, mercados financieros, etc." />
+                </Form.Item>
+
+                <Title level={5}>Redes Sociales y Perfiles Públicos</Title>
+                <Paragraph type="secondary">
+                    Proporciona enlaces a perfiles donde muestres tu actividad o conocimientos (opcional pero recomendado).
+                </Paragraph>
+                <Form.Item
+                    name="twitterUrl"
+                    label="Perfil de Twitter/X"
+                    rules={[{ type: 'url', message: 'Por favor, introduce una URL válida.' }]}
+                >
+                    <Input prefix={<TwitterSquareFilled />} placeholder="https://x.com/tu-usuario" />
+                </Form.Item>
+                 <Form.Item
+                    name="otherPublicProfileUrl"
+                    label="Otro Perfil Público (Ej. TradingView, Blog, etc.)"
+                    rules={[{ type: 'url', message: 'Por favor, introduce una URL válida.' }]}
+                >
+                    <Input prefix={<LinkOutlined />} placeholder="URL a tu perfil o contenido relevante" />
+                </Form.Item>
+                 <Form.Item
+                    name="additionalInfo"
+                    label="Información Adicional (Opcional)"
+                >
+                    <TextArea rows={2} placeholder="Cualquier otra información que consideres relevante." />
+                </Form.Item>
+            </Form>
+        </Spin>
+      </Modal>
+
     </div>
   );
 };
