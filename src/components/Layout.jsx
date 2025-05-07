@@ -11,6 +11,7 @@ import Analitics from './Analitics/Analitics';
 import Calendario from './Calendar/Calendario';
 import Noticias from './Noticias/Noticias';
 
+
 const { Content, Footer } = Layout;
 const { Text } = Typography;
 
@@ -64,7 +65,6 @@ const CryptoLayout = () => {
 
   return (
     <>
-   
 
       <Layout style={styles.layout}>
         {!isMobile && (
@@ -92,8 +92,6 @@ const CryptoLayout = () => {
           </Col>
         </Row>
       </Layout>
-
-
     </>
   );
 };

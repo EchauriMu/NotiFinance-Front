@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Modal, Button } from 'antd';
+import { Modal, Button , Alert} from 'antd';
 import { useNavigate } from 'react-router-dom';
 
 const SubscriptionWarning = () => {
@@ -56,6 +56,7 @@ const SubscriptionWarning = () => {
 
   return (
     <Modal
+    width={700}
       open={showModal}
       onCancel={() => setShowModal(false)}
       footer={[
@@ -66,8 +67,15 @@ const SubscriptionWarning = () => {
           Ajustar mi plan
         </Button>,
       ]}
-      title="⚠️ Tu suscripción expira mañana"
+    
     >
+          <Alert
+          message="⚠️ Tu suscripción expira mañana"
+          description="Se han desactivado las funciones premium de tu cuenta."
+          type="warning"
+          showIcon
+          style={{ margin: 0, fontSize: 18 }}
+        />
       <div style={{ fontSize: 18 }}>
         <p>
           Tu suscripción vence mañana. Las alertas activas se desactivarán al expirar.
@@ -76,7 +84,7 @@ const SubscriptionWarning = () => {
           Si superas los límites del plan Freemium, tus recursos serán recortados automáticamente.
         </p>
         <p>
-          Para evitar interrupciones en el servicio, te recomendamos actualizar tu plan cuanto antes.
+          Para evitar interrupciones en el servicio, te recomendamos actualizar tu plan cuanto antes o activa la auto renovacion en el apartado de configuraciones.
         </p>
       </div>
     </Modal>
