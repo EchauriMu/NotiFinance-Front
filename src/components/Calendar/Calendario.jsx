@@ -29,8 +29,9 @@ const Calendario = () => {
 
   const fetchEvents = async (date) => {
     const dateFormatted = dayjs(date).utc().format('YYYY-MM-DD');
+    console.log('fecha: ' +dateFormatted);
     const url = `https://cors-anywhere.herokuapp.com/https://developers.coinmarketcal.com/v1/events?max=5&dateRangeStart=${dateFormatted}&dateRangeEnd=${dateFormatted}`;
-    
+    console.log('url generada: ' + url);
     const response = await fetch(url, {
       headers: {
         'x-api-key': 'SgwTxzBFp6103JuQLwBSJ6Up3zdJeSkI6HHGU6jm',
@@ -38,14 +39,17 @@ const Calendario = () => {
       },
     });
     const data = await response.json();
+    console.log('datos traido: ' + response);
     return data.body || [];
   };
 
   const handleDateClick = async (date) => {
+    console.log('fecha clickeada: ' + date)
     setSelectedDate(date);
     setIsModalVisible(true);
     setLoading(true);
     const eventsForSelectedDate = await fetchEvents(date);
+    console.log(eventsForSelectedDate);
     setEvents(eventsForSelectedDate);
     setLoading(false);
   };
@@ -89,7 +93,7 @@ const Calendario = () => {
       />
 
       <Modal
-        title={`Eventos para ${selectedDate ? dayjs(selectedDate).format('DD/MM/YYYY') : ''}`}
+        title={`Eventos para ${selectedDate ? dayjs(selectedDate).utc().format('DD/MM/YYYY'): ''}`}
         visible={isModalVisible}
         onCancel={handleCloseModal}
         footer={null}
@@ -105,7 +109,7 @@ const Calendario = () => {
               <Row style={{ marginBottom: 16 }}>
                 <Col span={24}>
                   <Title level={4}>{event.title.en}</Title>
-                  <Text>Fecha: {dayjs(event.date_event).format('DD/MM/YYYY')}</Text>
+                  <Text>Fecha: {dayjs(event.date_event).utc().format('DD/MM/YYYY')}</Text>
                 </Col>
               </Row>
 
