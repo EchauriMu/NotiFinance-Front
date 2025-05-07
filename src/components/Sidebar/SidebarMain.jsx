@@ -7,6 +7,8 @@ import TrackedCoins from './TrackedCoins';
 import NotificationsStatus from './NotificationsStatus';
 import SubscriptionInfo from './SubscriptionInfo';
 import LogoutButton from './Logout';  
+import SubscriptionWarning from '../Subscriptions/SubsWarning';
+import SubscriptionExpiredNotice from '../Subscriptions/SubsExpired';
 
 const styles = {
   sidebar: {
@@ -32,22 +34,22 @@ const SidebarMain = ({ setIsAuthenticated }) => {
   const [watchlist, setWatchlist] = useState([]);
   const [loadingUserData, setLoadingUserData] = useState(true);
   const [loadingSettings, setLoadingSettings] = useState(true);
+  const [dataReady, setDataReady] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Obtener datos del usuario
         const userDataResponse = await fetchUserData();
         setUserData(userDataResponse);
 
-        // Obtener configuración y lista de seguimiento
         const { notificationSettings, watchlist } = await fetchSettings();
         setNotificationSettings(notificationSettings);
         setWatchlist(watchlist);
-           } catch (error) {
+
+        setDataReady(true);
+      } catch (error) {
         console.error('❌ Error al obtener los datos:', error);
       } finally {
-        // Quité el setTimeout y actualizo los estados inmediatamente
         setLoadingUserData(false);
         setLoadingSettings(false);
       }
@@ -65,8 +67,15 @@ const SidebarMain = ({ setIsAuthenticated }) => {
         <NotificationsStatus loading={loadingSettings} notificationSettings={notificationSettings} />
         <SubscriptionInfo userData={userData} loading={loadingUserData} />
         <LogoutButton setIsAuthenticated={setIsAuthenticated} />
+
+        {/* ✅ Solo renderiza estos si los datos ya están listos */}
+        {dataReady && (
+          <>
+            <SubscriptionWarning />
+            <SubscriptionExpiredNotice />
+          </>
+        )}
       </div>
-      
     </div>
   );
 };

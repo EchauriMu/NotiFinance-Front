@@ -70,7 +70,13 @@ const Calendario = () => {
   return (
     <div style={{ padding: '0px 24px' }}>
       <Title level={3}>Calendario de Eventos</Title>
-
+ 
+      <Alert
+        message="Seleccione una fecha para ver los evento relevantes"
+        type="info"
+        showIcon
+        style={{ marginBottom: 16 }}
+      />
       <Alert
         message="Información sobre la Fecha"
         description="La fecha mostrada está en formato UTC. Puede variar respecto a tu fecha local."

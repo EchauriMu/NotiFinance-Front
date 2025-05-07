@@ -13,7 +13,7 @@ const SubscriptionExpiredNotice = () => {
   const getDateInTepic = () => {
     const date = new Date();
     // Formato YYYY-MM-DD (sin horas, minutos ni segundos)
-    return date.toLocaleDateString('en-CA'); // Este formato es YYYY-MM-DD
+    return date.toLocaleDateString('en-CA');
   };
 
   useEffect(() => {
@@ -23,17 +23,21 @@ const SubscriptionExpiredNotice = () => {
     try {
       const userData = JSON.parse(userDataStr);
       const { subscriptionExpiresAt } = userData;
-      console.log('Fecha de expiración (UTC):', subscriptionExpiresAt); // Imprime la fecha de expiración en UTC
+      console.log('subscriptionExpiresAt raw:', subscriptionExpiresAt);
 
       if (!subscriptionExpiresAt) return;
 
-      // Obtener la fecha actual en Tepic en formato YYYY-MM-DD
-      const todayInTepic = getDateInTepic();
-      
-      console.log('Fecha actual en Tepic:', todayInTepic); // Imprime la fecha actual en Tepic
+      // Obtener la fecha de expiración en formato Date
+      const expirationDate = new Date(subscriptionExpiresAt);
+      const expirationDateStr = expirationDate.toLocaleDateString('en-CA');
+      console.log('expirationDateStr:', expirationDateStr);
 
-      // Comparar solo las fechas (sin horas, minutos, segundos)
-      if (subscriptionExpiresAt.startsWith(todayInTepic)) {
+      // Fecha actual en Tepic
+      const todayInTepic = getDateInTepic();
+      console.log('todayInTepic:', todayInTepic);
+
+      // Mostrar modal solo si es el mismo día de la expiración
+      if (todayInTepic === expirationDateStr) {
         setShowModal(true);
       }
     } catch (error) {
@@ -59,6 +63,7 @@ const SubscriptionExpiredNotice = () => {
           Actualizar mi plan
         </Button>,
       ]}
+     
     >
       <Space direction="vertical" size="large" style={{ width: '100%' }}>
         <Alert

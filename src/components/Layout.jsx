@@ -10,9 +10,6 @@ import ConfigTab from './Config/ConfigMain';
 import Analitics from './Analitics/Analitics';
 import Calendario from './Calendar/Calendario';
 import Noticias from './Noticias/Noticias';
-import SubscriptionWarning from '../components/Subscriptions/SubsWarning'; 
-import SubscriptionExpiredNotice from './Subscriptions/SubsExpired';
-
 
 const { Content, Footer } = Layout;
 const { Text } = Typography;
@@ -67,9 +64,7 @@ const CryptoLayout = () => {
 
   return (
     <>
-      <SubscriptionWarning /> {/* <-- warning para la advertencia de expiracion */}
-      <SubscriptionExpiredNotice/>
-
+   
 
       <Layout style={styles.layout}>
         {!isMobile && (
@@ -97,6 +92,8 @@ const CryptoLayout = () => {
           </Col>
         </Row>
       </Layout>
+
+
     </>
   );
 };
