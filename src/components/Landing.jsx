@@ -57,19 +57,19 @@ export default function PaginaInicioNotiFinance() {
       nombre: "Sergio Alberto",
       rol: "Inversor de Cripto",
       contenido: "NotiFinance ha revolucionado cómo monitoreo mis inversiones. Las alertas en tiempo real me han ayudado a tomar decisiones oportunas.",
-      avatar: "/api/placeholder/64/64"
+      avatar: "https://avatars.githubusercontent.com/u/164229629?v=4"
     },
     {
       nombre: "Amir Orozco",
       rol: "Trader diario",
       contenido: "He probado muchos servicios de notificación de cripto, pero NotiFinance destaca por su precisión y opciones de personalización.",
-      avatar: "/api/placeholder/64/64"
+      avatar: "https://avatars.githubusercontent.com/u/164288215"
     },
     {
       nombre: "Eduardo Echauri",
       rol: "Analista Financiero",
       contenido: "Las herramientas de análisis de mercado de NotiFinance me brindan información que no podría obtener en otro lugar.",
-      avatar: "/api/placeholder/64/64"
+      avatar: "https://avatars.githubusercontent.com/u/163820326?u=4243f52d4bcd47ffdc7fcac5b3eb26da167b8232&v=4"
     }
   ];
 
@@ -346,35 +346,14 @@ export default function PaginaInicioNotiFinance() {
               </Paragraph>
             </Col>
             <Col xs={24} md={8} style={{ display: 'flex', justifyContent: 'center' }}>
-              <Button type="default" size="large" style={{ height: '50px', width: '200px', fontSize: '16px' }}>
+              <Button onClick={() => navigate('/register')}  type="default" size="large" style={{ height: '50px', width: '200px', fontSize: '16px' }}>
                 Comenzar Ahora
               </Button>
             </Col>
           </Row>
         </Card>
 
-        {/* Boletín */}
-        <Card style={{ marginBottom: '50px' }}>
-          <Title level={3} style={{ textAlign: 'center', marginBottom: '20px' }}>
-            Mantente Actualizado con Noticias Cripto
-          </Title>
-          <Paragraph style={{ textAlign: 'center', marginBottom: '30px' }}>
-            Suscríbete a nuestro boletín para recibir análisis de mercado, consejos y ofertas exclusivas
-          </Paragraph>
-          <Form form={form} onFinish={handleSuscribirse} layout="inline" style={{ display: 'flex', justifyContent: 'center' }}>
-            <Form.Item name="email" rules={[
-              { required: true, message: '¡Por favor ingresa tu email!' },
-              { type: 'email', message: '¡Por favor ingresa un email válido!' }
-            ]} style={{ width: '300px' }}>
-              <Input placeholder="Tu dirección de email" prefix={<MailOutlined />} size="large" />
-            </Form.Item>
-            <Form.Item>
-              <Button type="primary" htmlType="submit" size="large" loading={cargando}>
-                Suscribirse
-              </Button>
-            </Form.Item>
-          </Form>
-        </Card>
+    
       </Content>
 
       <Footer style={{ textAlign: 'center', background: '#001529', color: 'white', padding: '40px 50px' }}>
@@ -393,7 +372,6 @@ export default function PaginaInicioNotiFinance() {
             <Title level={4} style={{ color: 'white' }}>Enlaces Rápidos</Title>
             <ul style={{ listStyle: 'none', padding: 0, color: '#ccc' }}>
               <li style={{ marginBottom: '10px' }}><a style={{ color: '#ccc' }}>Inicio</a></li>
-              <li style={{ marginBottom: '10px' }}><a style={{ color: '#ccc' }}>Características</a></li>
               <li style={{ marginBottom: '10px' }}><a style={{ color: '#ccc' }}>Precios</a></li>
               <li style={{ marginBottom: '10px' }}><a style={{ color: '#ccc' }}>Sobre Nosotros</a></li>
             </ul>
@@ -402,7 +380,6 @@ export default function PaginaInicioNotiFinance() {
           <Col xs={24} sm={12} md={6}>
             <Title level={4} style={{ color: 'white' }}>Recursos</Title>
             <ul style={{ listStyle: 'none', padding: 0, color: '#ccc' }}>
-              <li style={{ marginBottom: '10px' }}><a style={{ color: '#ccc' }}>Blog</a></li>
               <li style={{ marginBottom: '10px' }}><a style={{ color: '#ccc' }}>Guías</a></li>
               <li style={{ marginBottom: '10px' }}><a style={{ color: '#ccc' }}>Documentación API</a></li>
               <li style={{ marginBottom: '10px' }}><a style={{ color: '#ccc' }}>Preguntas Frecuentes</a></li>
@@ -412,9 +389,9 @@ export default function PaginaInicioNotiFinance() {
           <Col xs={24} sm={12} md={6}>
             <Title level={4} style={{ color: 'white' }}>Contacto</Title>
             <ul style={{ listStyle: 'none', padding: 0, color: '#ccc' }}>
-              <li style={{ marginBottom: '10px' }}>contacto@notifinance.com</li>
-              <li style={{ marginBottom: '10px' }}>+34 123 456 789</li>
-              <li style={{ marginBottom: '10px' }}>Calle Cripto 123, Ciudad Digital</li>
+              <li style={{ marginBottom: '10px' }}>notifinance.mx@gmail.com</li>
+              <li style={{ marginBottom: '10px' }}>+52 311 162 5934</li>
+              <li style={{ marginBottom: '10px' }}>Calle Cripto 777</li>
             </ul>
           </Col>
         </Row>

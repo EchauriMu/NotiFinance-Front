@@ -213,7 +213,7 @@ const UserAlerts = ({ refresh }) => {
         style={{
           width: '100%',
           marginBottom: 8,
-          margin: 0,
+        
           borderRadius: 6,
           boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
           borderLeft: alert.isFulfilled ? '3px solid #1890ff' : 'none'
@@ -228,7 +228,7 @@ const UserAlerts = ({ refresh }) => {
           }}
         >
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 4, }}>
               <Tag color="gold" style={{ margin: 0 }}>
                 {alert.cryptoSymbol}
               </Tag>
