@@ -17,6 +17,7 @@ const HelpAndFAQ = () => {
         <Title level={2} style={{ margin: 0, fontWeight: 700 }}>
           <span style={{ color: 'white' }}>Centro de</span>{' '}
           <span style={{ color: '#fa8c16' }}>Ayuda</span>
+                    <span style={{ color: 'white' }}> y preguntas frecuentes</span>{' '}
         </Title>
       </div>
 
