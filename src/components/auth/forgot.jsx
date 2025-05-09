@@ -1,8 +1,15 @@
 import React, { useState } from "react";
 import { Form, Input, Button, Card, Spin, notification } from "antd";
 import axiosInstance from "../../api/axiosInstance";
+import {  useNavigate } from "react-router-dom";  
+
+
+
 
 const ForgotPassword = () => {
+
+  
+const navigate = useNavigate();  // Usar useNavigate
   const [loading, setLoading] = useState(false);
 
   const onFinish = async (values) => {
@@ -13,11 +20,7 @@ const ForgotPassword = () => {
       });
 
       if (response.status === 200) {
-        notification.success({
-          message: "Correo enviado",
-          description: "Revisa tu correo electrónico para restablecer tu contraseña.",
-          placement: "bottomRight",
-        });
+        navigate("/success");
       }
     } catch (error) {
       const errorMessage =

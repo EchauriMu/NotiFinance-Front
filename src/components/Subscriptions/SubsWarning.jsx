@@ -23,22 +23,17 @@ const SubscriptionWarning = () => {
 
       if (!subscriptionExpiresAt) return;
 
-      console.log('subscriptionExpiresAt raw:', subscriptionExpiresAt);
-
       // Obtener la fecha de expiración en formato Date
       const expirationDate = new Date(subscriptionExpiresAt);
       const expirationDateStr = expirationDate.toLocaleDateString('en-CA'); // YYYY-MM-DD
-      console.log('expirationDateStr:', expirationDateStr);
 
       // Calcular un día antes de la expiración
       const dayBefore = new Date(expirationDate);
       dayBefore.setDate(dayBefore.getDate() - 1);
       const dayBeforeStr = dayBefore.toLocaleDateString('en-CA');
-      console.log('dayBeforeExpirationStr:', dayBeforeStr);
 
       // Fecha actual en Tepic
       const todayInTepic = getDateInTepic();
-      console.log('todayInTepic:', todayInTepic);
 
       // Mostrar modal si es un día antes de la expiración
       if (dayBeforeStr === todayInTepic) {

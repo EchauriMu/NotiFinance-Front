@@ -188,7 +188,7 @@ const UserAlerts = ({ refresh }) => {
 
   if (error) {
     return (
-      <Card style={{ marginBottom: 24 }}>
+      <Card title='Mis alertas' style={{ marginBottom: 24 }}>
         <Alert
           message={error}
           type="info"
@@ -213,7 +213,7 @@ const UserAlerts = ({ refresh }) => {
         style={{
           width: '100%',
           marginBottom: 8,
-        
+
           borderRadius: 6,
           boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
           borderLeft: alert.isFulfilled ? '3px solid #1890ff' : 'none'
@@ -232,19 +232,19 @@ const UserAlerts = ({ refresh }) => {
               <Tag color="gold" style={{ margin: 0 }}>
                 {alert.cryptoSymbol}
               </Tag>
-              <Text style={{ fontSize: 18, marginTop: 2 }} strong>Meta: ${alert.targetPrice}</Text>
+              <Text style={{ fontSize: 18, marginTop: 2 }} strong>Objetivo: ${alert.targetPrice}</Text>
             </div>
 
             <div style={{ fontSize: 16, marginTop: 2 }}>
-      
-                {icon} {alert.typeNotification}
-           
+
+             Medio: {alert.typeNotification} {icon} 
+
             </div>
           </div>
           <Badge
-  color={alert.isFulfilled ? 'blue' : 'yellow'}
-  text={alert.isFulfilled ? 'Cumplida' : 'No Cumplida'}
-/>
+            color={alert.isFulfilled ? 'blue' : 'yellow'}
+            text={alert.isFulfilled ? 'Cumplida' : 'No Cumplida'}
+          />
 
           <div style={{ display: 'flex', gap: 4 }}>
             <Button

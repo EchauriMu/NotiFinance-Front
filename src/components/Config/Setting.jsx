@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Button, Space, Modal, Form, Input, message, notification, Divider } from 'antd';
+import { Button, Space, Modal, Form, Input, message, notification, Divider, Row, Col } from 'antd';
 import axiosInstance from '../../api/axiosInstance';
 import MediaSettingsModal from './MediaSettingsModal';
 import BillingSettingsModal from './BillingSettingsModal';
+import SupportSection from './SupportSection';
 
 const ProfileSettings = () => {
   const [isNameModalOpen, setIsNameModalOpen] = useState(false);
@@ -42,7 +43,6 @@ const ProfileSettings = () => {
           description: 'Revisa tu correo electrónico para restablecer tu contraseña.',
           placement: 'bottomRight',
         });
-        setIsSessionEndingModalOpen(true);
       }
     } catch (error) {
       const errorMessage = error.response?.data?.message || 'Ocurrió un error al enviar el correo';
@@ -75,21 +75,30 @@ const ProfileSettings = () => {
   return (
     <>
       <Space direction="vertical" size="large" style={{ width: '100%', marginTop: 0 }}>
-
         {/* Configuración de Perfil */}
-        <Divider orientation="left">Configuración de Perfil</Divider>
-        <Button type="primary" block onClick={() => setIsNameModalOpen(true)}>
-          Cambiar Nombre
-        </Button>
-        <Button type="default" block onClick={() => setIsPasswordModalOpen(true)}>
-          Recuperar Contraseña
-        </Button>
+        <Divider style={{ margin: 0 }} orientation="left">Configuración de Perfil</Divider>
+
+        <Row gutter={[16, 16]}>
+          <Col xs={24} sm={12} md={12}>
+            <Button type="primary" block onClick={() => setIsNameModalOpen(true)}>
+              Cambiar Nombre
+            </Button>
+          </Col>
+          <Col xs={24} sm={12} md={12}>
+            <Button type="default" block onClick={() => setIsPasswordModalOpen(true)}>
+              Recuperar Contraseña
+            </Button>
+          </Col>
+        </Row>
+
 
         {/* Configuración de Facturación */}
-        <Divider orientation="left">Configuración de Facturación</Divider>
+        <Divider style={{ margin: 0 }} orientation="left">Configuración de Facturación</Divider>
         <Button type="default" block onClick={() => setIsBillingModalOpen(true)}>
           Abrir Configuración de Facturación
         </Button>
+        <Divider style={{ margin: 0 }} orientation="left">Soporte</Divider>
+        <SupportSection />
       </Space>
 
       {/* Modales */}
@@ -161,3 +170,4 @@ const ProfileSettings = () => {
 };
 
 export default ProfileSettings;
+

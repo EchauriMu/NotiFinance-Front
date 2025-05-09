@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Form, Input, Button, Card, Spin, notification } from "antd";
-import { useParams, useNavigate } from "react-router-dom";  // Cambié useHistory por useNavigate
+import { useParams, useNavigate } from "react-router-dom";  
 import axiosInstance from "../../api/axiosInstance";
 
 const ResetPassword = () => {
@@ -16,7 +16,7 @@ const ResetPassword = () => {
         description: "Token inválido o no proporcionado.",
         placement: "bottomRight",
       });
-      navigate("/login"); // Usar navigate en lugar de history.push
+      navigate("/login"); 
     }
   }, [token, navigate]);
 
@@ -37,7 +37,7 @@ const ResetPassword = () => {
         });
 
         // Redirigir al login después de restablecer la contraseña
-        navigate("/login");  // Usar navigate en lugar de history.push
+        navigate("/successchange");  // Usar navigate en lugar de history.push
       }
     } catch (error) {
       const errorMessage =
