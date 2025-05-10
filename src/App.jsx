@@ -14,6 +14,13 @@ import ForgotPassword from "./components/auth/forgot";
 import ResetPassword from "./components/auth/Reset";
 import CryptoList from "./components/List";
 import AdminPanel from "./components/Admin/AdminPanel";
+import Succes from "./components/auth/succes";
+import SuccesChange from "./components/auth/successchange";
+import TermsAndConditions from "./components/Terms";
+import HelpAndFAQ from "./components/help";
+import AboutPage from "./components/About";
+import './App.css';
+
 import Intro from "./components/General/intro";
 
 import './App.css';
@@ -115,6 +122,11 @@ const App = () => {
           }
         />
 
+            <Route path="/about" element={<AboutPage />} />
+        <Route path="/ayuda" element={<HelpAndFAQ />} />
+        <Route path="/terminos" element={<TermsAndConditions />} />
+        <Route path="/successchange" element={<SuccesChange />} />
+        <Route path="/success" element={<Succes />} />
         <Route path="/register" element={<Register />} />
         <Route path="/verify/:userId" element={<VerifyToken />} />
         <Route path="/subscription" element={<Subscription />} />

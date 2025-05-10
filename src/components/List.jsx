@@ -54,7 +54,7 @@ const CryptoList = () => {
           </Title>
         </div>
 
-    <Title>Cryptomonedas dispibles en nuestra plataforma: </Title>
+    <Title>Cryptomonedas disponibles en nuestra plataforma: </Title>
       <Search
         placeholder="Buscar símbolo o nombre"
         onSearch={onSearch}

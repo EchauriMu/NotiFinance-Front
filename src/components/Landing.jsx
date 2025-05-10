@@ -26,7 +26,7 @@ export default function PaginaInicioNotiFinance() {
     { nombre: 'Ethereum', simbolo: 'ETH', precio: 3521.78, cambio: -1.2, icono: 'Ξ' },
     { nombre: 'Cardano', simbolo: 'ADA', precio: 0.65, cambio: 5.8, icono: '₳' },
     { nombre: 'Solana', simbolo: 'SOL', precio: 132.45, cambio: 7.2, icono: 'ӾL' },
-    { nombre: 'Ripple', simbolo: 'XRP', precio: 0.52, cambio: -0.5, icono: '✕' },
+    { nombre: 'Doge', simbolo: 'XRP', precio: 0.52, cambio: -0.5, icono: '✕' },
   ];
 
   const caracteristicas = [
@@ -372,7 +372,7 @@ export default function PaginaInicioNotiFinance() {
             <Title level={4} style={{ color: 'white' }}>Enlaces Rápidos</Title>
             <ul style={{ listStyle: 'none', padding: 0, color: '#ccc' }}>
               <li style={{ marginBottom: '10px' }}><a style={{ color: '#ccc' }}>Inicio</a></li>
-              <li style={{ marginBottom: '10px' }}><a style={{ color: '#ccc' }}>Precios</a></li>
+              <li  onClick={() => navigate('/subscription')} style={{ marginBottom: '10px' }}><a style={{ color: '#ccc' }}>Precios</a></li>
               <li style={{ marginBottom: '10px' }}><a style={{ color: '#ccc' }}>Sobre Nosotros</a></li>
             </ul>
           </Col>
@@ -381,8 +381,8 @@ export default function PaginaInicioNotiFinance() {
             <Title level={4} style={{ color: 'white' }}>Recursos</Title>
             <ul style={{ listStyle: 'none', padding: 0, color: '#ccc' }}>
               <li style={{ marginBottom: '10px' }}><a style={{ color: '#ccc' }}>Guías</a></li>
-              <li style={{ marginBottom: '10px' }}><a style={{ color: '#ccc' }}>Documentación API</a></li>
-              <li style={{ marginBottom: '10px' }}><a style={{ color: '#ccc' }}>Preguntas Frecuentes</a></li>
+                 <li  onClick={() => navigate('/list')} style={{ marginBottom: '10px' }}><a style={{ color: '#ccc' }}>Mercados</a></li>
+              <li onClick={() => navigate('/ayuda')} style={{ marginBottom: '10px' }}><a style={{ color: '#ccc' }}>Preguntas Frecuentes</a></li>
             </ul>
           </Col>
 

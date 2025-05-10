@@ -20,6 +20,7 @@ export const fetchUserData = async () => {
       lastLogin: data.lastLogin || 'Nunca',
       plan: data.plan || 'Freemium',
       subscriptionExpiresAt: data.subscriptionExpiresAt || null,
+      autoRenew: data.autoRenew || null,
     };
 
     sessionStorage.setItem('userData', JSON.stringify(userData));
