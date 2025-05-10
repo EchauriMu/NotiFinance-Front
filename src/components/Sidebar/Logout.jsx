@@ -3,7 +3,7 @@ import { Button, message, Space } from 'antd';
 import { LogoutOutlined } from '@ant-design/icons';
 import axiosInstance from '../../api/axiosInstance';
 
-const LogoutButton = () => {
+const LogoutButton = ({ containerStyle = {}}) => {
   const handleLogout = async () => {
     try {
       // Llamada al endpoint de logout para limpiar la cookie
@@ -16,6 +16,7 @@ const LogoutButton = () => {
       
       // Eliminar token de localStorage si existe
       localStorage.removeItem('token');
+      localStorage.removeItem('userRole');
       
       message.success('Has cerrado sesión correctamente');
       
@@ -28,6 +29,7 @@ const LogoutButton = () => {
       // Aún así, limpiamos los datos locales
       sessionStorage.clear();
       localStorage.removeItem('token');
+      localStorage.removeItem('userRole');
       
       message.error('Error al cerrar sesión');
       
@@ -37,11 +39,7 @@ const LogoutButton = () => {
   };
 
   return (
-    <div style={{ 
-      marginTop: '20px', 
-      padding: '15px 0', 
-      borderTop: '1px solid rgba(255,255,255,0.1)'
-    }}>
+    <div style={{ ...containerStyle }}>
       <Button 
         type="primary" 
         danger 

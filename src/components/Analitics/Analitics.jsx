@@ -160,7 +160,7 @@ const Analitics = () => {
   }, []);
 
   const isAnalystUser = userRole === 'analist';
-  const isBasicUser = userRole === 'basic' || userRole === 'freemium'; // Ajusta según tus roles
+  const isBasicUser = userRole === 'basic';
 
 
   const fetchPredictions = async () => {
@@ -305,7 +305,7 @@ const Analitics = () => {
         </Col>
         <Col>
             <Space>
-                {isBasicUser && ( // Botón para aplicar a analista
+                {isBasicUser && (
                     <Button
                     type="default"
                     icon={<SolutionOutlined />}

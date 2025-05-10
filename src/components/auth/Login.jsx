@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axiosInstance from "../../api/axiosInstance";
 import { ArrowRightOutlined } from "@ant-design/icons";
 
-const Login = ({ setIsAuthenticated }) => {
+const Login = ({ setIsAuthenticated, setUserRole }) => {
   const [loading, setLoading] = useState(false);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth); // Track window width for responsive styles
   const navigate = useNavigate();
@@ -16,14 +16,29 @@ const Login = ({ setIsAuthenticated }) => {
       const response = await axiosInstance.post("/auth/login", values);
 
       if (response.status === 200) {
+        const { token, user } = response.data;
+
+        if (!token || !user?.role) {
+          throw new Error("Respuesta inválida del servidor");
+        }
+
+        localStorage.setItem("token", token);
+        localStorage.setItem("userRole", user.role);
+
+        setUserRole(user.role); // Ahora sí usamos la prop correctamente
+        setIsAuthenticated(true);
+
         notification.success({
           message: "Inicio de sesión exitoso",
           description: "Has iniciado sesión correctamente.",
           placement: "bottomRight",
         });
 
-        setIsAuthenticated(true);
-        navigate("/"); // Redirigir al dashboard
+        // Redirigir después de una pequeña pausa para asegurar el estado
+        setTimeout(() => {
+          navigate(user.role === "admin" ? "/admin" : "/home");
+        }, 100);
+        
       }
     } catch (error) {
       const errorMessage =

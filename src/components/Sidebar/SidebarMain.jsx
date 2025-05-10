@@ -91,7 +91,7 @@ const SidebarMain = ({ setIsAuthenticated }) => {
         <TrackedCoins watchlist={watchlist} loading={loadingSettings} />
         <NotificationsStatus loading={loadingSettings} notificationSettings={notificationSettings} />
         <SubscriptionInfo userData={userData} loading={loadingUserData} />
-        <LogoutButton setIsAuthenticated={setIsAuthenticated} />
+        <LogoutButton containerStyle={{ marginTop: '20px', padding: '15px 0', borderTop: '1px solid rgba(255,255,255,0.1)' }} setIsAuthenticated={setIsAuthenticated} />
 
         {/* Solo renderiza estos si los datos ya están listos */}
         {dataReady && (
