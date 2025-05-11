@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, Row, Col, Card, Typography, Button, Badge } from 'antd';
+import { Modal, Row, Col, Card, Typography, Button, Badge, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 
 const { Title, Text } = Typography;
@@ -61,9 +61,11 @@ const UpdatePlanModal = ({ open, onClose }) => {
   const navigate = useNavigate();
   const userData = JSON.parse(sessionStorage.getItem('userData'));
   const currentPlan = userData?.plan || 'Freemium';
+  const isFreemium = currentPlan === 'Freemium';
 
   return (
     <Modal
+    title="Elige tu nuevo plan."
       open={open}
       onCancel={onClose}
       footer={null}
@@ -71,7 +73,6 @@ const UpdatePlanModal = ({ open, onClose }) => {
       width={1000}
     >
       <div style={{ marginBottom: '24px', textAlign: 'center' }}>
-        <Title level={4}>Elige tu nuevo plan</Title>
         <Text type="secondary">Actualiza tu suscripción para obtener más beneficios</Text>
       </div>
 
@@ -80,6 +81,7 @@ const UpdatePlanModal = ({ open, onClose }) => {
           const isCurrentPlan = plan.name === currentPlan;
           const badgeText = isCurrentPlan ? 'Plan actual' : plan.badge;
           const badgeColor = isCurrentPlan ? 'green' : 'blue';
+          const isPlanChangeable = isFreemium || currentPlan === 'Freemium';
 
           return (
             <Col key={plan.name} xs={24} sm={12} md={8}>
@@ -88,7 +90,7 @@ const UpdatePlanModal = ({ open, onClose }) => {
                   style={{ borderLeft: `4px solid ${plan.color}` }}
                   size="small"
                   bordered
-                  hoverable={!isCurrentPlan}
+                  hoverable={isPlanChangeable}
                 >
                   <Title level={5}>{plan.name}</Title>
                   <ul style={{ paddingLeft: 16, marginTop: 12 }}>
@@ -105,19 +107,21 @@ const UpdatePlanModal = ({ open, onClose }) => {
                     type="primary"
                     block
                     size="small"
-                    disabled={isCurrentPlan}
+                    disabled={!isPlanChangeable}
                     style={{
                       marginTop: '12px',
                       backgroundColor: plan.color,
                       borderColor: plan.color
                     }}
                     onClick={() => {
-                      if (!isCurrentPlan) {
+                      if (!isPlanChangeable) {
+                        message.info('Para cambiar de plan, ve a Configuración > Facturación.');
+                      } else {
                         navigate('/payments', { state: { plan } });
                       }
                     }}
                   >
-                    {isCurrentPlan ? 'Plan actual' : 'Elegir'}
+                    {isPlanChangeable ? 'Elegir' : 'Cambiar desde Configuración'}
                   </Button>
                   <Button
                     block
@@ -133,6 +137,11 @@ const UpdatePlanModal = ({ open, onClose }) => {
           );
         })}
       </Row>
+
+      {/* Nota en la parte inferior */}
+      <Text type="secondary" style={{ marginTop: '16px', display: 'block' }}>
+        Si deseas cambiar de plan, hazlo desde <a href="/config-facturacion">Configuración  Facturación</a>
+      </Text>
     </Modal>
   );
 };

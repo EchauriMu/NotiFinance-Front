@@ -1,10 +1,14 @@
 import React from 'react';
-import { Row, Col, Card, Typography, Button, Divider, Collapse, Badge, Space, Layout } from 'antd';
+import {
+  Row, Col, Card, Typography, Button, Divider,
+  Collapse, Badge, Space, Layout
+} from 'antd';
 import { CheckCircleOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 
 const { Footer } = Layout;
-const { Title, Paragraph, Text } = Typography, { Panel } = Collapse;
+const { Title, Paragraph, Text } = Typography;
+const { Panel } = Collapse;
 
 const plans = [
   {
@@ -61,9 +65,9 @@ const plans = [
 
 const Subscription = () => {
   const navigate = useNavigate();
-
   const userData = JSON.parse(sessionStorage.getItem('userData'));
   const currentPlan = userData?.plan || 'Freemium';
+  const isPlanChangeable = currentPlan === 'Freemium';
 
   return (
     <div style={{ padding: '0px 60px', minHeight: '100vh' }}>
@@ -74,13 +78,19 @@ const Subscription = () => {
         </Paragraph>
       </div>
 
+      {!isPlanChangeable && (
+        <div style={{ textAlign: 'center', marginBottom: 30 }}>
+          <Text type="secondary">
+            Ya tienes un plan activo. Para cambiarlo, ve a Configuración &gt; Facturación.
+          </Text>
+        </div>
+      )}
+
       <Row gutter={[32, 32]} justify="center" style={{ marginBottom: 80 }}>
         {plans.map(plan => {
           const planColor = plan.color;
           const isCurrentPlan = plan.name === currentPlan;
           const badgeColor = plan.name === 'NotiFinance Pro' ? 'purple' : plan.name === 'Premium' ? 'volcano' : 'blue';
-
-          // 🔄 Combinar el texto del badge si es el plan actual
           const badgeText = isCurrentPlan ? `${plan.badge} • Plan actual` : plan.badge;
 
           return (
@@ -88,7 +98,7 @@ const Subscription = () => {
               <Badge.Ribbon text={badgeText} color={badgeColor}>
                 <Card
                   bordered
-                  hoverable
+                  hoverable={isPlanChangeable && !isCurrentPlan}
                   style={{
                     borderTop: `8px solid ${planColor}`,
                     borderRadius: 16,
@@ -126,16 +136,16 @@ const Subscription = () => {
                   <Button
                     type="primary"
                     block
-                    disabled={isCurrentPlan}
+                    disabled={!isPlanChangeable || isCurrentPlan}
                     style={{
                       marginTop: 20,
                       backgroundColor: planColor,
                       borderColor: planColor,
-                      opacity: isCurrentPlan ? 0.6 : 1,
-                      cursor: isCurrentPlan ? 'not-allowed' : 'pointer',
+                      opacity: (!isPlanChangeable || isCurrentPlan) ? 0.6 : 1,
+                      cursor: (!isPlanChangeable || isCurrentPlan) ? 'not-allowed' : 'pointer',
                     }}
                     onClick={() => {
-                      if (!isCurrentPlan) {
+                      if (isPlanChangeable && !isCurrentPlan) {
                         navigate('/payments', { state: { plan } });
                       }
                     }}
