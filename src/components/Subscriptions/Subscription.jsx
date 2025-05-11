@@ -48,7 +48,6 @@ const plans = [
     name: 'NotiFinance Pro', price: '$19.99/mes', color: '#722ed1', badge: 'Nuevo • Para profesionales',
     features: [
       'Hasta 10 alertas con condiciones avanzadas',
-      'Gestión de usuarios y roles por equipo',
       'Integraciones avanzadas (API, Zapier, Webhooks)',
       'Panel de análisis detallado con exportación de datos',
       'Soporte premium 24/7 con canal dedicado',
@@ -172,7 +171,8 @@ const Subscription = () => {
             <Paragraph>Recibirás una notificación y tendrás la opción de actualizar tu plan o eliminar alertas antiguas.</Paragraph>
           </Panel>
           <Panel header="¿Puedo compartir mi cuenta con otros?" key="4">
-            <Paragraph>Solo el plan NotiFinance Pro permite gestión de usuarios y roles. Para uso individual, recomendamos Premium.</Paragraph>
+            <Paragraph>Para garantizar una experiencia segura y personalizada, las cuentas de NotiFinance son de uso individual. Si deseas más beneficios, 
+              te recomendamos explorar nuestro plan Premium.</Paragraph>
           </Panel>
         </Collapse>
       </div>

@@ -42,7 +42,6 @@ const plans = [
     name: 'NotiFinance Pro', price: '$19.99/mes', color: '#722ed1', badge: 'Nuevo • Para equipos',
     features: [
       'Hasta 10 alertas con condiciones avanzadas',
-      'Gestión de usuarios y roles por equipo',
       'Integraciones avanzadas (API, Zapier, Webhooks)',
       'Panel de análisis detallado con exportación de datos',
       'Soporte premium 24/7 con canal dedicado',
