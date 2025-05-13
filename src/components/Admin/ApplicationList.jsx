@@ -121,7 +121,7 @@ const ApplicationList = () => {
           </Tooltip>
           <Tooltip title="Aprobar Solicitud">
             {/* Llama a showConfirmModal en lugar de handleAction directamente */}
-            <Button type="primary" icon={<CheckCircleOutlined />} size="small" onClick={() => showConfirmModal(record._id, 'approve')} />
+            <Button style={{background:'green'}} icon={<CheckCircleOutlined />} size="small" onClick={() => showConfirmModal(record._id, 'approve')} />
           </Tooltip>
           <Tooltip title="Rechazar Solicitud">
             {/* Llama a showConfirmModal en lugar de handleAction directamente */}
