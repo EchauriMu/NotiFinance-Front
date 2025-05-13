@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { Form, Input, Button, Spin, notification } from "antd";
+import { Form, Input, Button, Spin, notification , Typography} from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import axiosInstance from "../../api/axiosInstance";
 import { ArrowRightOutlined } from "@ant-design/icons";
 
+
+const { Title } = Typography;
+
 const Login = ({ setIsAuthenticated, setUserRole }) => {
   const [loading, setLoading] = useState(false);
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth); // Track window width for responsive styles
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth); 
   const navigate = useNavigate();
 
   // Handle form submission
@@ -153,10 +156,9 @@ const Login = ({ setIsAuthenticated, setUserRole }) => {
         {/* Formulario */}
         <div style={styles.formContainer}>
           <div style={{ marginBottom: "24px" }}>
-            <h2 style={{margin:0}}>
-             
-              Inicia sesion en tu cuenta.
-            </h2>
+            <Title level={2} style={{ color: "withe", }}>
+              Iniciar sesión en tu cuenta.
+            </Title>
           </div>
 
           <Form onFinish={onFinish} layout="vertical" style={{ width: "100%" }}>

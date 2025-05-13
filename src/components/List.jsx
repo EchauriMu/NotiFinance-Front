@@ -50,7 +50,7 @@ const CryptoList = () => {
            <div style={{ display: 'flex', alignItems: 'center' }}>
           <Title level={2} style={{ margin: 0 , fontWeight:700}}>
             <span style={{ color: 'white' }}>Noti</span>
-            <span style={{ color: '#fa8c16' }}>Finance</span>
+            <span style={{ color: '#ffa500' }}>Finance</span>
           </Title>
         </div>
 

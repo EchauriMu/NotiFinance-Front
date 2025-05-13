@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Form, Input, Button, Spin, notification } from "antd";
+import { Form, Input, Button, Spin, notification , Typography} from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import axiosInstance from "../../api/axiosInstance";
 import { ArrowRightOutlined } from "@ant-design/icons";
+
+
+const { Title } = Typography;
 
 const Register = () => {
   const [loading, setLoading] = useState(false);
@@ -135,7 +138,10 @@ const Register = () => {
         {/* Formulario de registro */}
         <div style={styles.formContainer}>
           <div style={{ marginBottom: "24px" }}>
-            <h2 style={styles.logo}>Regístrate en tu cuenta.</h2>
+            <Title level={3} style={{ color: 'white', margin: '16px 0' }}>
+              Registrate en Notifinance.
+            </Title>
+
           </div>
 
           <Form onFinish={onFinish} layout="vertical" style={{ width: "100%" }}>

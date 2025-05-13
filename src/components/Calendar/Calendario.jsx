@@ -102,8 +102,8 @@ const Calendario = () => {
   const eventsForSelectedDate = selectedDate ? (eventsByDate[selectedDate] || []) : [];
 
   return (
-    <div style={{ padding: '0px 24px' }}>
-      <Title level={3}>Calendario de Eventos</Title>
+    <div style={{ padding: '0px 4px' }}>
+      <Title style={{ margin:'10px 0px'}}level={3}>Calendario de Eventos</Title>
 
       <Alert
         message="Seleccione una fecha para ver los evento relevantes"
