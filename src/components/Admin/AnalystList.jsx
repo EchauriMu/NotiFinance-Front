@@ -124,7 +124,7 @@ const AnalystList = () => {
 
   return (
     <div style={{ marginTop: '20px' }}>
-      <Title level={4}>Lista de Analistas Activos</Title>
+  
       <Table
         columns={columns}
         dataSource={analysts}
