@@ -25,7 +25,12 @@ const ProfileSettings = () => {
       setIsSessionEndingModalOpen(true);
     } catch (error) {
       console.error('Error actualizando nombre:', error);
-      message.error(error.response?.data?.message || 'Error al actualizar el nombre');
+      const msg = error.response?.data?.message || 'Error al actualizar el nombre';
+      if (msg.includes('E11000 duplicate key error')) {
+        message.error('Nombre de usuario ya en uso');
+      } else {
+        message.error(msg);
+      }
     }
   };
 
@@ -103,7 +108,7 @@ const ProfileSettings = () => {
 
       {/* Modales */}
       <Modal
-        title="Cambiar Nombre"
+        title="Cambiar Nombre de Usuario"
         open={isNameModalOpen}
         onOk={handleNameSubmit}
         onCancel={() => {
@@ -117,7 +122,17 @@ const ProfileSettings = () => {
           <Form.Item
             label="Nuevo Nombre"
             name="name"
-            rules={[{ required: true, message: 'Por favor ingresa tu nuevo nombre' }]}
+               rules={[
+                { required: true, message: "Ingresa tu usuario" },
+                {
+                  pattern: /^[a-zA-Z0-9_.-]+$/,
+                  message: "El nombre de usuario solo puede contener letras, números, guiones bajos (_), puntos (.) o guiones (-).",
+                },
+                {
+                  max: 20,
+                  message: "El nombre de usuario no puede tener más de 20 caracteres.",
+                },
+              ]}
           >
             <Input placeholder="Escribe tu nuevo nombre" />
           </Form.Item>
