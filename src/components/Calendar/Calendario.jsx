@@ -64,6 +64,16 @@ const Calendario = () => {
   const dateCellRender = (value) => {
     const dateKey = dayjs(value).utc().format('YYYY-MM-DD');
     const events = eventsByDate[dateKey] || [];
+
+    if (loading) {
+      // Mostrar Skeleton mientras se cargan los datos
+      return (
+        <div style={{ padding: '8px' }}>
+          <Skeleton active title={false} paragraph={{ rows: 1, width: '100%' }} />
+        </div>
+      );
+    }
+
     return (
       <ul className="events-list" style={{ padding: 0, listStyle: 'none' }}>
         {events.slice(0, 2).map(evt => (

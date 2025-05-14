@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Row, Col } from 'antd';
+import { Collapse } from 'antd';
 import { Watchlist } from './WatchList';
 import { Explore } from './Explore';
 import { fetchCryptos } from '../../functions/fetchCryptos';
 import { fetchNews } from '../../functions/fetchNews'; 
 import { StatForum } from './StatForum';
 import UserAlerts from './UserAlert';
+
+const { Panel } = Collapse;
 
 const CryptoAlertForm = () => {
   const [form] = Form.useForm();
@@ -17,7 +20,7 @@ const CryptoAlertForm = () => {
   const [errorNews, setErrorNews] = useState(null);
 
   const [refreshAlerts, setRefreshAlerts] = useState(false);
-  const triggerRefresh = () => setRefreshAlerts(prev => !prev);
+  const triggerRefresh = () => setRefreshAlerts((prev) => !prev);
 
   useEffect(() => {
     const loadCryptos = async () => {
@@ -56,22 +59,26 @@ const CryptoAlertForm = () => {
     <>
       <UserAlerts refresh={refreshAlerts} />
 
-      <Row gutter={[16, 16]}>
-        <Col span={24} xs={24} md={12}>
-          <Watchlist
-            form={form}
-            cryptoOptions={cryptoOptions}
-            selectedNotification={selectedNotification}
-            selectNotification={setSelectedNotification}
-            setSelectedCrypto={setSelectedCrypto}
-            onAlertCreated={triggerRefresh}
-          />
-        </Col>
-        <Col span={24} xs={24} md={12}>
-          <StatForum symbol={selectedCrypto} />
-          <Explore news={news} loading={loadingNews} error={errorNews} />
-        </Col>
-      </Row>
+      <Collapse defaultActiveKey={[]} style={{ marginTop: '16px' }}>
+        <Panel header="Creacion de alertas" key="1">
+          <Row gutter={[16, 16]}>
+            <Col span={24} xs={24} md={12}>
+              <Watchlist
+                form={form}
+                cryptoOptions={cryptoOptions}
+                selectedNotification={selectedNotification}
+                selectNotification={setSelectedNotification}
+                setSelectedCrypto={setSelectedCrypto}
+                onAlertCreated={triggerRefresh}
+              />
+            </Col>
+            <Col span={24} xs={24} md={12}>
+              <StatForum symbol={selectedCrypto} />
+              <Explore news={news} loading={loadingNews} error={errorNews} />
+            </Col>
+          </Row>
+        </Panel>
+      </Collapse>
     </>
   );
 };

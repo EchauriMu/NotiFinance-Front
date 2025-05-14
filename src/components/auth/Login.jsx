@@ -165,7 +165,17 @@ const Login = ({ setIsAuthenticated, setUserRole }) => {
             <Form.Item
               label="Usuario"
               name="username"
-              rules={[{ required: true, message: "Ingresa tu usuario" }]}
+              rules={[
+                { required: true, message: "Ingresa tu usuario" },
+                {
+                  pattern: /^[a-zA-Z0-9_.-]+$/,
+                  message: "El nombre de usuario solo puede contener letras, números, guiones bajos (_), puntos (.) o guiones (-).",
+                },
+                {
+                  max: 20,
+                  message: "El nombre de usuario no puede tener más de 20 caracteres.",
+                },
+              ]}
               style={styles.formItem}
             >
               <Input style={styles.input} size="large" />
@@ -174,7 +184,6 @@ const Login = ({ setIsAuthenticated, setUserRole }) => {
             <Form.Item
               label="Contraseña"
               name="password"
-              rules={[{ required: true, message: "Ingresa tu contraseña" }]}
               style={styles.formItem}
             >
               <Input.Password style={styles.input} size="large" />

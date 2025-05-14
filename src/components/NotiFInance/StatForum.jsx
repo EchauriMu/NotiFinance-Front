@@ -11,7 +11,12 @@ import axiosInstance from "../../api/axiosInstance";
 const { TextArea } = Input;
 const { Title, Text } = Typography;
 
-const ONE_HOUR = 100;
+//En produccion hay que cambiar esto Pardo me recuerdas
+//1 segundo = 1,000 milisegundos
+//1 minuto = 60 segundos = 60,000 milisegundos
+//1 hora = 60 minutos = 3,600,000 milisegundos
+
+const ONE_HOUR = 3600000; 
 
 export const StatForum = ({ symbol }) => {
   const [foro, setForo] = useState(null);

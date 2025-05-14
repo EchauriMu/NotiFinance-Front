@@ -42,9 +42,10 @@ const NewsComponent = () => {
 
   if (loading) {
     return (
-      <div className="loading-container" style={{padding: '20px'}}>
- <Title style={{marginTop:0}} level={2}>Noticias mas recientes...</Title>
-        <Row gutter={[16, 16]}>
+      <div className="loading-container" style={{ padding: '0px 4px' }}>
+              <Title style={{ margin:'10px 0px'}} level={3}>Noticias mas recientes...</Title>
+  
+      <Row gutter={[16, 16]}>
        
           {[...Array(pageSize)].map((_, index) => (
             <Col xs={24} sm={12} md={8} lg={6} key={index}>
@@ -65,8 +66,8 @@ const NewsComponent = () => {
   }
 
   return (
-    <div style={{ padding: '20px' }}>
-        <Title style={{marginTop:0}} level={2}>Noticias mas recientes...</Title>
+    <div style={{padding: '0px 4px'  }}>
+        <Title style={{ margin:'10px 0px'}} level={3}>Noticias mas recientes...</Title>
       <Row gutter={[16, 16]}>
         {paginatedNews.map((item, index) => (
           <Col xs={24} sm={12} md={8} lg={6} key={index}>

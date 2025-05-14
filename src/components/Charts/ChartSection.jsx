@@ -10,7 +10,6 @@ const styles = {
   card: {
     border: '1px solid rgba(255,255,255,0.1)',
     marginBottom: '20px',
-   
   },
   buttonGroup: {
     marginBottom: '20px',
@@ -59,20 +58,32 @@ const CryptoChart = () => {
   }, [selectedCrypto, interval]);
 
   return (
-   
-      <Row gutter={[16, 16]}>
-        <Col xs={24} md={24}>
-        <Card  title="Criptomonedas del mercado"style={styles.card}>
+    <Row gutter={[16, 16]}>
+      <Col xs={24} md={24}>
+        <Card title="Criptomonedas del mercado" style={styles.card}>
           {!selectedCrypto && !loadingChart && (
             <Alert
-              message="¡Importante!"
-              description="Por favor, selecciona una criptomoneda para ver el gráfico."
-              type="warning"
+              message="Información"
+              description={
+                <>
+                  Por favor, selecciona una criptomoneda para ver el gráfico.{" "}
+                  ¿No conoces los símbolos? Conoce qué mercados podemos ofrecerte{" "}
+                  <a
+                    href="/list"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    aquí
+                  </a>
+                  .
+                </>
+              }
+              type="info"
               showIcon
               style={{ marginBottom: '20px' }}
             />
           )}
-          
+
           <Select
             showSearch
             style={{ width: '100%', marginBottom: '20px' }}
@@ -81,7 +92,7 @@ const CryptoChart = () => {
             placeholder="Selecciona una criptomoneda"
             loading={symbolsLoading}
           >
-            {cryptos.map(item => (
+            {cryptos.map((item) => (
               <Select.Option key={item.value} value={item.value}>
                 {item.label}
               </Select.Option>
@@ -108,10 +119,9 @@ const CryptoChart = () => {
             loadingChart={loadingChart}
             selectedCrypto={selectedCrypto}
           />
-           </Card>
-        </Col>
-      </Row>
-   
+        </Card>
+      </Col>
+    </Row>
   );
 };
 

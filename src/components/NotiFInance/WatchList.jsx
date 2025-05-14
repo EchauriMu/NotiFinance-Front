@@ -81,7 +81,20 @@ export const Watchlist = ({
       <Spin spinning={loading}>
         <Alert
           message="Instrucciones"
-          description="Seleccione una criptomoneda, ingrese un precio umbral y elija un medio de notificación."
+          description={
+            <>
+              Seleccione una criptomoneda, ingrese un precio umbral y elija un medio de notificación.{" "}
+              ¿No conoces los símbolos? Conoce qué mercados podemos ofrecerte{" "}
+              <a
+                href="/list"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                aquí
+              </a>
+              .
+            </>
+          }
           type="info"
           showIcon
           style={{ marginBottom: 16 }}

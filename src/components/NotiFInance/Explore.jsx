@@ -45,7 +45,12 @@ export const Explore = ({ news, loading, error }) => (
         )}
       />
     ) : (
-      <p style={{ textAlign: 'center', fontStyle: 'italic' }}>No hay noticias disponibles</p>
+    <Alert
+        message="Sin símbolo selecionado"
+  type="warning"
+        showIcon
+      />
+    
     )}
   </Card>
 );

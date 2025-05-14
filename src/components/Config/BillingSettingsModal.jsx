@@ -1,19 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import { Modal, Typography, Spin, notification, Switch, Card, Space, Badge, Tag, Divider, } from 'antd';
-import axiosInstance from '../../api/axiosInstance'; // Asegúrate de tener esta instancia de axios configurada correctamente
-
-const { Title } = Typography;
+import { Modal, Typography, Spin, notification, Switch, Card, Space, Badge, Tag, Divider, Select, Button } from 'antd';
+import axiosInstance from '../../api/axiosInstance'; 
+const { Title, Text } = Typography;
+const { Option } = Select;
 
 const BillingSettingsModal = ({ open, onClose }) => {
-  const { Title, Text } = Typography; // Correct way to import Text from Typography
-
   const [paymentInfo, setPaymentInfo] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [autoRenew, setAutoRenew] = useState(false); // Estado para la renovación automática
+  const [autoRenew, setAutoRenew] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState(null);
+  const [changingPlan, setChangingPlan] = useState(false);
+  const [confirmModalVisible, setConfirmModalVisible] = useState(false);
+
+  const allowedPlans = ['Freemium', 'Premium', 'NotiFinance Pro'];
 
   useEffect(() => {
     if (open) {
-      fetchPaymentInfo(); // Cuando el modal se abre, traemos los datos
+      fetchPaymentInfo();
     }
   }, [open]);
 
@@ -21,8 +24,9 @@ const BillingSettingsModal = ({ open, onClose }) => {
     setLoading(true);
     try {
       const response = await axiosInstance.get('/subs/me/active');
-      setPaymentInfo(response.data); // Guardamos la suscripción activa en el estado
-      setAutoRenew(response.data.autoRenew); // Asignamos el valor de autoRenew desde la API
+      setPaymentInfo(response.data);
+      setAutoRenew(response.data.autoRenew);
+      console.log('Payment Info:', response.data.plan);
       setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -55,88 +59,123 @@ const BillingSettingsModal = ({ open, onClose }) => {
   };
 
   return (
-    <Modal
-      title="Configuración de Facturación"
-      open={open}
-      onCancel={onClose} // Solo habilitamos el cierre por el botón de cancelación
-      footer={null} // Eliminamos el pie de página (donde están los botones Ok y Cancel)
-      width={600}
-    >
-      <div>
-        {loading ? (
-          <div style={{ textAlign: 'center', padding: '20px' }}>
-            <Spin size="large" />
-          </div>
-        ) : paymentInfo ? (
-          <div>
-            {/* Información de la suscripción */}
-            <Title level={4}>Detalles de la Suscripción</Title>
-            <Card bordered={false} style={{ marginBottom: 20 }}>
-              <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-                {/* Información del Plan */}
-                <div>
-                  <Text strong>Plan:</Text> <Text>{paymentInfo.plan}</Text>
-                </div>
-                <Divider />
-                {/* Estado de la Suscripción */}
-                <div>
-                  <Text strong>Estado:</Text> <Space>{renderStatusBadge(paymentInfo.status)}</Space>
-                </div>
-              </Space>
-            </Card>
+    <>
+      <Modal
+        title="Configuración de Facturación"
+        open={open}
+        onCancel={onClose}
+        footer={null}
+        width={600}
+      >
+        <div>
+          {loading ? (
+            <div style={{ textAlign: 'center', padding: '20px' }}>
+              <Spin size="large" />
+            </div>
+          ) : paymentInfo ? (
+            <div>
+              <Title level={4}>Detalles de la Suscripción</Title>
+              <Card bordered={false} style={{ marginBottom: 20 }}>
+                <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+                  <div>
+                    <Text strong>Plan:</Text> <Text>{paymentInfo.plan}</Text>
+                  </div>
+                  <Divider />
+                  <div>
+                    <Text strong>Estado:</Text> <Space>{renderStatusBadge(paymentInfo.status)}</Space>
+                  </div>
+                </Space>
+              </Card>
 
-            {/* Detalles de la tarjeta de crédito */}
-            <Title level={4}>Detalles de Pago</Title>
-            <Card bordered={false} style={{ marginBottom: 20 }}>
-              <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-                <div>
-                  <Text strong>Método de Pago:</Text> <Text>Tarjeta de Crédito (TC)</Text>
-                </div>
-                <div>
-                  <Text strong>Últimos 4 dígitos de la tarjeta:</Text> <Tag>{paymentInfo.last4}</Tag>
-                </div>
-                <div>
-                  <Text strong>Fecha de Expiración:</Text> <Tag>{paymentInfo.FC || 'No disponible'}</Tag>
-                </div>
-              </Space>
-            </Card>
+              {paymentInfo.planChangeRequested ? (
+                // Mostrar información del cambio de plan pendiente
+                <Card bordered={false} style={{ marginBottom: 20 }}>
+                  <Title style={{margin:0}} level={4}>Cambio de Plan</Title>
+                  <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+                    <div style={{marginTop:10}}>
+                      <Text strong>Nuevo Plan Solicitado:</Text>{' '}
+                      <Tag color="blue" style={{ fontSize: '14px', padding: '5px 10px' }}>
+                        {paymentInfo.newRequestedPlan}
+                      </Tag>
+                    </div>
+                    <div>
+                      <Text strong>Fecha Efectiva del Cambio:</Text>{' '}
+                      <Tag color="green" style={{ fontSize: '14px', padding: '5px 10px' }}>
+                        {new Date(paymentInfo.planChangeEffectiveDate).toLocaleDateString()}
+                      </Tag>
+                    </div>
+                    <div>
+                      <Badge
+                        status="processing"
+                        text="Cambio pendiente"
+                        style={{ fontSize: '14px', marginTop: '10px' }}
+                      />
+                    </div>
+                  </Space>
+                </Card>
+              ) : (
+                // Mostrar opción para cambiar de plan si no hay solicitud pendiente
+                <>
+                  <Title level={4}>Cambio de Plan</Title>
+                  <Card bordered={false} style={{ marginBottom: 20 }}>
+                    <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+                      <div>
+                        <Text strong>Selecciona un nuevo plan:</Text>
+                        <Select
+                          style={{ width: '100%', marginTop: 10 }}
+                          placeholder="Selecciona un plan"
+                          value={selectedPlan}
+                          onChange={(value) => setSelectedPlan(value)}
+                        >
+                          {allowedPlans
+                            .filter((plan) => plan !== paymentInfo.plan)
+                            .map((plan) => (
+                              <Option key={plan} value={plan}>
+                                {plan.charAt(0).toUpperCase() + plan.slice(1)}
+                              </Option>
+                            ))}
+                        </Select>
+                      </div>
+                      <Button
+                        type="primary"
+                        onClick={() => setConfirmModalVisible(true)}
+                        loading={changingPlan}
+                        disabled={!selectedPlan || selectedPlan === paymentInfo.plan}
+                      >
+                        Cambiar Plan
+                      </Button>
+                    </Space>
+                  </Card>
+                </>
+              )}
 
-            {/* Fechas de la Suscripción */}
-            <Title level={4}>Fechas de la Suscripción</Title>
-            <Card bordered={false} style={{ marginBottom: 20 }}>
-              <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-                <div>
-                  <Text strong>Fecha de inicio:</Text> <Text>{new Date(paymentInfo.startedAt).toLocaleDateString()}</Text>
-                </div>
-                <div>
-                  <Text strong>Fecha de expiración:</Text> <Text>{new Date(paymentInfo.expiresAt).toLocaleDateString()}</Text>
-                </div>
-              </Space>
-            </Card>
-
-            {/* Renovación Automática */}
-            <Title level={4}>Renovación Automática</Title>
-            <Card bordered={false} style={{ marginBottom: 20 }}>
-              <div style={{ marginBottom: 20 }}>
-                <Text strong>¿Activar renovación automática?</Text>
-                <Switch 
-                  checked={autoRenew} 
-                  onChange={(checked) => setAutoRenew(checked)} 
-                  style={{ marginLeft: 10 }} 
-                />
-                {autoRenew ? (
-                  <Text style={{ color: 'green', marginLeft: 10 }}>Renovación automática activada</Text>
-                ) : (
-                  <Text style={{ color: 'red', marginLeft: 10 }}>Renovación automática desactivada</Text>
-                )}
-              </div>
-            </Card>
-          </div>
-        ) : (
-          <Text>No hay información de suscripción activa.</Text>
-        )}
-      </div>
-    </Modal>
+              {paymentInfo.plan && paymentInfo.plan.toLowerCase() !== 'freemium' ? (
+                <>
+                  <Title level={4}>Detalles de Pago</Title>
+                  <Card bordered={false} style={{ marginBottom: 20 }}>
+                    <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+                      <div>
+                        <Text strong>Método de Pago:</Text> <Text>Tarjeta de Crédito (TC)</Text>
+                      </div>
+                      <div>
+                        <Text strong>Últimos 4 dígitos de la tarjeta:</Text> <Tag>{paymentInfo.last4}</Tag>
+                      </div>
+                      <div>
+                        <Text strong>Fecha de Expiración:</Text> <Tag>{paymentInfo.FC || 'No disponible'}</Tag>
+                      </div>
+                    </Space>
+                  </Card>
+                </>
+              ) : (
+                <Text>Este plan no incluye opciones de pago ni renovación automática.</Text>
+              )}
+            </div>
+          ) : (
+            <Text>No hay información de suscripción activa.</Text>
+          )}
+        </div>
+      </Modal>
+    </>
   );
 };
 

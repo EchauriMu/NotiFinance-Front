@@ -93,9 +93,9 @@ const ProfileSettings = () => {
 
 
         {/* Configuración de Facturación */}
-        <Divider style={{ margin: 0 }} orientation="left">Configuración de Facturación</Divider>
+        <Divider style={{ margin: 0 }} orientation="left">Configuración de Plan</Divider>
         <Button type="default" block onClick={() => setIsBillingModalOpen(true)}>
-          Abrir Configuración de Facturación
+          Abrir Configuración de Plan
         </Button>
         <Divider style={{ margin: 0 }} orientation="left">Soporte</Divider>
         <SupportSection />
