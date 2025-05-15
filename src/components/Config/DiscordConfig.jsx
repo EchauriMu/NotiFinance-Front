@@ -125,7 +125,7 @@ const DiscordConfig = () => {
 
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <Badge
-              count={isDiscordVerified ? 'Activo' : 'Inactivo'}
+              count={isDiscordVerified ? 'Activo' : 'Sin registrar'}
               style={{ backgroundColor: isDiscordVerified ? '#52c41a' : '#f5222d' }}
             />
             {isDiscordVerified && (

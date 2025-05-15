@@ -128,12 +128,19 @@ export const Watchlist = ({
             rules={[
               { required: true, message: 'Ingresa un precio umbral' },
               {
-                validator: (_, value) =>
-                  value >= 0
-                    ? Promise.resolve()
-                    : Promise.reject(
-                        new Error('El precio no puede ser negativo')
-                      )
+                validator: (_, value) => {
+                  const num = Number(value);
+                  if (value === undefined || value === null || value === '') {
+                    return Promise.reject(new Error('Ingresa un precio umbral'));
+                  }
+                  if (isNaN(num)) {
+                    return Promise.reject(new Error('El precio debe ser un número'));
+                  }
+                  if (num < 0) {
+                    return Promise.reject(new Error('El precio no puede ser negativo'));
+                  }
+                  return Promise.resolve();
+                }
               }
             ]}
           >
@@ -141,6 +148,7 @@ export const Watchlist = ({
               prefix="$"
               placeholder="Ingresa el precio umbral"
               type="number"
+              step="any"
               disabled={loading}
             />
           </Form.Item>

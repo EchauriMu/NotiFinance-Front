@@ -150,7 +150,7 @@ const WhatsAppConfig = () => {
 
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <Badge
-              count={isWhatsappVerified ? 'Activo' : 'Inactivo'}
+              count={isWhatsappVerified ? 'Activo' : 'Sin registrar'}
               style={{ backgroundColor: isWhatsappVerified ? '#52c41a' : '#f5222d' }}
             />
             {!isWhatsappVerified && (
