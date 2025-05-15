@@ -478,14 +478,14 @@ const Analitics = () => {
                     Proporciona enlaces a perfiles donde muestres tu actividad o conocimientos (opcional pero recomendado).
                 </Paragraph>
                 <Form.Item
-                    name="twitterUrl"
+                    name="twitterURL"
                     label="Perfil de Twitter/X"
                     rules={[{ type: 'url', message: 'Por favor, introduce una URL válida.' }]}
                 >
                     <Input prefix={<TwitterSquareFilled />} placeholder="https://x.com/tu-usuario" />
                 </Form.Item>
-                 <Form.Item
-                    name="otherPublicProfileUrl"
+                <Form.Item
+                    name="otherPublicProfileURL"
                     label="Otro Perfil Público (Ej. TradingView, Blog, etc.)"
                     rules={[{ type: 'url', message: 'Por favor, introduce una URL válida.' }]}
                 >

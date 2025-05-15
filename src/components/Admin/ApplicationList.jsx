@@ -172,8 +172,6 @@ const ApplicationList = () => {
         {selectedApplicationDetails && (
           <Descriptions bordered column={1} size="small">
             <Descriptions.Item label="ID Solicitud">{selectedApplicationDetails._id}</Descriptions.Item>
-            <Descriptions.Item label="ID Usuario">{selectedApplicationDetails.userId?._id || selectedApplicationDetails.userId}</Descriptions.Item>
-            {/* ... más items de descripción ... */}
             <Descriptions.Item label="Nombre Usuario">{selectedApplicationDetails.userId?.username || selectedApplicationDetails.username}</Descriptions.Item>
             <Descriptions.Item label="Email Usuario">{selectedApplicationDetails.userId?.email || selectedApplicationDetails.email}</Descriptions.Item>
             <Descriptions.Item label="Fecha Solicitud">{dayjs(selectedApplicationDetails.createdAt).format('DD/MM/YYYY HH:mm:ss')}</Descriptions.Item>
@@ -187,8 +185,8 @@ const ApplicationList = () => {
                 {selectedApplicationDetails.experience}
               </Paragraph>
             </Descriptions.Item>
-            <Descriptions.Item label="Twitter/X">{selectedApplicationDetails.twitterUrl || 'N/A'}</Descriptions.Item>
-            <Descriptions.Item label="Otro Perfil Público">{selectedApplicationDetails.otherPublicProfileUrl || 'N/A'}</Descriptions.Item>
+            <Descriptions.Item label="Twitter/X">{selectedApplicationDetails.twitterURL || 'N/A'}</Descriptions.Item>
+            <Descriptions.Item label="Otro Perfil Público">{selectedApplicationDetails.otherPublicProfileURL || 'N/A'}</Descriptions.Item>
             <Descriptions.Item label="Info Adicional">{selectedApplicationDetails.additionalInfo || 'N/A'}</Descriptions.Item>
              <Descriptions.Item label="Estado"><Tag color="blue">{selectedApplicationDetails.status}</Tag></Descriptions.Item>
           </Descriptions>
