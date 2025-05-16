@@ -25,6 +25,7 @@ import Intro from "./components/General/intro";
 
 import './App.css';
 import { Spin } from "antd";
+import EmailVerification from "./components/Admin/EmailVerification";
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem("token"));
@@ -148,6 +149,7 @@ const App = () => {
           path="/intro"
           element={isAuthenticated ? <Intro /> : <Navigate to="/login" replace />}
         />
+        <Route path="/verify-admin" element={<EmailVerification />} />
       </Routes>
     </Router>
   );
