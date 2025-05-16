@@ -156,11 +156,12 @@ export const Watchlist = ({
           <Form.Item name="notifications" label="Medios de Notificación">
             <Row gutter={[16, 16]}>
               {Object.entries(icons).map(([type, icon]) => (
-                <Col span={8} key={type}>
+                <Col xs={12} md={12} lg={8} key={type}>
                   <Card
                     hoverable
                     onClick={() => !loading && selectNotification(type)}
                     style={{
+                    
                       textAlign: 'center',
                       cursor: loading ? 'not-allowed' : 'pointer',
                       opacity: loading ? 0.5 : 1,
@@ -171,7 +172,7 @@ export const Watchlist = ({
                     }}
                   >
                     {icon}
-                    <p>{type.charAt(0).toUpperCase() + type.slice(1)}</p>
+                    <p >{type.charAt(0).toUpperCase() + type.slice(1)}</p>
                   </Card>
                 </Col>
               ))}

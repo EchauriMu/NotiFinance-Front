@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Card, Button, Modal, Form, Input, Alert, Steps, Spin, Badge, notification
+  Card, Button, Modal, Form, Input, Alert, Steps, Spin, Badge, notification, Tooltip
 } from 'antd';
 import {
   WhatsAppOutlined,
@@ -157,10 +157,12 @@ const WhatsAppConfig = () => {
               <ExclamationCircleOutlined style={{ fontSize: '20px', color: '#f5222d', marginLeft: '8px' }} />
             )}
             {isWhatsappVerified && (
-              <DeleteOutlined
-                style={{ fontSize: '20px', color: '#f5222d', marginLeft: '8px', cursor: 'pointer' }}
-                onClick={showDeleteModal}
-              />
+              <Tooltip title="Eliminar configuración de WhatsApp">
+                <DeleteOutlined
+                  style={{ fontSize: '20px', color: '#f5222d', marginLeft: '8px', cursor: 'pointer' }}
+                  onClick={showDeleteModal}
+                />
+              </Tooltip>
             )}
           </div>
         </div>

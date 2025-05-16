@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, Typography, Spin, notification, Switch, Card, Space, Badge, Tag, Divider, Select, Button } from 'antd';
 import axiosInstance from '../../api/axiosInstance'; 
+import dayjs from 'dayjs'; // Si no tienes dayjs, puedes usar new Date()
 const { Title, Text } = Typography;
 const { Option } = Select;
 
@@ -33,8 +34,42 @@ const BillingSettingsModal = ({ open, onClose }) => {
       notification.error({
         message: 'Error al cargar la suscripción',
         description: error.response?.data?.message || 'Hubo un problema al cargar la información de tu suscripción.',
+        placement: 'bottomRight',
       });
     }
+  };
+
+  const handleChangePlan = async () => {
+    setChangingPlan(true);
+    try {
+      const effectiveDate = dayjs().add(1, 'day').toISOString();
+      const response = await axiosInstance.post('/subs/changeplan', {
+        newRequestedPlan: selectedPlan,
+        effectiveDate,
+      });
+      if (response.data.success) {
+        notification.success({
+          message: 'Solicitud enviada',
+          description: 'El cambio de plan ha sido solicitado correctamente.',
+          placement: 'bottomRight',
+        });
+        setConfirmModalVisible(false);
+        fetchPaymentInfo();
+      } else {
+        notification.error({
+          message: 'Error',
+          description: response.data.message || 'No se pudo solicitar el cambio de plan.',
+          placement: 'bottomRight',
+        });
+      }
+    } catch (error) {
+      notification.error({
+        message: 'Error',
+        description: error.response?.data?.message || 'No se pudo solicitar el cambio de plan.',
+        placement: 'bottomRight',
+      });
+    }
+    setChangingPlan(false);
   };
 
   const renderStatusBadge = (status) => {
@@ -119,34 +154,84 @@ const BillingSettingsModal = ({ open, onClose }) => {
                   <Title level={4}>Cambio de Plan</Title>
                   <Card bordered={false} style={{ marginBottom: 20 }}>
                     <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-                      <div>
-                        <Text strong>Selecciona un nuevo plan:</Text>
-                        <Select
-                          style={{ width: '100%', marginTop: 10 }}
-                          placeholder="Selecciona un plan"
-                          value={selectedPlan}
-                          onChange={(value) => setSelectedPlan(value)}
+                      {paymentInfo.plan && paymentInfo.plan.toLowerCase() === 'freemium' ? (
+                        <Button
+                          type="primary"
+                          block
+                          onClick={() => window.open('https://notifinance-es.netlify.app/subscription')}
                         >
-                          {allowedPlans
-                            .filter((plan) => plan !== paymentInfo.plan)
-                            .map((plan) => (
-                              <Option key={plan} value={plan}>
-                                {plan.charAt(0).toUpperCase() + plan.slice(1)}
-                              </Option>
-                            ))}
-                        </Select>
-                      </div>
-                      <Button
-                        type="primary"
-                        onClick={() => setConfirmModalVisible(true)}
-                        loading={changingPlan}
-                        disabled={!selectedPlan || selectedPlan === paymentInfo.plan}
-                      >
-                        Cambiar Plan
-                      </Button>
+                          Comprar un plan en notifinance.es
+                        </Button>
+                      ) : (
+                        <>
+                          <div>
+                            <Text strong>Selecciona un nuevo plan:</Text>
+                            <Select
+                              style={{ width: '100%', marginTop: 10 }}
+                              placeholder="Selecciona un plan"
+                              value={selectedPlan}
+                              onChange={(value) => setSelectedPlan(value)}
+                            >
+                              {['Premium', 'NotiFinance Pro']
+                                .filter((plan) => plan !== paymentInfo.plan)
+                                .map((plan) => (
+                                  <Option key={plan} value={plan}>
+                                    {plan}
+                                  </Option>
+                                ))}
+                            </Select>
+                          </div>
+                          <Button
+                            type="primary"
+                            onClick={() => setConfirmModalVisible(true)}
+                            loading={changingPlan}
+                            disabled={!selectedPlan || selectedPlan === paymentInfo.plan}
+                          >
+                            Cambiar Plan
+                          </Button>
+                        </>
+                      )}
                     </Space>
                   </Card>
                 </>
+              )}
+
+              {paymentInfo.plan && paymentInfo.plan.toLowerCase() !== 'freemium' && (
+                <Card bordered={false} style={{ marginBottom: 20 }}>
+                  <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      <Text strong>Renovación automática:</Text>
+                      <Switch
+                        checked={autoRenew}
+                        onChange={async (checked) => {
+                          setAutoRenew(checked);
+                          try {
+                            await axiosInstance.patch('/subs/autorenew', { autoRenew: checked });
+                            notification.success({
+                              message: 'Auto-renovación actualizada',
+                              description: checked
+                                ? 'La auto-renovación está activada.'
+                                : 'La auto-renovación está desactivada.',
+                              placement: 'bottomRight',
+                            });
+                          } catch (error) {
+                            notification.error({
+                              message: 'Error',
+                              description: error.response?.data?.error || 'No se pudo actualizar la auto-renovación.',
+                              placement: 'bottomRight',
+                            });
+                            setAutoRenew(!checked); // Revertir en caso de error
+                          }
+                        }}
+                        style={{ marginLeft: 10, marginRight: 10 }}
+                      />
+                      <Badge
+                        status={autoRenew ? 'success' : 'default'}
+                        text={autoRenew ? 'Activada' : 'Desactivada'}
+                      />
+                    </div>
+                  </Space>
+                </Card>
               )}
 
               {paymentInfo.plan && paymentInfo.plan.toLowerCase() !== 'freemium' ? (
@@ -175,6 +260,21 @@ const BillingSettingsModal = ({ open, onClose }) => {
           )}
         </div>
       </Modal>
+      {confirmModalVisible && (
+        <Modal
+          title="Confirmar cambio de plan"
+          open={confirmModalVisible}
+          onOk={handleChangePlan}
+          onCancel={() => setConfirmModalVisible(false)}
+          okText="Confirmar"
+          cancelText="Cancelar"
+          confirmLoading={changingPlan}
+        >
+          <p>
+            ¿Estás seguro de que deseas solicitar el cambio al plan <b>{selectedPlan}</b>?
+          </p>
+        </Modal>
+      )}
     </>
   );
 };

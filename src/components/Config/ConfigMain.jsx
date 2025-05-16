@@ -15,8 +15,8 @@ const ConfigMain = () => {
       <Row gutter={[24, 24]}>
         <Col span={24}>
           <Alert
-            message="Configuración"
-            description="Administra la verificación de tus medios de notificación."
+            message="Centro de Configuración"
+            description="Gestiona tus medios de notificación, cambia tu nombre de usuario, recupera tu contraseña y administra tus preferencias de cuenta desde esta pestaña."
             type="info"
             showIcon
           />

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Card, Button, Modal, Form, Input, Space, Typography, notification, Badge
+  Card, Button, Modal, Form, Input, Space, Typography, notification, Badge, Tooltip
 } from 'antd';
 import {
   DiscordOutlined, SettingOutlined, CheckCircleOutlined, DeleteOutlined
@@ -129,10 +129,12 @@ const DiscordConfig = () => {
               style={{ backgroundColor: isDiscordVerified ? '#52c41a' : '#f5222d' }}
             />
             {isDiscordVerified && (
-              <DeleteOutlined
-                style={{ fontSize: '20px', color: '#f5222d', marginLeft: '8px', cursor: 'pointer' }}
-                onClick={() => setDeleteModalVisible(true)}
-              />
+              <Tooltip title="Eliminar configuración de Discord">
+                <DeleteOutlined
+                  style={{ fontSize: '20px', color: '#f5222d', marginLeft: '8px', cursor: 'pointer' }}
+                  onClick={() => setDeleteModalVisible(true)}
+                />
+              </Tooltip>
             )}
           </div>
         </div>
