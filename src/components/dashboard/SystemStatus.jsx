@@ -16,20 +16,19 @@ const SystemStatus = () => {
 
   // Función para obtener el estado de los servicios
   const fetchServiceStatus = async () => {
-    setLoading(true); // Inicia el loading
-    setError(false);  // Resetea el estado de error
+    setLoading(true);
+    setError(false);
 
     try {
-      const response = await axiosInstance.get('/status'); 
+      const response = await axiosInstance.get('/status');
       if (response && response.data) {
         const serviceStatus = response.data;
 
-        // Actualizamos el estado con la respuesta
         setStatus({
-          'servicio de whatsapp': serviceStatus['servicio de whatsapp y alertas'] === 'Operativo' ? 'Operativo' : serviceStatus['servicio de whatsapp y alertas'],
-          'servicio de alertas': serviceStatus['servicio de whatsapp y alertas'] === 'Operativo' ? 'Operativo' : serviceStatus['servicio de whatsapp y alertas'],
-          'servicio de correo': serviceStatus['servicio de correo'] === 'Operativo' ? 'Operativo' : serviceStatus['servicio de correo'],
-          api_precios: serviceStatus.api_precios === 'Operativo' ? 'Operativo' : serviceStatus.api_precios,
+          'servicio de whatsapp': serviceStatus['servicio de whatsapp'] || 'No disponible',
+          'servicio de alertas': serviceStatus['servicio de alertas'] || 'No disponible',
+          'servicio de correo': serviceStatus['servicio de correo'] || 'No disponible',
+          api_precios: serviceStatus.api_precios || 'No disponible',
         });
       } else {
         setStatus({
@@ -41,16 +40,15 @@ const SystemStatus = () => {
       }
     } catch (error) {
       console.error("Error al obtener el estado de los servicios:", error);
-      // Si hay un error, los marcamos todos como "No disponible"
       setStatus({
         'servicio de whatsapp': 'No disponible',
         'servicio de alertas': 'No disponible',
         'servicio de correo': 'No disponible',
         api_precios: 'No disponible',
       });
-      setError(true); // Establecemos que ocurrió un error
+      setError(true);
     } finally {
-      setLoading(false); // Finaliza el loading
+      setLoading(false);
     }
   };
 
