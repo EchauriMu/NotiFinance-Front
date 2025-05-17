@@ -53,18 +53,31 @@ const AdminSettings = ({ userData }) => {
   return (
     <Card
       title={<Title level={4} style={{ margin: 0 }}>Configuración de Administrador</Title>}
- >
+    >
       <div style={{ marginBottom: 16 }}>
-        <Text strong>Usuario:</Text> <Text>{userData?.username}</Text>
+        <Text strong>Nombre de usuario:</Text> <Text>{userData?.username}</Text>
         <br />
-        <Text strong>Rol:</Text> <Text>{userData?.role}</Text>
+        <Text strong>Rol asignado:</Text> <Text>{userData?.role === "admin" ? "Administrador" : userData?.role}</Text>
       </div>
       <Divider />
       {!userData?.email ? (
         <>
           <Text>
             <MailOutlined style={{ color: '#1890ff', marginRight: 6 }} />
-            No tienes un correo electrónico registrado. Regístralo para poder recuperar tu cuenta y recibir notificaciones importantes.
+            <strong>No tienes un correo electrónico registrado.</strong>
+            <br />
+            <span>
+              Es fundamental que registres un correo electrónico válido y personal. Este correo será utilizado para:
+              <ul style={{ margin: '8px 0 0 20px', padding: 0 }}>
+                <li>Recuperar el acceso a tu cuenta en caso de olvidar tu contraseña.</li>
+                <li>Recibir notificaciones importantes sobre la plataforma y la administración.</li>
+                <li>Confirmar acciones sensibles o cambios en la configuración de tu cuenta.</li>
+              </ul>
+              <br />
+              <strong>Por favor, asegúrate de ingresar un correo al que solo tú tengas acceso.</strong>
+              <br />
+              Si no registras un correo, no podrás recuperar tu cuenta ni recibir alertas críticas del sistema.
+            </span>
           </Text>
           <div style={{ marginTop: 18, marginBottom: 8 }}>
             <Text strong>
@@ -141,8 +154,11 @@ const AdminSettings = ({ userData }) => {
       )}
       <Divider />
       <Text type="secondary" style={{ fontSize: 13 }}>
-        Tu correo electrónico se usará para notificaciones importantes y recuperación de cuenta. 
-        Asegúrate de que esté actualizado y sea accesible solo por ti.
+        <strong>Importante:</strong> El correo electrónico registrado se utilizará exclusivamente para notificaciones administrativas, alertas de seguridad y recuperación de cuenta. 
+        <br />
+        <span>
+          Mantén tu correo actualizado y asegúrate de que solo tú tengas acceso a él. Si tienes dudas sobre la seguridad de tu cuenta, contacta al soporte de NotiFinance.
+        </span>
       </Text>
     </Card>
   );

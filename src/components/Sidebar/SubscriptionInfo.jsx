@@ -47,14 +47,21 @@ const SubscriptionInfo = ({ userData, loading }) => {
             />
 
             <Text type="secondary" style={{ fontSize: '14px' }}>
-              Válido hasta:{' '}
-              {userData?.subscriptionExpiresAt
-                ? new Date(userData.subscriptionExpiresAt).toLocaleDateString('es-ES', {
-                    day: '2-digit',
-                    month: 'short',
-                    year: 'numeric',
-                  })
-                : 'Sin fecha'}
+              {userData?.plan?.toLowerCase() === 'freemium'
+                ? 'Vigencia: Ilimitada'
+                : (
+                  <>
+                    Válido hasta:{' '}
+                    {userData?.subscriptionExpiresAt
+                      ? new Date(userData.subscriptionExpiresAt).toLocaleDateString('es-ES', {
+                          day: '2-digit',
+                          month: 'short',
+                          year: 'numeric',
+                        })
+                      : 'Ilimitada'}
+                  </>
+                )
+              }
             </Text>
 
             <Button type="link" size="small" block onClick={() => setModalOpen(true)}>

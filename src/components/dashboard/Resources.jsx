@@ -20,7 +20,7 @@ const Resources = () => {
           <div style={{ display: "flex", flexDirection: "column", gap: 22 }}>
                 <Title level={5}>Recursos para usuarios</Title>
             <Link onClick={() => handleLinkClick("/intro")}>Introducción a NotiFinance</Link>
-            <Link onClick={() => handleLinkClick("/howtocreate")}>Cómo crear tu primera alerta</Link>
+            <Link onClick={() => handleLinkClick("/guia")}>Cómo crear tu primera alerta</Link>
             <Link onClick={() => handleLinkClick("/subscription")}>Guía de planes y beneficios</Link>
               <Link onClick={() => handleLinkClick("/list")}>Monedas disponibles</Link>
           </div>

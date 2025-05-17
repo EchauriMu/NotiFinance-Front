@@ -12,52 +12,51 @@ const { Panel } = Collapse;
 
 const plans = [
   {
-    name: 'Freemium', price: 'Gratis', color: '#1668dc', badge: 'Ideal para comenzar',
+    name: 'Freemium',
+    price: 'Gratis',
+    color: '#1668dc',
+    badge: 'Ideal para comenzar',
     features: [
-      '1 alerta personalizada con condiciones básicas',
-      'Soporte vía email en horario laboral',
+      'Hasta 3 alertas en total (sin posibilidad de eliminar o cambiarla)',
+      'Solo 1 alerta activa a la vez',
       'Notificaciones por correo electrónico',
-      'Acceso a recursos educativos y documentación',
-      'Historial de alertas limitado a 7 días'
     ],
     details: {
-      incluye: 'Acceso a una alerta activa, visualización básica, uso individual.',
-      recomendado: 'Usuarios nuevos o personas que quieran probar el servicio.',
-      limitaciones: 'Sin acceso a integraciones externas ni soporte fuera de horario.',
-      tecnicos: 'Frecuencia de escaneo: cada 60 minutos.'
+      incluye: 'Crea hasta 3 alertas, con solo una activa a la vez. Solo notificaciones por correo electrónico.',
+      recomendado: 'Usuarios nuevos o quienes quieren probar el servicio.',
+      limitaciones: 'No permite eliminar alertas, solo modificarlas. No puedes crear más de 3 alertas. Solo una alerta activa a la vez.',
     }
   },
   {
-    name: 'Premium', price: '$9.99/mes', color: '#faad14', badge: 'Más popular',
+    name: 'Premium',
+    price: '$9.99/mes',
+    color: '#faad14',
+    badge: 'Más popular',
     features: [
-      'Hasta 5 alertas configurables con múltiples condiciones',
-      'Soporte prioritario (respuesta en menos de 12h)',
-      'Notificaciones por WhatsApp, Discord y correo',
-      'Acceso anticipado a nuevas funciones',
-      'Historial de alertas de 30 días',
-      'Análisis básico de tendencias'
+      'Hasta 10 alertas configurables',
+      'Hasta 5 alertas activas a la vez',
+      'Notificaciones por correo electrónico, WhatsApp y Discord',
     ],
     details: {
-      incluye: 'Funciones ampliadas, más canales de notificación, soporte rápido.',
-      recomendado: 'Usuarios avanzados, pequeños emprendedores.',
+      incluye: 'Crea hasta 5 alertas y mantén hasta 3 activas. Recibe notificaciones por correo, WhatsApp y Discord.',
+      recomendado: 'Usuarios avanzados o pequeños emprendedores.',
       limitaciones: 'No incluye panel de equipo ni integraciones API.',
-      tecnicos: 'Frecuencia de escaneo: cada 15 minutos.'
     }
   },
   {
-    name: 'NotiFinance Pro', price: '$19.99/mes', color: '#722ed1', badge: 'Nuevo • Para profesionales',
+    name: 'NotiFinance Pro',
+    price: '$19.99/mes',
+    color: '#722ed1',
+    badge: 'Nuevo • Para profesionales',
     features: [
-      'Hasta 10 alertas con condiciones avanzadas',
-      'Integraciones avanzadas (API, Zapier, Webhooks)',
-      'Panel de análisis detallado con exportación de datos',
-      'Soporte premium 24/7 con canal dedicado',
-      'Historial completo y búsqueda avanzada'
+      'Hasta 20 alertas configurables',
+      'Hasta 10 alertas activas a la vez',
+      'Notificaciones por correo electrónico, WhatsApp y Discord',
     ],
     details: {
-      incluye: 'Herramientas colaborativas, acceso total a funcionalidades y personalización.',
+      incluye: 'Crea hasta 10 alertas y mantén todas activas. Recibe notificaciones por correo, WhatsApp y Discord.',
       recomendado: 'Equipos financieros, analistas, startups en crecimiento.',
-      limitaciones: 'Ninguna funcionalidad limitada. Acceso completo.',
-      tecnicos: 'Frecuencia de escaneo: cada 2 minutos. SLA: 99.9%'
+      limitaciones: 'Acceso completo, sin restricciones.',
     }
   }
 ];
@@ -129,7 +128,6 @@ const Subscription = () => {
                     <Panel header="¿Qué incluye?" key="1"><Text>{plan.details.incluye}</Text></Panel>
                     <Panel header="Recomendado para..." key="2"><Text>{plan.details.recomendado}</Text></Panel>
                     <Panel header="Limitaciones" key="3"><Text>{plan.details.limitaciones}</Text></Panel>
-                    <Panel header="Detalles técnicos" key="4"><Text>{plan.details.tecnicos}</Text></Panel>
                   </Collapse>
 
                   <Button
