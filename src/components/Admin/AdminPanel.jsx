@@ -60,6 +60,13 @@ const AdminPanel = () => {
       setModalVisible(true);
     });
 
+            // Escuchar el evento 'userUpdated' del WebSocket
+    newSocket.on('userDeleted', (data) => {
+      console.log('⚠️ Cambio detectado, mostrando modal');
+      setModalVisible(true); // Mostrar el modal cuando haya un cambio
+    });
+    
+
     return () => {
       newSocket.disconnect();
     };

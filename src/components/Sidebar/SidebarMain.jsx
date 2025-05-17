@@ -52,7 +52,7 @@ const SidebarMain = ({ setIsAuthenticated }) => {
         setUserData(userDataResponse);
 
         // Emitir al WebSocket para suscribirse a los cambios del usuario
-        newSocket.emit('subscribeUserChanges', userDataResponse.id);
+        newSocket.emit('subscrisibeUserChanges', userDataResponse.id);
         console.log('✅ Suscrito a cambios del usuario:', userDataResponse.id);
 
         // Obtener configuración de notificaciones y lista de seguimiento
@@ -73,6 +73,12 @@ const SidebarMain = ({ setIsAuthenticated }) => {
 
     // Escuchar el evento 'userUpdated' del WebSocket
     newSocket.on('userUpdated', (data) => {
+      console.log('⚠️ Cambio detectado, mostrando modal');
+      setModalVisible(true); // Mostrar el modal cuando haya un cambio
+    });
+
+        // Escuchar el evento 'userUpdated' del WebSocket
+    newSocket.on('userDeleted', (data) => {
       console.log('⚠️ Cambio detectado, mostrando modal');
       setModalVisible(true); // Mostrar el modal cuando haya un cambio
     });

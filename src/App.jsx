@@ -149,7 +149,18 @@ const App = () => {
           path="/intro"
           element={isAuthenticated ? <Intro /> : <Navigate to="/login" replace />}
         />
-        <Route path="/verify-admin" element={<EmailVerification />} />
+        <Route
+          path="/verify-admin"
+          element={
+            isAuthenticated && userRole === "admin" ? (
+              <EmailVerification />
+            ) : isAuthenticated ? (
+              <Navigate to="/home" replace />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
       </Routes>
     </Router>
   );

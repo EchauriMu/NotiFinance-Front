@@ -55,6 +55,12 @@ const ResetPassword = () => {
 
   return (
     <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+          <Title level={2} style={{ margin: 0 , fontWeight:700}}>
+            <span style={{ color: 'white' }}>Noti</span>
+            <span style={{ color: '#ffa500' }}>Finance</span>
+          </Title>
+        </div>
       <Card title="Restablecer Contraseña" style={{ width: 350 }}>
         <Form onFinish={onFinish} layout="vertical">
           <Form.Item
@@ -62,7 +68,12 @@ const ResetPassword = () => {
             name="password"
             rules={[
               { required: true, message: "Ingresa tu nueva contraseña" },
-              { min: 6, message: "La contraseña debe tener al menos 6 caracteres" },
+              { min: 8, message: "La contraseña debe tener al menos 8 caracteres" },
+              {
+                pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                message:
+                  "Debe tener mayúscula, minúscula, número y un carácter especial",
+              },
             ]}
             hasFeedback
           >
