@@ -112,7 +112,20 @@ export const StatForum = ({ symbol }) => {
     : 0;
 
   return (
-    <Card title={'Predicción de la comunidad'} style={{ marginBottom: 15 }}>
+    <Card
+      title={
+        <div>
+       
+          Predicción de la comunidad  - 
+             {symbol && (
+            <span style={{ color: '#ffa500', fontWeight: 700, fontSize: 14, marginRight: 12 }}>
+             Criptomoneda  : {symbol}
+            </span>
+          )}
+        </div>
+      }
+      style={{ marginBottom: 15 }}
+    >
       {!symbol ? (
         <Alert message="Para ver el foro selecciona un símbolo" type="warning" showIcon />
       ) : loading ? (

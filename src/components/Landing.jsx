@@ -371,16 +371,14 @@ export default function PaginaInicioNotiFinance() {
           <Col xs={24} sm={12} md={6}>
             <Title level={4} style={{ color: 'white' }}>Enlaces Rápidos</Title>
             <ul style={{ listStyle: 'none', padding: 0, color: '#ccc' }}>
-              <li style={{ marginBottom: '10px' }}><a style={{ color: '#ccc' }}>Inicio</a></li>
               <li  onClick={() => navigate('/subscription')} style={{ marginBottom: '10px' }}><a style={{ color: '#ccc' }}>Precios</a></li>
-              <li style={{ marginBottom: '10px' }}><a style={{ color: '#ccc' }}>Sobre Nosotros</a></li>
+              <li  onClick={() => navigate('/about')}  style={{ marginBottom: '10px' }}><a style={{ color: '#ccc' }}>Sobre Nosotros</a></li>
             </ul>
           </Col>
 
           <Col xs={24} sm={12} md={6}>
             <Title level={4} style={{ color: 'white' }}>Recursos</Title>
             <ul style={{ listStyle: 'none', padding: 0, color: '#ccc' }}>
-              <li style={{ marginBottom: '10px' }}><a style={{ color: '#ccc' }}>Guías</a></li>
                  <li  onClick={() => navigate('/list')} style={{ marginBottom: '10px' }}><a style={{ color: '#ccc' }}>Mercados</a></li>
               <li onClick={() => navigate('/ayuda')} style={{ marginBottom: '10px' }}><a style={{ color: '#ccc' }}>Preguntas Frecuentes</a></li>
             </ul>

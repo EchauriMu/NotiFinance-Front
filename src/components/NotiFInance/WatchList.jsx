@@ -37,7 +37,7 @@ export const Watchlist = ({
         description: !crypto
           ? 'Selecciona una criptomoneda'
           : 'Selecciona un medio de notificación',
-        placement: 'topRight'
+        placement: 'bottomRight' // <-- bottomRight
       });
     }
 
@@ -55,7 +55,7 @@ export const Watchlist = ({
       notification.success({
         message: 'Alerta Creada',
         description: `Alerta para ${crypto} a $${threshold} creada correctamente`,
-        placement: 'topRight'
+        placement: 'bottomRight' // <-- bottomRight
       });
 
       form.resetFields();
@@ -69,7 +69,7 @@ export const Watchlist = ({
         notification.error({
           message: 'Error',
           description: 'Error al crear alerta',
-          placement: 'topRight'
+          placement: 'bottomRight' // <-- bottomRight
         });
     } finally {
       setLoading(false);
@@ -83,7 +83,7 @@ export const Watchlist = ({
           message="Instrucciones"
           description={
             <>
-              Seleccione una criptomoneda, ingrese un precio umbral y elija un medio de notificación.{" "}
+              Seleccione una criptomoneda, ingrese un precio umbral (en $usd) y elija un medio de notificación.{" "}
               ¿No conoces los símbolos? Conoce qué mercados podemos ofrecerte{" "}
               <a
                 href="/list"

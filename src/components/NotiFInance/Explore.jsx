@@ -4,7 +4,7 @@ import { Card, List, Spin, Alert, Typography } from 'antd';
 const { Title, Text } = Typography;
 
 export const Explore = ({ news, loading, error }) => (
-  <Card title="Explorar" >
+  <Card title="Noticias recientes..." >
     {loading ? (
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '200px' }}>
         <Spin size="large" />

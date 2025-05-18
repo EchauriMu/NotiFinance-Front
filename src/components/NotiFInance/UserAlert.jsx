@@ -232,10 +232,10 @@ const UserAlerts = ({ refresh }) => {
               <Tag color="gold" style={{ margin: 0 }}>
                 {alert.cryptoSymbol}
               </Tag>
-              <Text style={{ fontSize: 18, marginTop: 2 }} strong>Objetivo: ${alert.targetPrice}</Text>
+              <Text style={{ fontSize:'0.8rem', marginTop: 2, marginLeft:4 }} strong>Objetivo: ${alert.targetPrice}</Text>
             </div>
 
-            <div style={{ fontSize: 16, marginTop: 2 }}>
+            <div style={{ fontSize:'1rem', marginTop: 2 }}>
 
              Medio: {alert.typeNotification} {icon} 
 
@@ -252,7 +252,7 @@ const UserAlerts = ({ refresh }) => {
               size="small"
               onClick={() => toggleActiveStatus(alert._id, alert.isActive)}
               style={{
-                fontSize: 16,
+                fontSize:'1rem',
                 padding: '0 6px',
                 color: alert.isActive ? 'red' : 'green',
                 borderColor: alert.isActive ? 'red' : 'green'
@@ -309,7 +309,7 @@ const UserAlerts = ({ refresh }) => {
                   </span>
                 </div>
               }
-              extra={<EllipsisOutlined />}
+             
               style={{
                 borderRadius: 6,
                 boxShadow: '0 1px 3px rgba(0,0,0,0.08)'
@@ -354,7 +354,7 @@ const UserAlerts = ({ refresh }) => {
                   </span>
                 </div>
               }
-              extra={<EllipsisOutlined />}
+            
               style={{
                 borderRadius: 6,
                 boxShadow: '0 1px 3px rgba(0,0,0,0.08)'
