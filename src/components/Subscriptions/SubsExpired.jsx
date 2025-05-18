@@ -23,15 +23,20 @@ const SubscriptionExpiredNotice = () => {
     try {
       const userData = JSON.parse(userDataStr);
       const { subscriptionExpiresAt } = userData;
-    
+
+      console.log('subscriptionExpiresAt recibido:', subscriptionExpiresAt);
+
       if (!subscriptionExpiresAt) return;
 
       // Obtener la fecha de expiración en formato Date
       const expirationDate = new Date(subscriptionExpiresAt);
+      console.log('expirationDate (objeto Date):', expirationDate);
       const expirationDateStr = expirationDate.toLocaleDateString('en-CA');
+      console.log('expirationDateStr (toLocaleDateString en-CA):', expirationDateStr);
 
       // Fecha actual en Tepic
       const todayInTepic = getDateInTepic();
+      console.log('todayInTepic:', todayInTepic);
 
       // Mostrar modal solo si es el mismo día de la expiración
       if (todayInTepic === expirationDateStr) {

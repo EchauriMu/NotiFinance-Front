@@ -139,6 +139,7 @@ const ApplicationList = () => {
   return (
     <>
       <Table
+          style={{overflowY: 'auto'}} // Estilo para scroll
         columns={columns}
         dataSource={applications}
         rowKey="_id"

@@ -132,6 +132,7 @@ const AnalystList = () => {
         loading={loading}
         locale={{ emptyText: <Empty description="No hay analistas registrados." /> }}
         size="small"
+        style={{overflowY: 'auto'}} // Estilo para scroll
       />
 
       {/* Modal de Confirmación para Revocar Rol */}

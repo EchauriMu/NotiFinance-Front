@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Row, Col, Space, Button } from 'antd';
-import { DotChartOutlined,TeamOutlined, AppstoreAddOutlined, CalendarOutlined, NotificationOutlined } from '@ant-design/icons';
+import { DotChartOutlined, TeamOutlined, AppstoreAddOutlined, CalendarOutlined, NotificationOutlined } from '@ant-design/icons';
 
 const sections = ['dashboard', 'monedas', 'notifinance', 'configuracion'];
 
@@ -43,14 +43,18 @@ const CryptoHeader = ({ setActiveSection, activeSection }) => {
         height: 'auto',
       }}
     >
-      <Row justify="space-between" align="middle">
-        <Col xs={24} sm={16}>
+      <Row justify="space-between" align="middle" gutter={[0, 12]}>
+        <Col xs={24} sm={14}>
           <Space
-            size="large"
+            size={isMobile ? 'small' : 'large'}
+            direction={isMobile ? 'vertical' : 'horizontal'}
             wrap
             style={{
               marginLeft: isMobile ? 0 : 40,
               textAlign: isMobile ? 'center' : 'initial',
+              width: '100%',
+              justifyContent: isMobile ? 'center' : 'flex-start',
+              display: 'flex',
             }}
           >
             {sections
@@ -59,20 +63,44 @@ const CryptoHeader = ({ setActiveSection, activeSection }) => {
                 <Button
                   key={section}
                   type="text"
+                  block={isMobile}
                   onClick={() => setActiveSection(section)}
-                  style={buttonStyle(section)}
+                  style={{
+                    ...buttonStyle(section),
+                    width: isMobile ? '100%' : 'auto',
+                    minWidth: 100,
+                  }}
                 >
                   {section.charAt(0).toUpperCase() + section.slice(1)}
                 </Button>
               ))}
           </Space>
         </Col>
-        <Col xs={24} sm={8} style={{ textAlign: 'center', marginTop: '8px' }}>
-          <Space wrap>
-            {renderButton('analitics', 'Analitics', <DotChartOutlined />)}
-            {renderButton('calendario', 'Calendario', <CalendarOutlined />)}
-            {renderButton('noticias', 'Noticias!', <NotificationOutlined />)}
-          </Space>
+        <Col xs={24} sm={10} style={{ marginTop: isMobile ? 16 : 8 }}>
+          <div
+            style={{
+              paddingLeft: 16,
+              background: 'rgba(20,20,20,0.95)',
+              borderRadius: 6,
+              display: 'inline-block',
+              width: isMobile ? '100%' : 'auto',
+            }}
+          >
+            <Space
+              wrap
+              direction={isMobile ? 'vertical' : 'horizontal'}
+              style={{
+                borderLeft: '3px solid rgba(255,255,255,0.1)',
+                width: isMobile ? '100%' : 'auto',
+                justifyContent: isMobile ? 'center' : 'flex-start',
+                display: 'flex',
+              }}
+            >
+              {renderButton('analitics', 'Analitics', <DotChartOutlined />)}
+              {renderButton('calendario', 'Calendario', <CalendarOutlined />)}
+              {renderButton('noticias', 'Noticias!', <NotificationOutlined />)}
+            </Space>
+          </div>
         </Col>
       </Row>
     </header>

@@ -333,6 +333,7 @@ const UserList = () => {
         </Col>
       </Row>
       <Table
+          style={{overflowY: 'auto'}} // Estilo para scroll
         columns={columns}
         dataSource={filteredUsers}
         rowKey="_id"
