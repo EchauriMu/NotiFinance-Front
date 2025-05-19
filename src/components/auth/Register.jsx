@@ -160,6 +160,7 @@ const Register = () => {
                 },
               ]}
               style={styles.formItem}
+              hasFeedback
             >
               <Input style={styles.input} size="large" />
             </Form.Item>
@@ -172,6 +173,7 @@ const Register = () => {
                 { type: "email", message: "Ingresa un correo válido." },
               ]}
               style={styles.formItem}
+              hasFeedback
             >
               <Input type="email" style={styles.input} size="large" />
             </Form.Item>
@@ -187,10 +189,12 @@ const Register = () => {
                 },
                 {
                   pattern: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-                  message: "La contraseña debe incluir al menos una letra mayúscula, una minúscula, un número y un carácter especial.",
+                  message:
+                    "La contraseña debe incluir al menos una letra mayúscula, una minúscula, un número y un carácter especial. Solo se permiten estos caracteres especiales: @ $ ! % * ? &",
                 },
               ]}
               style={styles.formItem}
+              hasFeedback
             >
               <Input.Password style={styles.input} size="large" />
             </Form.Item>

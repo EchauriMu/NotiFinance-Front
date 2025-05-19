@@ -66,15 +66,18 @@ const ResetPassword = () => {
           <Form.Item
             label="Nueva Contraseña"
             name="password"
-            rules={[
-              { required: true, message: "Ingresa tu nueva contraseña" },
-              { min: 8, message: "La contraseña debe tener al menos 8 caracteres" },
-              {
-                pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-                message:
-                  "Debe tener mayúscula, minúscula, número y un carácter especial",
-              },
-            ]}
+          rules={[
+                { required: true, message: "Ingresa tu contraseña" },
+                {
+                  min: 8,
+                  message: "La contraseña debe tener al menos 8 caracteres.",
+                },
+                {
+                  pattern: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                  message:
+                    "La contraseña debe incluir al menos una letra mayúscula, una minúscula, un número y un carácter especial. Solo se permiten estos caracteres especiales: @ $ ! % * ? &",
+                },
+              ]}
             hasFeedback
           >
             <Input.Password />
