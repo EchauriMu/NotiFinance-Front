@@ -6,7 +6,14 @@ const { Title, Paragraph } = Typography;
 
 const TermsAndConditions = () => {
   return (
-    <div style={{ padding: '24px', maxWidth: 800, margin: '0 auto', backgroundColor: '#1f1f1f', color: 'white', borderRadius: 8 }}>
+    <div style={{
+      padding: '24px',
+      maxWidth: 800,
+      margin: '0 auto',
+
+      color: 'white',
+
+    }}>
       <div style={{ display: 'flex', alignItems: 'center', marginBottom: 24 }}>
         <Title level={2} style={{ margin: 0, fontWeight: 700 }}>
           <span style={{ color: 'white' }}>Noti</span>
@@ -14,7 +21,7 @@ const TermsAndConditions = () => {
         </Title>
       </div>
 
-      <Title level={3} style={{ color: '#ffa500' }}>Términos y Condiciones de Uso</Title>
+      <Title>Términos y Condiciones de Uso</Title>
       <Paragraph><strong>Fecha de entrada en vigor:</strong> 04 de marzo de 2025</Paragraph>
 
       <Paragraph><strong>1. Aceptación de los Términos:</strong> El uso del servicio web <strong>NotiFinance</strong> implica la aceptación plena de estos Términos y Condiciones.</Paragraph>

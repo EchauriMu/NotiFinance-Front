@@ -48,10 +48,11 @@ const CryptoList = () => {
   return (
     <div style={{ padding: '24px', maxWidth: 800, margin: '0 auto' }}>
            <div style={{ display: 'flex', alignItems: 'center' }}>
-          <Title level={2} style={{ margin: 0 , fontWeight:700}}>
-            <span style={{ color: 'white' }}>Noti</span>
-            <span style={{ color: '#ffa500' }}>Finance</span>
-          </Title>
+
+           <Title level={2} style={{ margin: 0, fontWeight: 700 }}>
+          <span style={{ color: 'white' }}>Noti</span>
+          <span style={{ color: '#ffa500' }}>Finance</span>
+        </Title>
         </div>
 
     <Title>Cryptomonedas disponibles en nuestra plataforma: </Title>

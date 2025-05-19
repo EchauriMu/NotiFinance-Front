@@ -53,7 +53,7 @@ const SidebarMain = ({ setIsAuthenticated }) => {
 
         // Emitir al WebSocket para suscribirse a los cambios del usuario
         newSocket.emit('subscrisibeUserChanges', userDataResponse.id);
-        console.log('✅ Suscrito a cambios del usuario:', userDataResponse.id);
+        console.log('✅ Suscrito a cambios para logout de user:', userDataResponse.id);
 
         // Obtener configuración de notificaciones y lista de seguimiento
         const { notificationSettings, watchlist } = await fetchSettings();

@@ -12,35 +12,59 @@ const HelpAndFAQ = () => {
   };
 
   return (
-    <div style={{ padding: '24px', maxWidth: 800, margin: '0 auto', backgroundColor: '#1f1f1f', color: 'white', borderRadius: 8 }}>
+    <div style={{
+      padding: '22px',
+      maxWidth: 800,
+      margin: '0 auto',
+    }}>
       <div style={{ display: 'flex', alignItems: 'center', marginBottom: 24 }}>
+
         <Title level={2} style={{ margin: 0, fontWeight: 700 }}>
-          <span style={{ color: 'white' }}>Centro de</span>{' '}
-          <span style={{ color: '#fa8c16' }}>Ayuda</span>
-                    <span style={{ color: 'white' }}> y preguntas frecuentes</span>{' '}
+          <span style={{ color: 'white' }}>Noti</span>
+          <span style={{ color: '#ffa500' }}>Finance</span>
         </Title>
       </div>
 
-      <Paragraph style={{ color: '#ccc' }}>
+      <Title >
+        Centro de Ayuda y preguntas frecuentes
+      </Title>
+
+      <Paragraph style={{ color: '#ccc', marginBottom: 24 }}>
         Aquí encontrarás respuestas a las preguntas más frecuentes sobre el uso de NotiFinance. Si necesitas ayuda personalizada, puedes escribirnos directamente.
       </Paragraph>
 
-      <Collapse accordion>
-        <Panel header="¿Qué es NotiFinance?" key="1">
-          <Paragraph>Es una plataforma que ofrece notificaciones en tiempo real sobre cambios en el mercado de criptomonedas.</Paragraph>
+      <Collapse accordion
+        style={{
+          background: '#232323',
+          borderRadius: 8,
+          border: '1px solid #262626',
+          marginBottom: 32
+        }}
+        expandIconPosition="right"
+      >
+        <Panel header="¿Qué es NotiFinance?" key="1" style={{ color: '#fff' }}>
+          <Paragraph style={{ color: '#ccc' }}>
+            Es una plataforma que ofrece notificaciones en tiempo real sobre cambios en el mercado de criptomonedas.
+          </Paragraph>
         </Panel>
-        <Panel header="¿Cómo configuro mis preferencias de notificación?" key="2">
-          <Paragraph>Desde la barra de navegacion, accede a la sección de 'NotiFinance' y selecciona las criptos y umbrales que deseas monitorear.</Paragraph>
+        <Panel header="¿Cómo configuro mis preferencias de notificación?" key="2" style={{ color: '#fff' }}>
+          <Paragraph style={{ color: '#ccc' }}>
+            Desde la barra de navegación, accede a la sección de 'NotiFinance' y selecciona las criptos y umbrales que deseas monitorear.
+          </Paragraph>
         </Panel>
-        <Panel header="¿Es gratis probar NotiFinance?" key="3">
-          <Paragraph>Sí, el servicio puede ser gratuito para usuarios registrados con un plan limitado por 12 meses.</Paragraph>
+        <Panel header="¿Es gratis probar NotiFinance?" key="3" style={{ color: '#fff' }}>
+          <Paragraph style={{ color: '#ccc' }}>
+            Sí, el servicio puede ser gratuito para usuarios registrados con un plan limitado por 12 meses.
+          </Paragraph>
         </Panel>
-        <Panel header="¿Qué tan seguras están mis notificaciones y datos?" key="4">
-          <Paragraph>Aplicamos estándares como ISO/IEC 27001 para garantizar que tus datos estén seguros mediante cifrado y buenas prácticas.</Paragraph>
+        <Panel header="¿Qué tan seguras están mis notificaciones y datos?" key="4" style={{ color: '#fff' }}>
+          <Paragraph style={{ color: '#ccc' }}>
+            Aplicamos estándares como ISO/IEC 27001 para garantizar que tus datos estén seguros mediante cifrado y buenas prácticas.
+          </Paragraph>
         </Panel>
       </Collapse>
 
-      <div style={{ marginTop: 32 }}>
+      <div style={{ marginTop: 24 }}>
         <Title level={4} style={{ color: '#fa8c16' }}>¿Necesitas ayuda personalizada?</Title>
         <Paragraph style={{ color: '#ccc' }}>
           Contáctanos directamente por correo electrónico. Estaremos encantados de ayudarte.

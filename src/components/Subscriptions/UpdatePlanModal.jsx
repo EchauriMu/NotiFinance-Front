@@ -139,7 +139,7 @@ const UpdatePlanModal = ({ open, onClose }) => {
 
       {/* Nota en la parte inferior */}
       <Text type="secondary" style={{ marginTop: '16px', display: 'block' }}>
-        Si deseas cambiar de plan, hazlo desde <a href="/config-facturacion">Configuración  Facturación</a>
+        Si deseas cambiar de plan, hazlo desde Configuración -- Facturación
       </Text>
     </Modal>
   );
