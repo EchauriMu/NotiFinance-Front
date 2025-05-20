@@ -42,8 +42,8 @@ const SidebarMain = ({ setIsAuthenticated }) => {
 
   useEffect(() => {
     // Crear la conexión con el WebSocket
-    const newSocket = io('https://ntlogout.onrender.com'); // Asegúrate de usar la URL correcta
-    setSocket(newSocket); // Establecer socket en el estado
+    const newSocket = io('https://ntlogout.onrender.com'); 
+    setSocket(newSocket); 
 
     const fetchData = async () => {
       try {
@@ -52,7 +52,7 @@ const SidebarMain = ({ setIsAuthenticated }) => {
         setUserData(userDataResponse);
 
         // Emitir al WebSocket para suscribirse a los cambios del usuario
-        newSocket.emit('subscrisibeUserChanges', userDataResponse.id);
+        newSocket.emit('subscribeUserChanges', userDataResponse.id);
         console.log('✅ Suscrito a cambios para logout de user:', userDataResponse.id);
 
         // Obtener configuración de notificaciones y lista de seguimiento
