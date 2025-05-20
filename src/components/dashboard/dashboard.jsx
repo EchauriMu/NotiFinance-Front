@@ -40,6 +40,7 @@ const Dashboard = () => {
         isFulfilled: alert.isFulfilled,
       }));
       sessionStorage.setItem('trackedSymbols', JSON.stringify(trackedSymbols));
+      window.dispatchEvent(new Event('trackedSymbolsUpdated'));
 
       const activeAlerts = alertData.filter(alert => alert.isActive);
       setAlertCountActive(activeAlerts.length);

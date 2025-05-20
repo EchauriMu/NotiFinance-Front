@@ -38,7 +38,6 @@ export const fetchSettings = async () => {
   try {
     const response = await axiosInstance.get('/setting/get');  // Ruta para configuración y lista de seguimiento
 
-
     const notificationSettings = response.data.notificationSettings || {
       email: false,
       whatsapp: false,
@@ -49,7 +48,7 @@ export const fetchSettings = async () => {
        // Guardar en sessionStorage
        sessionStorage.setItem('notificationSettings', JSON.stringify(notificationSettings));
   
-
+console.log(watchlist)
     return { notificationSettings, watchlist };
   } catch (error) {
     console.error('❌ [API] Error al obtener la configuración y watchlist:', error);

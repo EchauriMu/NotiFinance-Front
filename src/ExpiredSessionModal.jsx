@@ -13,16 +13,13 @@ const ExpiredSessionModal = ({ socket, setIsAuthenticated, setModalVisible }) =>
       sessionStorage.clear();
       localStorage.removeItem("token");
 
-      message.success("Has cerrado sesión correctamente");
-
       // Establecer estado de autenticación a falso
       setIsAuthenticated(false);
 
       // Recargar la página
       window.location.reload();
     } catch (error) {
-      message.error("Error al cerrar sesión");
-      sessionStorage.clear();
+   sessionStorage.clear();
       localStorage.removeItem("token");
       window.location.reload();
     }
@@ -41,9 +38,8 @@ const ExpiredSessionModal = ({ socket, setIsAuthenticated, setModalVisible }) =>
   return (
     <Modal
       title="⚠️ Tu sesión expiró"
-      visible={true}
-      onOk={handleOk} // Realiza logout cuando se hace clic en "Aceptar"
-      onCancel={handleCancel} // Realiza logout cuando se cancela
+      open={true}
+      closable={false}
       footer={[
         <Button key="ok" type="primary" onClick={handleOk}>
           Aceptar

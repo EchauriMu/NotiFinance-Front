@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Space, Typography, Tag, Skeleton } from 'antd';
 import { ThunderboltOutlined } from '@ant-design/icons';
+import { s } from 'framer-motion/client';
 
 const { Text } = Typography;
 
@@ -21,15 +22,28 @@ const TrackedCoins = ({ loading }) => {
   const [watchlist, setWatchlist] = useState([]);
 
   useEffect(() => {
-    // Acceder a los datos guardados en sessionStorage
-    const storedData = sessionStorage.getItem('trackedSymbols');
-    if (storedData) {
-      setWatchlist(JSON.parse(storedData));  // Establecer los datos de la sesión
-    }
+    const updateWatchlist = () => {
+      const storedData = sessionStorage.getItem('trackedSymbols');
+      if (storedData) {
+        setWatchlist(JSON.parse(storedData));
+      } else {
+        setWatchlist([]);
+      }
+    };
+
+    updateWatchlist();
+
+    // Escuchar cambios manuales en sessionStorage (por ejemplo, desde Dashboard)
+    window.addEventListener('trackedSymbolsUpdated', updateWatchlist);
+
+    return () => {
+      window.removeEventListener('trackedSymbolsUpdated', updateWatchlist);
+    };
   }, []);
 
   return (
     <div style={styles.statsCard}>
+
       <Space direction="vertical" style={{ width: '100%' }} size="small">
         <Space align="center">
           <ThunderboltOutlined style={{ color: '#faad14', fontSize: '20px' }} />
