@@ -61,12 +61,12 @@ const ResetPassword = () => {
   // ====== RENDERIZADO DEL FORMULARIO ======
   return (
     <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
-      <div style={{ display: 'flex', alignItems: 'center' }}>
+   
         <Title level={2} style={{ margin: 0, fontWeight: 700 }}>
           <span style={{ color: 'white' }}>Noti</span>
           <span style={{ color: '#ffa500' }}>Finance</span>
         </Title>
-      </div>
+ 
       <Card title="Restablecer Contraseña" style={{ width: 350 }}>
         <Form onFinish={onFinish} layout="vertical">
           {/* ====== CAMPO: NUEVA CONTRASEÑA ====== */}
