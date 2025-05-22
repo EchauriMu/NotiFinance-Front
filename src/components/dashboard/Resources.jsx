@@ -51,7 +51,7 @@ const Resources = () => {
             <Col xs={24} md={12}>
               <Card
                 title="Centro de Soporte"
-                extra={<Link onClick={() => handleLinkClick("/soporte")}>Ir</Link>}
+                extra={<Link onClick={() => handleLinkClick("/https://mail.google.com/mail/?view=cm&fs=1&to=notifinance.mx@gmail.com")}>Ir</Link>}
                 bordered={false}
               >
                 <Text>Accede a nuestro centro de soporte para resolver tus dudas.</Text>
