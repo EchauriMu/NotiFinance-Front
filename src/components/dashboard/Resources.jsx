@@ -50,7 +50,7 @@ const Resources = () => {
             </Col>
             <Col xs={24} md={12}>
               <Card
-                title="Centro de Soporte"
+                title="Contancto de Soporte"
                 extra={<Link onClick={() => handleLinkClick("/https://mail.google.com/mail/?view=cm&fs=1&to=notifinance.mx@gmail.com")}>Ir</Link>}
                 bordered={false}
               >
