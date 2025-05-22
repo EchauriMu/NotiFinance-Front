@@ -12,20 +12,7 @@ const Calendario = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [userRole, setUserRole] = useState('basic');
 
-  // 1️⃣ Leer role de sessionStorage
-  useEffect(() => {
-    const userDataRaw = sessionStorage.getItem('userData');
-    if (userDataRaw) {
-      try {
-        const userData = JSON.parse(userDataRaw);
-        setUserRole(userData.role || 'basic');
-      } catch (e) {
-        console.error('Error al parsear userData:', e);
-      }
-    }
-  }, []);
 
   // 2️⃣ Fetch de todos los eventos de hoy a +7 días, al montar
   useEffect(() => {
@@ -123,13 +110,7 @@ const Calendario = () => {
         style={{ marginBottom: 16 }}
       />
 
-      {userRole !== 'basic' && (
-        <Space style={{ marginBottom: 24 }}>
-          <Button type="primary" onClick={handleAddEvent}>Añadir Evento</Button>
-          <Button onClick={handleMyEvents}>Mis Eventos</Button>
-        </Space>
-      )}
-
+ 
       <Calendar
         onSelect={handleDateClick}
         dateCellRender={dateCellRender}
