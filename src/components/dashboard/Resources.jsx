@@ -12,17 +12,17 @@ const Resources = () => {
   };
 
   return (
-    <Card title='Recursos y Ayuda'style={{ marginTop: 24 }}>
-  
+    <Card title='Recursos y Ayuda' style={{ marginTop: 24 }}>
+
       <Row gutter={[24, 24]}>
         {/* Columna Izquierda */}
         <Col xs={24} sm={8} md={6}>
           <div style={{ display: "flex", flexDirection: "column", gap: 22 }}>
-                <Title level={5}>Recursos para usuarios</Title>
+            <Title level={5}>Recursos para usuarios</Title>
             <Link onClick={() => handleLinkClick("/intro")}>Introducción a NotiFinance</Link>
             <Link onClick={() => handleLinkClick("/guia")}>Cómo crear tu primera alerta</Link>
             <Link onClick={() => handleLinkClick("/subscription")}>Guía de planes y beneficios</Link>
-              <Link onClick={() => handleLinkClick("/list")}>Monedas disponibles</Link>
+            <Link onClick={() => handleLinkClick("/list")}>Monedas disponibles</Link>
           </div>
         </Col>
 
@@ -50,12 +50,21 @@ const Resources = () => {
             </Col>
             <Col xs={24} md={12}>
               <Card
-                title="Contancto de Soporte"
-                extra={<Link onClick={() => handleLinkClick("https://mail.google.com/mail/?view=cm&fs=1&to=notifinance.mx@gmail.com")}>Ir</Link>}
+                title="Soporte por Gmail"
+                extra={
+                  <a
+                    href="https://mail.google.com/mail/?view=cm&fs=1&to=notifinance.mx@gmail.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Abrir Gmail
+                  </a>
+                }
                 bordered={false}
               >
-                <Text>Accede a nuestro centro de soporte para resolver tus dudas.</Text>
+                <Text>Haz clic en “Abrir Gmail” para escribirnos desde tu cuenta de Google.</Text>
               </Card>
+
             </Col>
           </Row>
         </Col>
