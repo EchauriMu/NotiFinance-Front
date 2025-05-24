@@ -146,7 +146,8 @@ const UserList = () => {
   // Excluir el usuario con nombre exactamente "admin"
   const usuariosFiltrados = users.filter(u => u.username !== "admin");
 
-  const totalUsuarios = usuariosFiltrados.length;
+  // Total de usuarios menos el admin (siempre -1)
+  const totalUsuarios = users.length > 0 ? users.length - 1 : 0;
   const usuariosActivos = usuariosFiltrados.filter(u => u.isActive).length;
   const usuariosInactivos = usuariosFiltrados.filter(u => !u.isActive).length;
   const administradores = usuariosFiltrados.filter(u => u.role === 'admin').length;

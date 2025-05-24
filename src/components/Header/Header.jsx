@@ -1,27 +1,47 @@
 import React, { useState, useEffect } from 'react';
 import { Row, Col, Space, Button } from 'antd';
-import { DotChartOutlined, TeamOutlined, AppstoreAddOutlined, CalendarOutlined, NotificationOutlined } from '@ant-design/icons';
+import {
+  DotChartOutlined,
+  CalendarOutlined,
+  NotificationOutlined,
+} from '@ant-design/icons';
 
+// =========== SECCIONES PRINCIPALES ===========
 const sections = ['dashboard', 'monedas', 'notifinance', 'configuracion'];
 
 const CryptoHeader = ({ setActiveSection, activeSection }) => {
+  // =========== ESTADO: DETECCIÓN MÓVIL ===========
   const [isMobile, setIsMobile] = useState(false);
 
+  // =========== EFECTO PARA REVISAR TAMAÑO DE PANTALLA ===========
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768);
+      setIsMobile(window.innerWidth <= 768); // Considerar móvil si es <= 768px
     };
 
-    checkMobile(); // Comprobar al principio
+    checkMobile(); // Comprobación inicial
 
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    window.addEventListener('resize', checkMobile); // Añadir listener
+    return () => window.removeEventListener('resize', checkMobile); // Limpiar listener
   }, []);
 
+  // =========== ESTILO PARA BOTÓN ACTIVO ===========
   const buttonStyle = (section) => ({
     borderBottom: activeSection === section ? '5px solid orange' : 'none',
   });
 
+  // =========== TRADUCCIÓN DE SECCIONES ===========
+  const sectionLabels = {
+    dashboard: 'Panel Principal',
+    monedas: 'Monedas',
+    notifinance: 'Notificaciones',
+    configuracion: 'Configuración',
+    analitics: 'Analistas',
+    calendario: 'Calendario',
+    noticias: 'Noticias',
+  };
+
+  // =========== RENDER DE BOTÓN ===========
   const renderButton = (section, label, icon) => (
     <Button
       key={section}
@@ -34,6 +54,7 @@ const CryptoHeader = ({ setActiveSection, activeSection }) => {
     </Button>
   );
 
+  // =========== RENDER PRINCIPAL ===========
   return (
     <header
       style={{
@@ -44,6 +65,7 @@ const CryptoHeader = ({ setActiveSection, activeSection }) => {
       }}
     >
       <Row justify="space-between" align="middle" gutter={[0, 12]}>
+        {/* SECCIÓN DE NAVEGACIÓN IZQUIERDA */}
         <Col xs={24} sm={14}>
           <Space
             size={isMobile ? 'small' : 'large'}
@@ -57,25 +79,25 @@ const CryptoHeader = ({ setActiveSection, activeSection }) => {
               display: 'flex',
             }}
           >
-            {sections
-              .filter((section) => section !== 'analitics')
-              .map((section) => (
-                <Button
-                  key={section}
-                  type="text"
-                  block={isMobile}
-                  onClick={() => setActiveSection(section)}
-                  style={{
-                    ...buttonStyle(section),
-                    width: isMobile ? '100%' : 'auto',
-                    minWidth: 100,
-                  }}
-                >
-                  {section.charAt(0).toUpperCase() + section.slice(1)}
-                </Button>
-              ))}
+            {sections.map((section) => (
+              <Button
+                key={section}
+                type="text"
+                block={isMobile}
+                onClick={() => setActiveSection(section)}
+                style={{
+                  ...buttonStyle(section),
+                  width: isMobile ? '100%' : 'auto',
+                  minWidth: 100,
+                }}
+              >
+                {sectionLabels[section] || section}
+              </Button>
+            ))}
           </Space>
         </Col>
+
+        {/* SECCIÓN DE ACCIONES DERECHA */}
         <Col xs={24} sm={10} style={{ marginTop: isMobile ? 16 : 8 }}>
           <div
             style={{
@@ -96,9 +118,9 @@ const CryptoHeader = ({ setActiveSection, activeSection }) => {
                 display: 'flex',
               }}
             >
-              {renderButton('analitics', 'Analitics', <DotChartOutlined />)}
-              {renderButton('calendario', 'Calendario', <CalendarOutlined />)}
-              {renderButton('noticias', 'Noticias!', <NotificationOutlined />)}
+              {renderButton('analitics', sectionLabels['analitics'], <DotChartOutlined />)}
+              {renderButton('calendario', sectionLabels['calendario'], <CalendarOutlined />)}
+              {renderButton('noticias', sectionLabels['noticias'], <NotificationOutlined />)}
             </Space>
           </div>
         </Col>
