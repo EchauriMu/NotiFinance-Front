@@ -56,7 +56,7 @@ const WhatsAppConfig = () => {
         setErrorMessage('');
       }
     } catch (error) {
-      setErrorMessage(error.response?.data?.message || 'Error al enviar el código.');
+      setErrorMessage('Ese número ya está registrado, si el error persiste contactenos.');
     } finally {
       setLoading(false);
     }

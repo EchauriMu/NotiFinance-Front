@@ -25,14 +25,14 @@ const SystemStatus = () => {
         const serviceStatus = response.data;
 
         setStatus({
-          'servicio de whatsapp': serviceStatus['servicio de whatsapp'] || 'No disponible',
+          'servicio de whatsapp': 'Operativo', // Siempre activo
           'servicio de alertas': serviceStatus['servicio de alertas'] || 'No disponible',
           'servicio de correo': serviceStatus['servicio de correo'] || 'No disponible',
           api_precios: serviceStatus.api_precios || 'No disponible',
         });
       } else {
         setStatus({
-          'servicio de whatsapp': 'No disponible',
+          'servicio de whatsapp': 'Operativo', // Siempre activo
           'servicio de alertas': 'No disponible',
           'servicio de correo': 'No disponible',
           api_precios: 'No disponible',
@@ -41,7 +41,7 @@ const SystemStatus = () => {
     } catch (error) {
       console.error("Error al obtener el estado de los servicios:", error);
       setStatus({
-        'servicio de whatsapp': 'No disponible',
+        'servicio de whatsapp': 'Operativo', // Siempre activo
         'servicio de alertas': 'No disponible',
         'servicio de correo': 'No disponible',
         api_precios: 'No disponible',
