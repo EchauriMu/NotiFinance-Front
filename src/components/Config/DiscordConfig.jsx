@@ -3,7 +3,7 @@ import {
   Card, Button, Modal, Form, Input, Space, Typography, notification, Badge, Tooltip
 } from 'antd';
 import {
-  DiscordOutlined, SettingOutlined, CheckCircleOutlined, DeleteOutlined
+  DiscordOutlined, SettingOutlined, CheckCircleOutlined, DeleteOutlined, QuestionCircleOutlined
 } from '@ant-design/icons';
 import axiosInstance from '../../api/axiosInstance';
 
@@ -118,9 +118,15 @@ const DiscordConfig = () => {
     <>
       <Card>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
             <DiscordOutlined style={{ fontSize: '24px', color: '#5865F2' }} />
             <strong style={{ marginLeft: '8px' }}>Discord</strong>
+            <Tooltip title="¿Cómo obtener tu Webhook de Discord?">
+              <QuestionCircleOutlined
+                style={{ fontSize: '18px', color: '#1677ff', marginLeft: 8, cursor: 'pointer' }}
+                onClick={() => window.open('https://www.youtube.com/watch?v=TrMzEfVYBxI', '_blank')}
+              />
+            </Tooltip>
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center' }}>
