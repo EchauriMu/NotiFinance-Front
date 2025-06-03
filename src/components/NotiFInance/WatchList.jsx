@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
-  Card, Form, Select, Input, Row, Col, Alert, Button, notification, Spin
+  Card, Form, Select, Input, Row, Col, Alert, Button, notification, Spin,
+  Typography, Tag
 } from 'antd';
 import {
   MailOutlined, DiscordOutlined, WhatsAppOutlined
@@ -11,6 +12,7 @@ import LimitReachedModal from './LimitCreate';
 import ServiceNotRegisteredModal from './NoData';
 
 const { Option } = Select;
+const { Title } = Typography;
 const icons = {
   email: <MailOutlined style={{ color: '#faad14', fontSize: 36 }} />,
   discord: <DiscordOutlined style={{ color: '#1890ff', fontSize: 36 }} />,
@@ -25,11 +27,53 @@ export const Watchlist = ({
   setSelectedCrypto,
   onAlertCreated
 }) => {
+  // =========== ESTADOS ===========
   const [loading, setLoading] = useState(false);
   const [showLimit, setShowLimit] = useState(false);
   const [showService, setShowService] = useState(false);
+  const [price, setPrice] = useState(null);
+  const [color, setColor] = useState('default');
+  const timerRef = useRef(null);
   const navigate = useNavigate();
 
+  // =========== OBTENER PRECIO DE LA CRIPTO SELECCIONADA ===========
+  const fetchPrice = async (symbol) => {
+    if (!symbol) return;
+    try {
+      const response = await fetch(
+        `https://min-api.cryptocompare.com/data/price?fsym=${symbol}&tsyms=USD`
+      );
+      const data = await response.json();
+      const newPrice = data.USD;
+      const storedPrice = sessionStorage.getItem(`price_${symbol}`);
+      if (storedPrice) {
+        const prevPrice = parseFloat(storedPrice);
+        if (newPrice > prevPrice) setColor('green');
+        else if (newPrice < prevPrice) setColor('red');
+        if (newPrice !== prevPrice) {
+          if (timerRef.current) clearTimeout(timerRef.current);
+          timerRef.current = setTimeout(() => setColor('default'), 4000);
+        }
+      }
+      sessionStorage.setItem(`price_${symbol}`, newPrice);
+      setPrice(newPrice);
+    } catch (error) {
+      setPrice(null);
+    }
+  };
+
+  // =========== EFECTO: ACTUALIZAR PRECIO AL CAMBIAR CRIPTO ===========
+  useEffect(() => {
+    if (!form.getFieldValue('crypto')) return;
+    fetchPrice(form.getFieldValue('crypto'));
+    const intervalId = setInterval(() => fetchPrice(form.getFieldValue('crypto')), 10000);
+    return () => {
+      clearInterval(intervalId);
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, [form.getFieldValue('crypto')]);
+
+  // =========== MANEJADOR DE ENVIO DEL FORMULARIO ===========
   const handleFinish = async ({ crypto, threshold }) => {
     if (!selectedNotification || !crypto) {
       return notification.error({
@@ -79,6 +123,8 @@ export const Watchlist = ({
   return (
     <Card title="Configurar Nueva Alerta de Precio">
       <Spin spinning={loading}>
+        {/* =========== PRECIO ACTUAL DE LA CRIPTO SELECCIONADA =========== */}
+      
         <Alert
           message="Instrucciones"
           description={
@@ -99,6 +145,16 @@ export const Watchlist = ({
           showIcon
           style={{ marginBottom: 16 }}
         />
+          {form.getFieldValue('crypto') && price !== null && (
+          <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+            <Title level={5}>
+              Precio actual de {form.getFieldValue('crypto')}: {' '}
+              <Tag color={color} style={{ fontSize: '18px', padding: '4px 10px' }}>
+                ${price} USD
+              </Tag>
+            </Title>
+          </div>
+        )}
         <Form form={form} layout="vertical" onFinish={handleFinish}>
           <Form.Item
             name="crypto"
